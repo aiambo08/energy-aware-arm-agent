@@ -6,7 +6,7 @@ phase PR.
 | Field | Value |
 |---|---|
 | Current phase | F1 merged (critical gate 1 passed); F2 awaits go |
-| Last green commit | `181bac7` (F0 merged, `main`) |
+| Last green commit | `0c1c1b0` (F1 merged, `main`) |
 | Next phase | F2 — torque source experiment and energy model (critical gate 2) |
 | Blockers | none |
 

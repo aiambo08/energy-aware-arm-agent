@@ -5,7 +5,7 @@ phase PR.
 
 | Field | Value |
 |---|---|
-| Current phase | F1 — arm simulation (critical gate 1) |
+| Current phase | F1 merged (critical gate 1 passed); F2 awaits go |
 | Last green commit | `181bac7` (F0 merged, `main`) |
 | Next phase | F2 — torque source experiment and energy model (critical gate 2) |
 | Blockers | none |
@@ -15,7 +15,7 @@ phase PR.
 | Phase | Status | Evidence |
 |---|---|---|
 | F0 skeleton, Docker, quality | merged (PR #1) | `reports/f0_quality.json` (ruff, format, mypy strict, 13 tests, 1.2 s), `reports/f0_sim.json` (boot 2.5 s, image 4.46 GB) |
-| F1 arm simulation | PR open, gate green locally | `reports/f1_sim.json` (3 runs: boots 3/3, ready ≤ 18.2 s, RTF ≥ 0.96, camera ≥ 10.9 FPS, grasp 3/3, slip ≤ 0.05 mm); kinematics + scene generator unit tests |
+| F1 arm simulation | done (PR #3) | `reports/f1_sim.json` (3 runs) and `reports/f1_sim_50runs.json` (50 runs: boots 50/50, ready ≤ 18.7 s, RTF ≥ 0.77, camera ≥ 10.6 FPS, grasp 50/50, slip ≤ 0.25 mm); kinematics + scene generator unit tests |
 | F2 torque source and energy model | not started | — |
 | F3 perception `detect()` | not started | — |
 | F4 primitives with contracts | not started | — |

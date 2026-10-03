@@ -35,9 +35,10 @@ tune. F1 needs a gripper whose grasp is reliable enough to be a *fixture* for F2
 
 ## Consequences
 
-- Measured in F1 (`reports/f1_sim.json`): the fixed-waypoint pick-and-place of a 45 mm,
-  50 g cube lifts it 14.5 cm, transports it 18 cm and places it back with sub-millimetre
-  slip; fingers stop at 19.8–20.2 mm (= stroke − cube/2) when closing on the cube.
+- Measured in F1 (`reports/f1_sim.json`, 3 runs): the fixed-waypoint pick-and-place of a
+  45 mm, 50 g cube lifts it 14.5 cm, transports it 18 cm and places it back; the cube moves
+  ≤ 0.05 mm relative to the TCP during transport (ground truth from Gazebo); fingers stop
+  at 19.8–20.2 mm (= stroke − cube/2) when closing on the cube.
 - The gripper is not a physically calibrated model of any product; energy figures for the
   gripper are therefore indicative, and the paper must say so.
 - If a photorealistic gripper is ever needed, the swap is confined to the xacro and the

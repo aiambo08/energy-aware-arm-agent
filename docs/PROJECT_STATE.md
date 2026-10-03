@@ -5,17 +5,17 @@ phase PR.
 
 | Field | Value |
 |---|---|
-| Current phase | F0 — skeleton, Docker and quality gates |
-| Last green commit | (set after the first CI run on `main`) |
-| Next phase | F1 — arm simulation (critical gate 1) |
+| Current phase | F1 — arm simulation (critical gate 1) |
+| Last green commit | `181bac7` (F0 merged, `main`) |
+| Next phase | F2 — torque source experiment and energy model (critical gate 2) |
 | Blockers | none |
 
 ## Phase status
 
 | Phase | Status | Evidence |
 |---|---|---|
-| F0 skeleton, Docker, quality | PR open, gates green locally | `reports/f0_quality.json` (ruff, format, mypy strict, 13 tests, 1.2 s), `reports/f0_sim.json` (boot 2.5 s, image 4.46 GB) |
-| F1 arm simulation | not started | — |
+| F0 skeleton, Docker, quality | merged (PR #1) | `reports/f0_quality.json` (ruff, format, mypy strict, 13 tests, 1.2 s), `reports/f0_sim.json` (boot 2.5 s, image 4.46 GB) |
+| F1 arm simulation | PR open, gate green locally | `reports/f1_sim.json` (3 runs: boots 3/3, ready ≤ 18.2 s, RTF ≥ 0.96, camera ≥ 10.9 FPS, grasp 3/3, slip ≤ 0.05 mm); kinematics + scene generator unit tests |
 | F2 torque source and energy model | not started | — |
 | F3 perception `detect()` | not started | — |
 | F4 primitives with contracts | not started | — |
@@ -32,12 +32,12 @@ phase PR.
 |---|---|---|
 | ADR-001 | Simulation stack, repository name and package name | accepted |
 | ADR-002 | Simulation image size threshold raised to 5 GB | accepted |
+| ADR-003 | Simple parallel-jaw gripper instead of Robotiq 2F-85 (D2) | accepted |
 
 ## Open decisions (from `docs/plan.es.md` §7)
 
 | # | Decision | Due |
 |---|---|---|
-| D2 | Arm and gripper (UR5e + Robotiq 2F-85 vs Panda) | F1 |
 | D3 | Torque source (Gazebo effort vs inverse dynamics) | F2 |
 | D4 | η excludes copper losses | F2 |
 | D5 | Single-turn vs retries | F6 |

@@ -1,0 +1,17 @@
+# Fixed joint-space waypoints for the F1 self-check (ros_ws/.../worlds/check_scene.sdf fixture).
+# Computed offline with the UR5e chain (ur_description 3.5.1) for a top-down TCP
+# (TCP = tool0 + 0.125 m along tool z). Cube at (-0.50, 0.00, 0.0225), 45 mm edge.
+# Online IK arrives in F4; these numbers are a fixture, not a planner.
+joint_names: [shoulder_pan_joint, shoulder_lift_joint, elbow_joint, wrist_1_joint, wrist_2_joint, wrist_3_joint]
+home:      [0.0, -1.57, 0.0, -1.57, 0.0, 0.0]
+pregrasp:  [0.2699, -1.6612, -1.9823, -1.0690, 1.5708, 1.8407]   # TCP (-0.50, 0.00, 0.1725)
+grasp:     [0.2699, -1.9135, -2.1424, -0.6565, 1.5708, 1.8407]   # TCP (-0.50, 0.00, 0.0275)
+transport: [-0.0920, -1.7334, -1.8989, -1.0802, 1.5708, 1.4788]  # TCP (-0.50, 0.18, 0.1725)
+place:     [-0.0920, -1.9387, -2.0426, -0.7311, 1.5708, 1.4788]  # TCP (-0.50, 0.18, 0.0425)
+cube_name: cube_0
+cube_start: [-0.50, 0.00, 0.0225]
+gripper:
+  open_effort_n: -10.0
+  close_effort_n: 20.0
+  stroke_m: 0.0425
+  cube_size_m: 0.045

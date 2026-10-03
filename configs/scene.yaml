@@ -1,0 +1,17 @@
+# Seeded tabletop scene parameters used by `armbench.scene` (`armbench scene --seed N`).
+# Coordinates are in the robot `base_link` frame; the table surface (z = 0) is where the
+# robot base is mounted and the usable workspace lies in front of the robot (−x at HOME).
+schema_version: 1
+workspace: {x_min: -0.70, x_max: -0.30, y_min: -0.25, y_max: 0.25}
+cube:
+  size_m: 0.045            # edge length
+  mass_kg: 0.05
+  min_separation_m: 0.09   # centre to centre
+  friction_mu: 1.0
+  edge_margin_m: 0.03      # keep cube centres away from the workspace border
+n_cubes: {min: 3, max: 6}
+palette:                    # name -> RGBA, used both for SDF material and later HSV perception
+  red:    [0.85, 0.10, 0.10, 1.0]
+  green:  [0.10, 0.70, 0.15, 1.0]
+  blue:   [0.10, 0.25, 0.85, 1.0]
+  yellow: [0.90, 0.85, 0.10, 1.0]

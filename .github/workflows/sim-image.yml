@@ -6,6 +6,7 @@ on:
       - "docker/**"
       - "ros_ws/**"
       - "scripts/check_sim_boot.py"
+      - "scripts/check_sim.py"
       - ".github/workflows/sim-image.yml"
   push:
     branches: [main]
@@ -13,6 +14,7 @@ on:
       - "docker/**"
       - "ros_ws/**"
       - "scripts/check_sim_boot.py"
+      - "scripts/check_sim.py"
       - ".github/workflows/sim-image.yml"
   workflow_dispatch:
 
@@ -37,8 +39,14 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Boot empty headless world (F0 gate)
         run: python3 scripts/check_sim_boot.py --image armbench-sim:dev --repeats 3 --out reports/f0_sim.ci.json
+      # GitHub runners (4 vCPU, software ogre2) render the RGB-D camera at ~9.6 FPS sim; the
+      # 10 FPS acceptance threshold is for the development host (reports/f1_sim.json).
+      - name: UR5e + gripper + RGB-D self-check (F1 gate)
+        run: python3 scripts/check_sim.py --image armbench-sim:dev --repeats 3 --camera-fps-min 8 --out reports/f1_sim.ci.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: f0_sim_report
-          path: reports/f0_sim.ci.json
+          name: sim_reports
+          path: |
+            reports/f0_sim.ci.json
+            reports/f1_sim.ci.json

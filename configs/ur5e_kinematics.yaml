@@ -1,0 +1,26 @@
+# UR5e kinematic parameters and joint limits used by `armbench.kinematics`.
+#
+# `kinematics:` is copied verbatim from `ur_description/config/ur5e/default_kinematics.yaml`
+# (ros-jazzy-ur-description 3.5.1). Each entry is the origin of the joint in its parent link
+# frame (URDF convention: T = Trans(xyz) * R_z(yaw) * R_y(pitch) * R_x(roll)); the joint
+# variable then rotates about the local z axis. The chain is preceded by the fixed
+# base_link -> base_link_inertia transform (rpy 0 0 pi) and followed by the fixed
+# wrist_3_link -> flange (rpy 0 -pi/2 -pi/2) and flange -> tool0 (rpy pi/2 0 pi/2) transforms,
+# which are hard-coded in `ur_macro.xacro` and therefore in `armbench.kinematics.ur5e`.
+#
+# `joint_limits:` comes from `ur_description/config/ur5e/joint_limits.yaml` (same release).
+schema_version: 1
+kinematics:
+  shoulder:  {x: 0, y: 0, z: 0.1625, roll: 0, pitch: 0, yaw: 0}
+  upper_arm: {x: 0, y: 0, z: 0, roll: 1.570796327, pitch: 0, yaw: 0}
+  forearm:   {x: -0.425, y: 0, z: 0, roll: 0, pitch: 0, yaw: 0}
+  wrist_1:   {x: -0.3922, y: 0, z: 0.1333, roll: 0, pitch: 0, yaw: 0}
+  wrist_2:   {x: 0, y: -0.0997, z: -2.044881182297852e-11, roll: 1.570796327, pitch: 0, yaw: 0}
+  wrist_3:   {x: 0, y: 0.09959999999999999, z: -2.042830148012698e-11, roll: 1.570796326589793, pitch: 3.141592653589793, yaw: 3.141592653589793}
+joint_limits:
+  shoulder_pan_joint:  {min_position: -6.283185307179586, max_position: 6.283185307179586, max_velocity: 3.141592653589793, max_effort: 150.0}
+  shoulder_lift_joint: {min_position: -6.283185307179586, max_position: 6.283185307179586, max_velocity: 3.141592653589793, max_effort: 150.0}
+  elbow_joint:         {min_position: -3.141592653589793, max_position: 3.141592653589793, max_velocity: 3.141592653589793, max_effort: 150.0}
+  wrist_1_joint:       {min_position: -6.283185307179586, max_position: 6.283185307179586, max_velocity: 3.141592653589793, max_effort: 28.0}
+  wrist_2_joint:       {min_position: -6.283185307179586, max_position: 6.283185307179586, max_velocity: 3.141592653589793, max_effort: 28.0}
+  wrist_3_joint:       {min_position: -6.283185307179586, max_position: 6.283185307179586, max_velocity: 3.141592653589793, max_effort: 28.0}

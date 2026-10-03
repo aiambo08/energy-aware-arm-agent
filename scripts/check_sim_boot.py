@@ -76,7 +76,19 @@ def boot_once(image: str, timeout_s: float) -> dict[str, Any]:
     stop_container()
     t0 = time.monotonic()
     started = run(
-        ["docker", "run", "-d", "--name", CONTAINER, image, "bash", "-c", SIM_CMD],
+        [
+            "docker",
+            "run",
+            "-d",
+            "--network",
+            "none",
+            "--name",
+            CONTAINER,
+            image,
+            "bash",
+            "-c",
+            SIM_CMD,
+        ],
         timeout=120,
     )
     if started.returncode != 0:

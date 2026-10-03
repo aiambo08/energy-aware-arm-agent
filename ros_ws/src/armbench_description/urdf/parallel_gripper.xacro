@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!--
+  Minimal parallel-jaw gripper for simulation (ADR-003).
+  Two independent prismatic fingers driven by effort commands; stroke 0 (open, 85 mm gap)
+  to 42.5 mm per finger (closed). Mass/inertia chosen to match a Robotiq 2F-85 + adapter (~1 kg)
+  so the arm dynamics (and the energy model) see a realistic payload.
+-->
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+  <xacro:macro name="parallel_gripper" params="prefix parent *origin
+      base_mass:=0.80 finger_mass:=0.10 stroke:=0.0425 finger_length:=0.060
+      finger_thickness:=0.012 finger_width:=0.025 base_size_xy:=0.085 base_height:=0.075
+      max_effort:=40.0 max_velocity:=0.15">
+
+    <xacro:property name="finger_offset_y" value="${stroke + finger_thickness / 2.0}"/>
+
+    <joint name="${prefix}gripper_base_joint" type="fixed">
+      <xacro:insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="${prefix}gripper_base_link"/>
+    </joint>
+
+    <link name="${prefix}gripper_base_link">
+      <visual>
+        <origin xyz="0 0 ${base_height / 2.0}" rpy="0 0 0"/>
+        <geometry>
+          <box size="${base_size_xy} ${base_size_xy} ${base_height}"/>
+        </geometry>
+        <material name="gripper_grey">
+          <color rgba="0.25 0.25 0.28 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${base_height / 2.0}" rpy="0 0 0"/>
+        <geometry>
+          <box size="${base_size_xy} ${base_size_xy} ${base_height}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 ${base_height / 2.0}" rpy="0 0 0"/>
+        <mass value="${base_mass}"/>
+        <inertia
+          ixx="${base_mass / 12.0 * (base_size_xy * base_size_xy + base_height * base_height)}"
+          iyy="${base_mass / 12.0 * (base_size_xy * base_size_xy + base_height * base_height)}"
+          izz="${base_mass / 12.0 * (2.0 * base_size_xy * base_size_xy)}"
+          ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <!-- Fingers slide along the gripper y axis towards the centre line. -->
+    <xacro:macro name="gripper_finger" params="side reflect">
+      <joint name="${prefix}${side}_finger_joint" type="prismatic">
+        <origin xyz="0 ${reflect * finger_offset_y} ${base_height}" rpy="0 0 0"/>
+        <parent link="${prefix}gripper_base_link"/>
+        <child link="${prefix}${side}_finger_link"/>
+        <axis xyz="0 ${-reflect} 0"/>
+        <limit lower="0.0" upper="${stroke}" effort="${max_effort}" velocity="${max_velocity}"/>
+        <dynamics damping="2.0" friction="0.2"/>
+      </joint>
+      <link name="${prefix}${side}_finger_link">
+        <visual>
+          <origin xyz="0 0 ${finger_length / 2.0}" rpy="0 0 0"/>
+          <geometry>
+            <box size="${finger_width} ${finger_thickness} ${finger_length}"/>
+          </geometry>
+          <material name="finger_black">
+            <color rgba="0.05 0.05 0.05 1.0"/>
+          </material>
+        </visual>
+        <collision>
+          <origin xyz="0 0 ${finger_length / 2.0}" rpy="0 0 0"/>
+          <geometry>
+            <box size="${finger_width} ${finger_thickness} ${finger_length}"/>
+          </geometry>
+        </collision>
+        <inertial>
+          <origin xyz="0 0 ${finger_length / 2.0}" rpy="0 0 0"/>
+          <mass value="${finger_mass}"/>
+          <inertia
+            ixx="${finger_mass / 12.0 * (finger_thickness * finger_thickness + finger_length * finger_length)}"
+            iyy="${finger_mass / 12.0 * (finger_width * finger_width + finger_length * finger_length)}"
+            izz="${finger_mass / 12.0 * (finger_width * finger_width + finger_thickness * finger_thickness)}"
+            ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+      </link>
+      <gazebo reference="${prefix}${side}_finger_link">
+        <mu1>1.5</mu1>
+        <mu2>1.5</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>0.1</maxVel>
+      </gazebo>
+    </xacro:macro>
+
+    <xacro:gripper_finger side="left" reflect="1"/>
+    <xacro:gripper_finger side="right" reflect="-1"/>
+
+    <!-- Tool centre point: between the finger pads, 10 mm above the finger tips. -->
+    <joint name="${prefix}tcp_joint" type="fixed">
+      <origin xyz="0 0 ${base_height + finger_length - 0.010}" rpy="0 0 0"/>
+      <parent link="${prefix}gripper_base_link"/>
+      <child link="${prefix}tcp"/>
+    </joint>
+    <link name="${prefix}tcp"/>
+
+    <ros2_control name="${prefix}gripper" type="system">
+      <hardware>
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      </hardware>
+      <xacro:macro name="finger_interfaces" params="joint">
+        <joint name="${joint}">
+          <command_interface name="effort">
+            <param name="min">${-max_effort}</param>
+            <param name="max">${max_effort}</param>
+          </command_interface>
+          <command_interface name="position">
+            <param name="min">0.0</param>
+            <param name="max">${stroke}</param>
+          </command_interface>
+          <state_interface name="position">
+            <param name="initial_value">0.0</param>
+          </state_interface>
+          <state_interface name="velocity"/>
+          <state_interface name="effort"/>
+        </joint>
+      </xacro:macro>
+      <xacro:finger_interfaces joint="${prefix}left_finger_joint"/>
+      <xacro:finger_interfaces joint="${prefix}right_finger_joint"/>
+    </ros2_control>
+  </xacro:macro>
+</robot>

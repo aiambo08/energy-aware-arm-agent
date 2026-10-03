@@ -13,8 +13,9 @@ from typing import Final
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-REPO_ROOT: Final = Path(__file__).resolve().parents[2]
-DEFAULT_SEEDS_FILE: Final = REPO_ROOT / "configs" / "seeds.yaml"
+from armbench.paths import CONFIG_DIR
+
+DEFAULT_SEEDS_FILE: Final = CONFIG_DIR / "seeds.yaml"
 
 
 class LockedSeedError(PermissionError):

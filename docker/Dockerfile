@@ -47,6 +47,17 @@ RUN bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash \
     && colcon build --event-handlers console_direct+ \
     && rm -rf build log"
 
+# Pure-Python `armbench` package (energy meter now, primitives later) importable from the
+# rclpy nodes. --no-deps keeps the apt numpy 1.26 that rclpy/cv_bridge/pinocchio are built
+# against; the two missing runtime deps are added explicitly.
+COPY pyproject.toml README.md LICENSE /work/armbench/
+COPY src /work/armbench/src
+COPY configs /work/armbench/configs
+ENV ARMBENCH_CONFIG_DIR=/work/armbench/configs
+RUN uv pip install --system --break-system-packages --no-cache --no-deps /work/armbench \
+    && uv pip install --system --break-system-packages --no-cache "pydantic>=2.7,<3" "typer>=0.12,<1" \
+    && python3 -c "import armbench.energy, pydantic, numpy; print(armbench.__version__, numpy.__version__)"
+
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

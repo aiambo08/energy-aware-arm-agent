@@ -23,6 +23,7 @@ from launch_ros.substitutions import FindPackageShare
 
 MAX_CUBES = 6
 ARM_CONTROLLERS = ["joint_state_broadcaster", "joint_trajectory_controller", "gripper_controller"]
+ENERGY_CONTROLLERS = ["energy_state_broadcaster"]
 
 
 def launch_setup(context):  # noqa: ANN001, ANN201
@@ -91,7 +92,7 @@ def launch_setup(context):  # noqa: ANN001, ANN201
             arguments=[name, "--controller-manager", "/controller_manager"],
             output="screen",
         )
-        for name in ARM_CONTROLLERS
+        for name in [*ARM_CONTROLLERS, *ENERGY_CONTROLLERS]
     ]
 
     bridge = Node(

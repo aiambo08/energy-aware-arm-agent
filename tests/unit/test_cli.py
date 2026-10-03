@@ -6,6 +6,7 @@ from typer.testing import CliRunner
 
 from armbench import __version__
 from armbench.cli import app
+from armbench.energy.log import Sample, write_samples_jsonl
 
 runner = CliRunner()
 
@@ -100,3 +101,21 @@ def test_fk_accepts_negative_angles() -> None:
 def test_fk_wrong_arity() -> None:
     result = runner.invoke(app, ["fk", "0", "0", "0"])
     assert result.exit_code != 0
+
+
+def test_energy_command_table_and_json(tmp_path: Path) -> None:
+    log = tmp_path / "ep.jsonl"
+    write_samples_jsonl(
+        log, [Sample(t=0.1 * i, q=(0.0,) * 6, qd=(0.5,) * 6, tau=(10.0,) * 6) for i in range(11)]
+    )
+    result = runner.invoke(app, ["energy", str(log)])
+    assert result.exit_code == 0, result.output
+    assert "A " in result.output
+    assert "Wh" in result.output
+    result = runner.invoke(app, ["energy", str(log), "--full", "--json"])
+    assert result.exit_code == 0, result.output
+    rows = json.loads(result.output)
+    assert len(rows) == 6
+    assert {r["variant"] for r in rows} == {"A", "B"}
+    result = runner.invoke(app, ["energy", str(log), "--variant", "B", "--eta", "0.5", "--json"])
+    assert json.loads(result.output)[0]["eta"] == 0.5

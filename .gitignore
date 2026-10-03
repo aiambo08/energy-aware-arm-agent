@@ -24,3 +24,6 @@ runs/
 .env
 .env.*
 !.env.example
+
+# F2 torque-source working directories (raw JSONL segments, plan)
+reports/_f2_*/

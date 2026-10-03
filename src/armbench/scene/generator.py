@@ -15,8 +15,9 @@ import numpy as np
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-REPO_ROOT: Final = Path(__file__).resolve().parents[3]
-DEFAULT_SCENE_FILE: Final = REPO_ROOT / "configs" / "scene.yaml"
+from armbench.paths import CONFIG_DIR
+
+DEFAULT_SCENE_FILE: Final = CONFIG_DIR / "scene.yaml"
 MAX_PLACEMENT_FAILURES: Final = 1_000
 YAW_HALF_RANGE: Final = np.pi / 4
 

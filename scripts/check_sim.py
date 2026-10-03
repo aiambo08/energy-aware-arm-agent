@@ -49,7 +49,21 @@ def stop_container() -> None:
 def check_once(image: str, ready_timeout_s: float, no_grasp: bool) -> dict[str, Any]:
     stop_container()
     t0 = time.time()
-    started = run(["docker", "run", "-d", "--name", CONTAINER, image, "bash", "-c", LAUNCH_CMD])
+    started = run(
+        [
+            "docker",
+            "run",
+            "-d",
+            "--network",
+            "none",
+            "--name",
+            CONTAINER,
+            image,
+            "bash",
+            "-c",
+            LAUNCH_CMD,
+        ]
+    )
     if started.returncode != 0:
         return {"ok": False, "error": f"docker run failed: {started.stderr.strip()}"}
     cmd = [

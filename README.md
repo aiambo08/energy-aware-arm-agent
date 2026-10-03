@@ -16,7 +16,7 @@ value or a measurement stored under `reports/` with the script that produced it.
 
 | Area | State |
 |---|---|
-| Python package `armbench` (`src/armbench`) | seed-split loader with the final-evaluation lock, `armbench` CLI |
+| Python package `armbench` (`src/armbench`) | seed-split loader with the final-evaluation lock, UR5e kinematics (FK/Jacobian/IK, numpy only), seeded scene generator → SDF, `armbench` CLI |
 | Quality gates | `ruff`, `ruff format`, `mypy --strict`, `pytest` (+ `hypothesis`), `pre-commit` |
 | Simulation image | `docker/Dockerfile`: ROS 2 Jazzy + Gazebo Harmonic + UR5e/Robotiq/Pinocchio packages, `ros_ws` built in the image |
 | Simulation (F1) | `ros_ws/src/armbench_description` (UR5e + parallel gripper xacro, tabletop world with fixed RGB-D camera), `ros_ws/src/armbench_bringup` (`sim.launch.py`, controllers, `sim_check` node) |
@@ -70,6 +70,12 @@ a JSON report with the boot time, image size and pass/fail against the F0
 thresholds (boot ≤ 30 s, image ≤ 5 GB uncompressed; see ADR-002).
 Measured on 2026-10-03: boot 2.5 s (3/3), image 4.46 GB.
 
+Both check scripts start their container with `--network none`: ROS 2 (DDS) discovery
+otherwise crosses the Docker bridge, so two simulation containers on the same host see
+each other's `/controller_manager` and `/clock` and the controller spawners of the second
+one fail to configure. Everything the checks need runs inside the container, so no network
+is required.
+
 ## Arm simulation (F1)
 
 `sim.launch.py` starts Gazebo Harmonic with the tabletop world, spawns the UR5e with the
@@ -83,7 +89,7 @@ and bridges `/clock`, `/camera/image` (640×480 `rgb8`, 15 Hz), `/camera/depth_i
 ```bash
 docker build -f docker/Dockerfile -t armbench-sim:dev .
 # headless simulation with the F1 check scene (one red cube in front of the robot)
-docker run --rm --name armbench-sim armbench-sim:dev \
+docker run --rm --network none --name armbench-sim armbench-sim:dev \
   ros2 launch armbench_bringup sim.launch.py headless:=true \
   world:=/work/ros_ws/install/armbench_description/share/armbench_description/worlds/check_scene.sdf
 # in another terminal: list topics / controllers
@@ -111,6 +117,38 @@ TCP during transport. Thresholds: ready ≤ 60 s, RTF ≥ 0.5, camera ≥ 10 FPS
 Measured on 2026-10-03 (8 vCPU, no GPU, `reports/f1_sim.json`, 3 runs): boots 3/3,
 controllers active in ≤ 18.2 s, RTF while moving ≥ 0.96, camera ≥ 10.9 FPS, grasp 3/3
 with slip ≤ 0.05 mm, lift 14.5 cm.
+
+## Seeded scenes and UR5e kinematics (host, no ROS)
+
+```bash
+# deterministic tabletop scene (3-6 coloured cubes) for a seed: as JSON, or as a full Gazebo world
+uv run armbench scene --seed 0 --json
+uv run armbench scene --seed 0 \
+  --template ros_ws/src/armbench_description/worlds/tabletop.sdf.in --out /tmp/scene0.sdf
+docker run --rm --network none --name armbench-sim \
+  -v /tmp/scene0.sdf:/scene/scene0.sdf:ro armbench-sim:dev \
+  ros2 launch armbench_bringup sim.launch.py headless:=true world:=/scene/scene0.sdf
+# forward kinematics of tool0 (base_link frame) for a joint vector, radians
+uv run armbench fk 0 -1.57 0 -1.57 0 0
+```
+
+`armbench.scene` (`configs/scene.yaml`) draws the number of cubes, colours, positions and
+yaws from `numpy.random.default_rng(seed)` only, rejects placements closer than 9 cm or
+outside the workspace in front of the robot, and renders each cube as an SDF `<model>`
+(`cube_0`…`cube_{n-1}`) with inertia, friction/contact parameters and a per-model
+`PosePublisher`, inserted at the `<!-- ARMBENCH_SCENE -->` marker of the world template.
+The JSON form carries a hash of the config so a scene can be re-created exactly later.
+
+`armbench.kinematics` (`configs/ur5e_kinematics.yaml`, values from `ur_description` 3.5.1)
+models the UR5e chain exactly as the xacro does (`base_link → … → tool0`), with forward
+kinematics, the geometric Jacobian and a damped-least-squares IK (`ik`, `ik_top_down` with a
+TCP offset) that respects joint limits and never raises on unreachable targets. Tests check
+FK against reference poses, the Jacobian against finite differences and IK round trips with
+Hypothesis.
+
+Verified on 2026-10-03 with the seed-0 world (6 cubes): headless boot with the three
+controllers active, every `/model/cube_<i>/pose` equal to the generated pose to 1e-6 m
+after settling, camera at 12.7 FPS.
 
 ## Seed policy
 

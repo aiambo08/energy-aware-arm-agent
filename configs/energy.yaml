@@ -1,0 +1,24 @@
+# Energy model parameters (phase F2). Loaded by `armbench.energy`.
+#
+# P_el(t) = P_mech(t) / eta + sum_i R_i * (tau_i / kt_i)^2 + p0_w
+#
+# * eta is the drive-train efficiency EXCLUDING copper losses (gearbox + power
+#   electronics), so the Joule term is not counted twice (ADR-004).
+# * Variant A (no regeneration): P_mech = sum_i max(tau_i * omega_i, 0).
+# * Variant B (upper bound):      P_mech = sum_i |tau_i * omega_i|.
+# * Joint-level torque constants and winding resistances are ASSUMPTIONS, not UR
+#   data (UR does not publish motor constants). They are reported with the results
+#   and swept in the sensitivity analysis; relative comparisons between agents are
+#   what the benchmark claims, never absolute Wh.
+schema_version: 1
+eta: 0.70
+eta_sensitivity: [0.60, 0.80]
+p0_w: 100.0            # controller + brakes + electronics idle draw (assumption)
+joint_order: [shoulder_pan_joint, shoulder_lift_joint, elbow_joint, wrist_1_joint, wrist_2_joint, wrist_3_joint]
+joints:
+  shoulder_pan_joint:  {torque_constant_nm_per_a: 10.0, winding_resistance_ohm: 0.50}   # size-3 joint
+  shoulder_lift_joint: {torque_constant_nm_per_a: 10.0, winding_resistance_ohm: 0.50}
+  elbow_joint:         {torque_constant_nm_per_a: 10.0, winding_resistance_ohm: 0.50}
+  wrist_1_joint:       {torque_constant_nm_per_a: 4.0,  winding_resistance_ohm: 1.00}   # size-1 joint
+  wrist_2_joint:       {torque_constant_nm_per_a: 4.0,  winding_resistance_ohm: 1.00}
+  wrist_3_joint:       {torque_constant_nm_per_a: 4.0,  winding_resistance_ohm: 1.00}

@@ -81,6 +81,8 @@
           <update_rate>15</update_rate>
           <visualize>false</visualize>
           <topic>camera</topic>
+          <!-- Gazebo-specific element (outside the SDF 1.9 schema, hence the sdformat warning at
+               load); it sets header.frame_id of the bridged image/camera_info messages. -->
           <gz_frame_id>camera_link</gz_frame_id>
           <camera name="rgbd">
             <horizontal_fov>1.0472</horizontal_fov>

@@ -1,0 +1,6287 @@
+{
+  "phase": "F1",
+  "check": "ur5e_gripper_camera_headless",
+  "generated_at": "2026-10-03T21:56:45+00:00",
+  "image": "armbench-sim:dev",
+  "world": "/work/ros_ws/install/armbench_description/share/armbench_description/worlds/check_scene.sdf",
+  "host": {
+    "cpus": 8,
+    "platform": "Linux-6.8.0-1061-aws-x86_64-with-glibc2.35",
+    "ci": false
+  },
+  "thresholds": {
+    "ready_s": 60.0,
+    "rtf_min": 0.5,
+    "camera_fps_min": 10.0,
+    "grasp_success_rate_min": 0.96,
+    "grasp_slip_max_m": 0.005
+  },
+  "summary": {
+    "runs": 50,
+    "boots_ok": 50,
+    "ready_max_s": 18.7,
+    "ready_mean_s": 8.87,
+    "rtf_moving_min": 0.774,
+    "camera_fps_sim_min": 10.58,
+    "effort_published_all_runs": true,
+    "joint_sweep_all_runs": true,
+    "gripper_all_runs": true,
+    "grasp_attempts": 50,
+    "grasp_ok": 50,
+    "grasp_success_rate": 1.0,
+    "grasp_slip_max_m": 0.00025
+  },
+  "runs": [
+    {
+      "ok": true,
+      "wall_s": 77.97,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.70223978919631,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.695906432748536,
+          "rgb_fps_wall": 11.260697816675084,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17973,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17973,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491625136,
+            0.020236889188345316
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 3e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791060535.3109872,
+        "node_start_epoch": 1791060536.3685892,
+        "passed": true,
+        "ready_epoch": 1791060542.7744615,
+        "ready_s_from_launch": 7.46,
+        "rtf_idle": 0.961,
+        "rtf_moving": 0.965,
+        "sim_time_s": 68.43,
+        "wall_s": 76.6
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.61,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.453500522466038,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.147335423197491,
+          "rgb_fps_wall": 11.661632499455589,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17968,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17968,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.0197636204915732,
+            0.02023688918520965
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 8e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791060613.2882721,
+        "node_start_epoch": 1791060614.3211813,
+        "passed": true,
+        "ready_epoch": 1791060621.3819408,
+        "ready_s_from_launch": 8.09,
+        "rtf_idle": 0.96,
+        "rtf_moving": 0.961,
+        "sim_time_s": 68.99,
+        "wall_s": 77.24
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.48,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 12.892078681552366,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.306982872200262,
+          "rgb_fps_wall": 12.789224382353197,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16746
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17973,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17973,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491592332,
+            0.020236889187272802
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 3e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791060691.9137416,
+        "node_start_epoch": 1791060692.9120705,
+        "passed": true,
+        "ready_epoch": 1791060698.9610324,
+        "ready_s_from_launch": 7.05,
+        "rtf_idle": 0.96,
+        "rtf_moving": 0.962,
+        "sim_time_s": 68.02,
+        "wall_s": 76.17
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.47,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 12.669801462904912,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.955342902711324,
+          "rgb_fps_wall": 13.460537918527606,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17957,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17956,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491614186,
+            0.02023688918950689
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 0.00019
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791060769.40879,
+        "node_start_epoch": 1791060770.397022,
+        "passed": true,
+        "ready_epoch": 1791060776.4332306,
+        "ready_s_from_launch": 7.02,
+        "rtf_idle": 0.963,
+        "rtf_moving": 0.962,
+        "sim_time_s": 68.05,
+        "wall_s": 76.17
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.71,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.438735177865613,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.25296442687747,
+          "rgb_fps_wall": 11.832359269306124,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17972,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17972,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491557225,
+            0.02023688918522563
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 4e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791060846.8841045,
+        "node_start_epoch": 1791060847.8552544,
+        "passed": true,
+        "ready_epoch": 1791060855.1505237,
+        "ready_s_from_launch": 8.27,
+        "rtf_idle": 0.963,
+        "rtf_moving": 0.965,
+        "sim_time_s": 69.44,
+        "wall_s": 77.43
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.41,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.306982872200264,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.911725955204217,
+          "rgb_fps_wall": 12.408732770633888,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17978,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17978,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491596884,
+            0.02023688918690955
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 2e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791060925.6049538,
+        "node_start_epoch": 1791060926.5711427,
+        "passed": true,
+        "ready_epoch": 1791060933.5144136,
+        "ready_s_from_launch": 7.91,
+        "rtf_idle": 0.962,
+        "rtf_moving": 0.961,
+        "sim_time_s": 68.91,
+        "wall_s": 77.14
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 76.89,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.423710792131844,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 10.579937304075234,
+          "rgb_fps_wall": 10.243630916629883,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.1798,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.1798,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491581483,
+            0.020236889187283662
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 4e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061004.0232892,
+        "node_start_epoch": 1791061004.9951699,
+        "passed": true,
+        "ready_epoch": 1791061010.6802871,
+        "ready_s_from_launch": 6.66,
+        "rtf_idle": 0.969,
+        "rtf_moving": 0.968,
+        "sim_time_s": 67.87,
+        "wall_s": 75.62
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.15,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.061650992685474,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.157894736842106,
+          "rgb_fps_wall": 12.679957865402283,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17969,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17969,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491577268,
+            0.020236889184547587
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 7e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061080.9243174,
+        "node_start_epoch": 1791061081.903771,
+        "passed": true,
+        "ready_epoch": 1791061087.644095,
+        "ready_s_from_launch": 6.72,
+        "rtf_idle": 0.964,
+        "rtf_moving": 0.964,
+        "sim_time_s": 67.97,
+        "wall_s": 75.87
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.39,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.845350052246603,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.201662644140521,
+          "rgb_fps_wall": 11.776993807077156,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17974,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17974,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491555396,
+            0.020236889185227456
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 2e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061158.0877707,
+        "node_start_epoch": 1791061159.0769558,
+        "passed": true,
+        "ready_epoch": 1791061165.925117,
+        "ready_s_from_launch": 7.84,
+        "rtf_idle": 0.966,
+        "rtf_moving": 0.963,
+        "sim_time_s": 69.03,
+        "wall_s": 77.07
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.72,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.09749670619236,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.516469038208168,
+          "rgb_fps_wall": 12.055576952925149,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17976,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17976,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491600162,
+            0.020236889187264965
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 1e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061236.4859302,
+        "node_start_epoch": 1791061237.4981406,
+        "passed": true,
+        "ready_epoch": 1791061243.4741611,
+        "ready_s_from_launch": 6.99,
+        "rtf_idle": 0.962,
+        "rtf_moving": 0.961,
+        "sim_time_s": 67.97,
+        "wall_s": 76.4
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 89.18,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 12.800417972831761,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 10.710553814002086,
+          "rgb_fps_wall": 10.305131158366821,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16746
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17981,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17981,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491537806,
+            0.02023688918394625
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 5e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061314.21908,
+        "node_start_epoch": 1791061315.3202581,
+        "passed": true,
+        "ready_epoch": 1791061332.9143682,
+        "ready_s_from_launch": 18.7,
+        "rtf_idle": 0.962,
+        "rtf_moving": 0.963,
+        "sim_time_s": 79.21,
+        "wall_s": 87.77
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 79.12,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.584117032392893,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.755485893416926,
+          "rgb_fps_wall": 11.356093873487554,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17965,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17965,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362049178531,
+            0.020236889205003605
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 0.00011
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061403.4092717,
+        "node_start_epoch": 1791061404.3949876,
+        "passed": true,
+        "ready_epoch": 1791061410.6651616,
+        "ready_s_from_launch": 7.26,
+        "rtf_idle": 0.966,
+        "rtf_moving": 0.936,
+        "sim_time_s": 68.15,
+        "wall_s": 77.8
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 79.47,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.570487483530961,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.384716732542818,
+          "rgb_fps_wall": 11.856512542313103,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17977,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17977,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491814345,
+            0.020236889208101284
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 2e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061482.5378363,
+        "node_start_epoch": 1791061483.500939,
+        "passed": true,
+        "ready_epoch": 1791061490.3165562,
+        "ready_s_from_launch": 7.78,
+        "rtf_idle": 0.957,
+        "rtf_moving": 0.949,
+        "sim_time_s": 68.43,
+        "wall_s": 78.17
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.86,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.408420488066506,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.66532582461786,
+          "rgb_fps_wall": 11.128388967128226,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17982,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17982,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491587707,
+            0.020236889186918714
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 6e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061562.0228827,
+        "node_start_epoch": 1791061563.2558944,
+        "passed": true,
+        "ready_epoch": 1791061569.6293268,
+        "ready_s_from_launch": 7.61,
+        "rtf_idle": 0.954,
+        "rtf_moving": 0.949,
+        "sim_time_s": 68.13,
+        "wall_s": 77.31
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.64,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.70223978919631,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.594202898550725,
+          "rgb_fps_wall": 11.108823954401359,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17982,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17982,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362049154558,
+            0.02023688918425676
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 6e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061640.8918893,
+        "node_start_epoch": 1791061641.9280431,
+        "passed": true,
+        "ready_epoch": 1791061648.962249,
+        "ready_s_from_launch": 8.07,
+        "rtf_idle": 0.958,
+        "rtf_moving": 0.957,
+        "sim_time_s": 68.98,
+        "wall_s": 77.31
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.38,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.453500522466038,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.102403343782653,
+          "rgb_fps_wall": 10.73288822375702,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16746
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17977,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17977,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491563386,
+            0.020236889184888283
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 1e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061719.5417535,
+        "node_start_epoch": 1791061720.5103767,
+        "passed": true,
+        "ready_epoch": 1791061726.4581332,
+        "ready_s_from_launch": 6.92,
+        "rtf_idle": 0.966,
+        "rtf_moving": 0.963,
+        "sim_time_s": 68.11,
+        "wall_s": 76.08
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.76,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 12.800417972831768,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 10.878010878010878,
+          "rgb_fps_wall": 10.52446434408157,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17974,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17974,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362049156305,
+            0.020236889185555423
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 2e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061796.928126,
+        "node_start_epoch": 1791061797.985681,
+        "passed": true,
+        "ready_epoch": 1791061805.2499845,
+        "ready_s_from_launch": 8.32,
+        "rtf_idle": 0.967,
+        "rtf_moving": 0.966,
+        "sim_time_s": 69.35,
+        "wall_s": 77.36
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 88.83,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.192267502612326,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.024986709197234,
+          "rgb_fps_wall": 12.63746160300939,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17963,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17962,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491561138,
+            0.02023688918360886
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 0.00013
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061875.6947687,
+        "node_start_epoch": 1791061876.7519488,
+        "passed": true,
+        "ready_epoch": 1791061894.208224,
+        "ready_s_from_launch": 18.51,
+        "rtf_idle": 0.971,
+        "rtf_moving": 0.971,
+        "sim_time_s": 79.58,
+        "wall_s": 87.44
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 87.81,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.633514633514634,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.597513597513599,
+          "rgb_fps_wall": 13.245276090170343,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17977,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17977,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491487294,
+            0.0202368891813138
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 2e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791061964.5382648,
+        "node_start_epoch": 1791061965.547146,
+        "passed": true,
+        "ready_epoch": 1791061982.3592167,
+        "ready_s_from_launch": 17.82,
+        "rtf_idle": 0.974,
+        "rtf_moving": 0.973,
+        "sim_time_s": 78.81,
+        "wall_s": 86.49
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 87.81,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.367816091954026,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.516469038208168,
+          "rgb_fps_wall": 12.21705755116141,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17978,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17978,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491540613,
+            0.020236889181829525
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 3e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062052.3578815,
+        "node_start_epoch": 1791062053.3300965,
+        "passed": true,
+        "ready_epoch": 1791062070.071854,
+        "ready_s_from_launch": 17.71,
+        "rtf_idle": 0.976,
+        "rtf_moving": 0.974,
+        "sim_time_s": 79.0,
+        "wall_s": 86.53
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 76.93,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.633514633514633,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.4085684430512,
+          "rgb_fps_wall": 12.07653634774582,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.1797,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.1797,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491531162,
+            0.02023688918212916
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 6e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062140.1785178,
+        "node_start_epoch": 1791062141.1200223,
+        "passed": true,
+        "ready_epoch": 1791062147.3392565,
+        "ready_s_from_launch": 7.16,
+        "rtf_idle": 0.974,
+        "rtf_moving": 0.975,
+        "sim_time_s": 68.5,
+        "wall_s": 75.7
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.08,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.892514892514892,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.07951307951308,
+          "rgb_fps_wall": 12.750354195982343,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17971,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.1797,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362049148986,
+            0.02023688918131125
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 6e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062217.123395,
+        "node_start_epoch": 1791062218.0899012,
+        "passed": true,
+        "ready_epoch": 1791062224.2892985,
+        "ready_s_from_launch": 7.17,
+        "rtf_idle": 0.974,
+        "rtf_moving": 0.976,
+        "sim_time_s": 68.63,
+        "wall_s": 75.82
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.18,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.633514633514633,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.209013209013209,
+          "rgb_fps_wall": 12.891686081683735,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17976,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17975,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491838024,
+            0.02023688921212518
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 1e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062294.2184484,
+        "node_start_epoch": 1791062295.1792922,
+        "passed": true,
+        "ready_epoch": 1791062301.1305354,
+        "ready_s_from_launch": 6.91,
+        "rtf_idle": 0.976,
+        "rtf_moving": 0.974,
+        "sim_time_s": 68.09,
+        "wall_s": 76.89
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.38,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.624505928853754,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.227538543328016,
+          "rgb_fps_wall": 11.701083498661736,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16746
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17969,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17969,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362049161782,
+            0.02023688919029641
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 7e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062372.4056292,
+        "node_start_epoch": 1791062373.4004703,
+        "passed": true,
+        "ready_epoch": 1791062379.6098528,
+        "ready_s_from_launch": 7.2,
+        "rtf_idle": 0.958,
+        "rtf_moving": 0.948,
+        "sim_time_s": 68.2,
+        "wall_s": 77.05
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 82.71,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.221158958001064,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.360446570972888,
+          "rgb_fps_wall": 11.765907499164394,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17961,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17961,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362086409317,
+            0.020236889335881053
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 0.00015
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062450.7997284,
+        "node_start_epoch": 1791062451.7966514,
+        "passed": true,
+        "ready_epoch": 1791062458.268596,
+        "ready_s_from_launch": 7.47,
+        "rtf_idle": 0.95,
+        "rtf_moving": 0.944,
+        "sim_time_s": 66.25,
+        "wall_s": 81.27
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 88.35,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 12.2501611863314,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.802232854864435,
+          "rgb_fps_wall": 9.451522716082113,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16746
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17961,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17961,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362072905725,
+            0.020236889317849182
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 0.00015
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062533.5309339,
+        "node_start_epoch": 1791062535.417995,
+        "passed": true,
+        "ready_epoch": 1791062541.8213139,
+        "ready_s_from_launch": 8.29,
+        "rtf_idle": 0.799,
+        "rtf_moving": 0.798,
+        "sim_time_s": 64.45,
+        "wall_s": 86.04
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 95.43,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.173998044965787,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.378465506125083,
+          "rgb_fps_wall": 10.588843971786167,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17972,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17972,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620495626563,
+            0.020236889234646466
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 4e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062621.9062467,
+        "node_start_epoch": 1791062623.621527,
+        "passed": true,
+        "ready_epoch": 1791062639.5904596,
+        "ready_s_from_launch": 17.68,
+        "rtf_idle": 0.792,
+        "rtf_moving": 0.809,
+        "sim_time_s": 72.46,
+        "wall_s": 93.35
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 79.21,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.610389610389612,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.923013923013922,
+          "rgb_fps_wall": 13.030946605342512,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17979,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17979,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491716413,
+            0.0202368891989034
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 4e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062717.3441339,
+        "node_start_epoch": 1791062718.4605985,
+        "passed": true,
+        "ready_epoch": 1791062724.7428706,
+        "ready_s_from_launch": 7.4,
+        "rtf_idle": 0.937,
+        "rtf_moving": 0.94,
+        "sim_time_s": 67.66,
+        "wall_s": 77.77
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.87,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.61517833199249,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.872083668543846,
+          "rgb_fps_wall": 12.102399102436793,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17981,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.1798,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491699573,
+            0.020236889197392395
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 5e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062796.5657923,
+        "node_start_epoch": 1791062797.7794194,
+        "passed": true,
+        "ready_epoch": 1791062803.8775458,
+        "ready_s_from_launch": 7.31,
+        "rtf_idle": 0.94,
+        "rtf_moving": 0.942,
+        "sim_time_s": 67.57,
+        "wall_s": 77.33
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.34,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.354066985645934,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 14.221158958001064,
+          "rgb_fps_wall": 13.435698914481588,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17966,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17966,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362049160697,
+            0.02023688918725816
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 0.0001
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062875.4420307,
+        "node_start_epoch": 1791062876.4388418,
+        "passed": true,
+        "ready_epoch": 1791062882.4514122,
+        "ready_s_from_launch": 7.01,
+        "rtf_idle": 0.945,
+        "rtf_moving": 0.945,
+        "sim_time_s": 67.86,
+        "wall_s": 77.0
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 78.19,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.09749670619236,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.25296442687747,
+          "rgb_fps_wall": 11.736658417683392,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17971,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17971,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491628317,
+            0.020236889190690593
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 5e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791062953.7890942,
+        "node_start_epoch": 1791062954.867638,
+        "passed": true,
+        "ready_epoch": 1791062961.3336375,
+        "ready_s_from_launch": 7.54,
+        "rtf_idle": 0.957,
+        "rtf_moving": 0.957,
+        "sim_time_s": 68.4,
+        "wall_s": 76.79
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 79.0,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.492753623188404,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.570487483530961,
+          "rgb_fps_wall": 13.007319101315884,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17974,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17974,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491607438,
+            0.02023688918912493
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 2e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063031.9946887,
+        "node_start_epoch": 1791063033.1139426,
+        "passed": true,
+        "ready_epoch": 1791063040.2045178,
+        "ready_s_from_launch": 8.21,
+        "rtf_idle": 0.959,
+        "rtf_moving": 0.962,
+        "sim_time_s": 68.79,
+        "wall_s": 77.57
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.71,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.629049111807731,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 14.624505928853756,
+          "rgb_fps_wall": 14.019125568124828,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17961,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17961,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491630378,
+            0.02023688919151434
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 0.00015
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063111.0018842,
+        "node_start_epoch": 1791063111.9765377,
+        "passed": true,
+        "ready_epoch": 1791063118.111472,
+        "ready_s_from_launch": 7.11,
+        "rtf_idle": 0.958,
+        "rtf_moving": 0.96,
+        "sim_time_s": 68.08,
+        "wall_s": 76.42
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.78,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.229249011857707,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.043478260869566,
+          "rgb_fps_wall": 12.542085232190088,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16746
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17977,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17977,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491574287,
+            0.020236889186932137
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 2e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063188.7184515,
+        "node_start_epoch": 1791063189.7323222,
+        "passed": true,
+        "ready_epoch": 1791063195.744945,
+        "ready_s_from_launch": 7.03,
+        "rtf_idle": 0.961,
+        "rtf_moving": 0.957,
+        "sim_time_s": 68.17,
+        "wall_s": 76.45
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 79.05,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.237199582027166,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.93103448275862,
+          "rgb_fps_wall": 12.420409014099977,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17975,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17974,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362049167312,
+            0.020236889195006838
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 2e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063266.5124433,
+        "node_start_epoch": 1791063267.5299945,
+        "passed": true,
+        "ready_epoch": 1791063274.2997844,
+        "ready_s_from_launch": 7.79,
+        "rtf_idle": 0.96,
+        "rtf_moving": 0.95,
+        "sim_time_s": 68.67,
+        "wall_s": 77.71
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 79.11,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.212925717350497,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.904761904761903,
+          "rgb_fps_wall": 11.141375507823259,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16746
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17971,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.1797,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.0197636204916565,
+            0.02023688919365278
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 5e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063345.5709713,
+        "node_start_epoch": 1791063346.6308541,
+        "passed": true,
+        "ready_epoch": 1791063352.9387362,
+        "ready_s_from_launch": 7.37,
+        "rtf_idle": 0.935,
+        "rtf_moving": 0.941,
+        "sim_time_s": 67.91,
+        "wall_s": 77.75
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 79.73,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.07884151246983,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.603915258782514,
+          "rgb_fps_wall": 11.887133182435889,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17983,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17983,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620493292427,
+            0.020236889229219922
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 8e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063424.698335,
+        "node_start_epoch": 1791063425.813896,
+        "passed": true,
+        "ready_epoch": 1791063431.845349,
+        "ready_s_from_launch": 7.15,
+        "rtf_idle": 0.943,
+        "rtf_moving": 0.94,
+        "sim_time_s": 67.11,
+        "wall_s": 78.23
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 83.75,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.997113997113997,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.6984126984127,
+          "rgb_fps_wall": 11.096353228752081,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16746
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17976,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17975,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620492177465,
+            0.020236889222704828
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 1e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063504.4449909,
+        "node_start_epoch": 1791063505.7915335,
+        "passed": true,
+        "ready_epoch": 1791063512.9695678,
+        "ready_s_from_launch": 8.52,
+        "rtf_idle": 0.872,
+        "rtf_moving": 0.845,
+        "sim_time_s": 66.75,
+        "wall_s": 82.07
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 87.23,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.34700992223116,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.31060606060606,
+          "rgb_fps_wall": 11.59986981506573,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17961,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17961,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362119609021,
+            0.020236889366891324
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 0.00015
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063588.2068367,
+        "node_start_epoch": 1791063589.417412,
+        "passed": true,
+        "ready_epoch": 1791063595.5826023,
+        "ready_s_from_launch": 7.38,
+        "rtf_idle": 0.94,
+        "rtf_moving": 0.825,
+        "sim_time_s": 65.2,
+        "wall_s": 85.55
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 86.99,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.827596351868197,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.621065019123272,
+          "rgb_fps_wall": 10.010948324233498,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17967,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17966,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620602422174,
+            0.02023688929153698
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 9e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063675.455073,
+        "node_start_epoch": 1791063676.862639,
+        "passed": true,
+        "ready_epoch": 1791063683.3467326,
+        "ready_s_from_launch": 7.89,
+        "rtf_idle": 0.859,
+        "rtf_moving": 0.805,
+        "sim_time_s": 64.63,
+        "wall_s": 85.16
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 87.77,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.362373737373737,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.440191387559807,
+          "rgb_fps_wall": 10.069903951137857,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17973,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17973,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620544345207,
+            0.020236889272890208
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 3e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063762.4595792,
+        "node_start_epoch": 1791063764.2048352,
+        "passed": true,
+        "ready_epoch": 1791063771.0942564,
+        "ready_s_from_launch": 8.63,
+        "rtf_idle": 0.807,
+        "rtf_moving": 0.81,
+        "sim_time_s": 64.8,
+        "wall_s": 85.61
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 80.67,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.19457735247209,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.64274322169059,
+          "rgb_fps_wall": 9.244347078241496,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17965,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17965,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491591586,
+            0.02023688918800549
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 0.00011
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063850.2545865,
+        "node_start_epoch": 1791063851.8386772,
+        "passed": true,
+        "ready_epoch": 1791063857.9415314,
+        "ready_s_from_launch": 7.69,
+        "rtf_idle": 0.795,
+        "rtf_moving": 0.895,
+        "sim_time_s": 66.38,
+        "wall_s": 78.7
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 83.05,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.157894736842106,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.445887445887445,
+          "rgb_fps_wall": 11.80196627069965,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.1798,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.1798,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620508038635,
+            0.020236889251492304
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 4e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791063930.9469097,
+        "node_start_epoch": 1791063932.4576273,
+        "passed": true,
+        "ready_epoch": 1791063938.5542376,
+        "ready_s_from_launch": 7.61,
+        "rtf_idle": 0.949,
+        "rtf_moving": 0.925,
+        "sim_time_s": 66.78,
+        "wall_s": 81.15
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 82.1,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.840326340326339,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.655011655011654,
+          "rgb_fps_wall": 10.111345715579589,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17972,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17972,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362049170106,
+            0.020236889196895307
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 4e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791064014.0125384,
+        "node_start_epoch": 1791064015.6276052,
+        "passed": true,
+        "ready_epoch": 1791064022.5532465,
+        "ready_s_from_launch": 8.54,
+        "rtf_idle": 0.868,
+        "rtf_moving": 0.882,
+        "sim_time_s": 66.94,
+        "wall_s": 80.16
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 89.15,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.05130513051305,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.424242424242424,
+          "rgb_fps_wall": 10.540878510827715,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17968,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17968,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763621132662983,
+            0.020236889361419468
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 8e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791064096.1220567,
+        "node_start_epoch": 1791064097.2231817,
+        "passed": true,
+        "ready_epoch": 1791064104.0216138,
+        "ready_s_from_launch": 7.9,
+        "rtf_idle": 0.844,
+        "rtf_moving": 0.774,
+        "sim_time_s": 64.96,
+        "wall_s": 87.61
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 98.24,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.875598086124404,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.196480938416423,
+          "rgb_fps_wall": 10.270980336166058,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17951,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17951,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362089348597,
+            0.02023688933935882
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 0.00025
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791064185.2850018,
+        "node_start_epoch": 1791064186.4182901,
+        "passed": true,
+        "ready_epoch": 1791064203.268619,
+        "ready_s_from_launch": 17.98,
+        "rtf_idle": 0.794,
+        "rtf_moving": 0.817,
+        "sim_time_s": 71.66,
+        "wall_s": 96.63
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 88.47,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.237639553429027,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 11.802232854864434,
+          "rgb_fps_wall": 9.416396363388184,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17975,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17975,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620495854815,
+            0.02023688923561873
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 2e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791064283.5341606,
+        "node_start_epoch": 1791064285.1301527,
+        "passed": true,
+        "ready_epoch": 1791064294.930423,
+        "ready_s_from_launch": 11.4,
+        "rtf_idle": 0.794,
+        "rtf_moving": 0.817,
+        "sim_time_s": 67.87,
+        "wall_s": 86.56
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.66,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 13.19226750261233,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.516469038208168,
+          "rgb_fps_wall": 12.030385156070427,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17973,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17973,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491610855,
+            0.02023688918798622
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 3e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091493e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791064372.0119882,
+        "node_start_epoch": 1791064373.0057383,
+        "passed": true,
+        "ready_epoch": 1791064379.0815582,
+        "ready_s_from_launch": 7.07,
+        "rtf_idle": 0.961,
+        "rtf_moving": 0.96,
+        "sim_time_s": 68.11,
+        "wall_s": 76.35
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.87,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.229249011857705,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 13.965744400527008,
+          "rgb_fps_wall": 13.40667272668233,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17979,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17979,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.01976362049159133,
+            0.020236889186915102
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 3e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791064449.679241,
+        "node_start_epoch": 1791064450.664675,
+        "passed": true,
+        "ready_epoch": 1791064456.9597952,
+        "ready_s_from_launch": 7.28,
+        "rtf_idle": 0.959,
+        "rtf_moving": 0.963,
+        "sim_time_s": 68.42,
+        "wall_s": 76.58
+      }
+    },
+    {
+      "ok": true,
+      "wall_s": 77.45,
+      "check": {
+        "camera": {
+          "depth_fps_sim": 14.759665621734586,
+          "depth_shape": [
+            640,
+            480,
+            "32FC1"
+          ],
+          "rgb_fps_sim": 12.277951933124346,
+          "rgb_fps_wall": 11.845857574880704,
+          "rgb_shape": [
+            640,
+            480,
+            "rgb8"
+          ]
+        },
+        "clock_ok": true,
+        "controllers_active": true,
+        "grasp": {
+          "cube_after_lift": [
+            -0.5,
+            -0.00025,
+            0.16745
+          ],
+          "cube_after_place": [
+            -0.50004,
+            0.17971,
+            0.0225
+          ],
+          "cube_after_transport": [
+            -0.50001,
+            0.17971,
+            0.16745
+          ],
+          "cube_start": [
+            -0.5,
+            -0.0,
+            0.0225
+          ],
+          "finger_pos_closed_on_cube": [
+            0.019763620491591687,
+            0.02023688918691475
+          ],
+          "fingers_stopped_by_cube": true,
+          "lift_height_m": 0.145,
+          "moves_ok": true,
+          "ok": true,
+          "transport_slip_m": 5e-05
+        },
+        "gripper": {
+          "closed_pos": [
+            0.04250000000018648,
+            0.042500000000205686
+          ],
+          "ok": true,
+          "opened_pos": [
+            -1.0764707463091492e-13,
+            -8.843138265927918e-14
+          ]
+        },
+        "joint_states": {
+          "effort_for_all_joints": true,
+          "effort_len": 8,
+          "names": [
+            "elbow_joint",
+            "left_finger_joint",
+            "right_finger_joint",
+            "shoulder_lift_joint",
+            "shoulder_pan_joint",
+            "wrist_1_joint",
+            "wrist_2_joint",
+            "wrist_3_joint"
+          ],
+          "ok": true
+        },
+        "joint_sweep": {
+          "home_ok": true,
+          "joints": [
+            {
+              "joint": "shoulder_pan_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "shoulder_lift_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "elbow_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_1_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_2_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            },
+            {
+              "joint": "wrist_3_joint",
+              "max_err_rad": 0.0,
+              "ok": true
+            }
+          ],
+          "ok": true
+        },
+        "launch_start_epoch": 1791064527.5652347,
+        "node_start_epoch": 1791064528.5286937,
+        "passed": true,
+        "ready_epoch": 1791064534.6278188,
+        "ready_s_from_launch": 7.06,
+        "rtf_idle": 0.964,
+        "rtf_moving": 0.962,
+        "sim_time_s": 68.11,
+        "wall_s": 76.17
+      }
+    }
+  ],
+  "passed": true
+}

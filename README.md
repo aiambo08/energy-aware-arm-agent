@@ -120,6 +120,9 @@ camera at ~9.6 FPS with software ogre2.
 Measured on 2026-10-03 (8 vCPU, no GPU, `reports/f1_sim.json`, 3 runs): boots 3/3,
 controllers active in ≤ 18.2 s, RTF while moving ≥ 0.96, camera ≥ 10.9 FPS, grasp 3/3
 with slip ≤ 0.05 mm, lift 14.5 cm.
+50-run tirada on the same host (`reports/f1_sim_50runs.json`, containers isolated with
+`--network none`): boots 50/50, controllers active in ≤ 18.7 s (mean 8.9 s), RTF while moving
+≥ 0.77, camera ≥ 10.6 FPS, grasp 50/50 with slip ≤ 0.25 mm, lift 14.5 cm in every run.
 
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 

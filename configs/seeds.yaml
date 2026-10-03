@@ -1,0 +1,17 @@
+# Seed split. Enforced by `armbench.seeds` and tests/unit/test_seeds.py.
+# Changing any range after the pre-registration commit requires an ADR.
+schema_version: 1
+splits:
+  dev:
+    description: Development (prompt and code tuning). Free use.
+    start: 0
+    end: 9
+  skill_validation:
+    description: Only for accepting or rejecting skills (phase F7).
+    start: 20
+    end: 39
+  final_eval:
+    description: Locked. The runner refuses them unless --final-eval and a registered protocol hash are given.
+    start: 100
+    end: 119
+    locked: true

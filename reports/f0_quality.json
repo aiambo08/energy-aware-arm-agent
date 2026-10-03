@@ -1,0 +1,43 @@
+{
+  "phase": "F0",
+  "check": "host_quality_gates",
+  "generated_at": "2026-10-03T18:35:33+00:00",
+  "gates": {
+    "ruff_check": {
+      "cmd": "uv run ruff check .",
+      "returncode": 0,
+      "seconds": 0.02,
+      "tail": [
+        "All checks passed!"
+      ]
+    },
+    "ruff_format": {
+      "cmd": "uv run ruff format --check .",
+      "returncode": 0,
+      "seconds": 0.02,
+      "tail": [
+        "15 files already formatted"
+      ]
+    },
+    "mypy_strict": {
+      "cmd": "uv run mypy",
+      "returncode": 0,
+      "seconds": 0.19,
+      "tail": [
+        "Success: no issues found in 9 source files"
+      ]
+    },
+    "pytest": {
+      "cmd": "uv run pytest -q -m not sim",
+      "returncode": 0,
+      "seconds": 0.83,
+      "tail": [
+        ".............                                                            [100%]",
+        "13 passed in 0.61s"
+      ]
+    }
+  },
+  "total_seconds": 1.06,
+  "threshold_total_seconds": 180.0,
+  "passed": true
+}

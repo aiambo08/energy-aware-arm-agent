@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+
+# ROS / colcon
+ros_ws/build/
+ros_ws/install/
+ros_ws/log/
+
+# Episode artefacts (large); curated reports/*.json are committed
+runs/
+*.mcap
+*.rrd
+
+# Secrets
+.env
+.env.*
+!.env.example

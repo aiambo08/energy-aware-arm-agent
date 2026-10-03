@@ -10,7 +10,7 @@ file(READ worlds/check_scene.sdf.in _fixture)
 string(REPLACE "    <!-- ARMBENCH_SCENE -->\n" "${_fixture}" _check_world "${_tpl}")
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/worlds/check_scene.sdf "${_check_world}")
 
-install(DIRECTORY urdf config DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY urdf DESTINATION share/${PROJECT_NAME})
 install(FILES worlds/tabletop.sdf.in worlds/check_scene.sdf.in
         ${CMAKE_CURRENT_BINARY_DIR}/worlds/check_scene.sdf
         DESTINATION share/${PROJECT_NAME}/worlds)

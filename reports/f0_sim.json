@@ -1,0 +1,38 @@
+{
+  "phase": "F0",
+  "check": "empty_world_headless_boot",
+  "generated_at": "2026-10-03T18:34:30+00:00",
+  "image": "armbench-sim:dev",
+  "image_size_bytes": 4460707380,
+  "image_size_gb": 4.461,
+  "versions": {
+    "gz_sim": "Gazebo Sim, version 8.15.0",
+    "ros_distro": "jazzy"
+  },
+  "host": {
+    "cpus": 8,
+    "platform": "Linux-6.8.0-1061-aws-x86_64-with-glibc2.35",
+    "ci": false
+  },
+  "thresholds": {
+    "boot_s": 30.0,
+    "image_gb": 5.0
+  },
+  "boots": [
+    {
+      "ok": true,
+      "boot_s": 2.51
+    },
+    {
+      "ok": true,
+      "boot_s": 2.52
+    },
+    {
+      "ok": true,
+      "boot_s": 2.51
+    }
+  ],
+  "boot_max_s": 2.52,
+  "boot_mean_s": 2.51,
+  "passed": true
+}

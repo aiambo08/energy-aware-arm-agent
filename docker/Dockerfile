@@ -1,0 +1,44 @@
+# Simulation image: ROS 2 Jazzy + Gazebo Harmonic + UR5e packages.
+# Phase F0 only needs an empty headless world; the UR/Robotiq/Pinocchio
+# packages are installed now so later phases reuse the cached layer.
+# ur_simulation_gz pulls rviz2/MoveIt (+0.21 GB measured); kept because the F1
+# gate is precisely that its launch files boot the UR5e headless (ADR-002).
+FROM ros:jazzy-ros-base@sha256:066420e07f60aa18262f2479981def87ebcfcec42eefb0c0c57c4a46098348ca
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8 \
+    ROS_DISTRO=jazzy \
+    GZ_VERSION=harmonic \
+    PYTHONUNBUFFERED=1
+
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ros-jazzy-ros-gz \
+        ros-jazzy-gz-ros2-control \
+        ros-jazzy-ros2-control \
+        ros-jazzy-ros2-controllers \
+        ros-jazzy-ur-description \
+        ros-jazzy-ur-simulation-gz \
+        ros-jazzy-robotiq-description \
+        ros-jazzy-pinocchio \
+        ros-jazzy-cv-bridge \
+        ros-jazzy-image-transport \
+        ros-jazzy-rosbag2-storage-mcap \
+        ros-jazzy-xacro \
+        python3-colcon-common-extensions \
+        python3-opencv \
+        python3-numpy \
+        libgl1 \
+        libegl1 \
+        libgl1-mesa-dri \
+        libglx-mesa0 \
+        mesa-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=ghcr.io/astral-sh/uv:0.8.22 /uv /uvx /usr/local/bin/
+
+WORKDIR /work
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["bash"]

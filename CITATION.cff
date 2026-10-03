@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Energy-Aware Arm Agent (armbench)"
+type: software
+authors:
+  - family-names: Ni
+    given-names: Aibo
+    email: aibo.ni@alumnos.upm.es
+    affiliation: Universidad Politécnica de Madrid
+repository-code: "https://github.com/aiambo08/energy-aware-arm-agent"
+license: MIT
+version: 0.0.1
+date-released: 2026-10-03
+keywords:
+  - robotics
+  - llm-agent
+  - energy
+  - gazebo
+  - ros2

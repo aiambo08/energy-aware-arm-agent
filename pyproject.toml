@@ -1,0 +1,71 @@
+[project]
+name = "armbench"
+version = "0.0.1"
+description = "Energy-aware LLM agent benchmark for a simulated UR5e arm (ROS 2 Jazzy + Gazebo Harmonic)."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+authors = [{ name = "Aibo Ni", email = "aibo.ni@alumnos.upm.es" }]
+keywords = ["robotics", "llm-agent", "energy", "gazebo", "ros2", "benchmark"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+]
+dependencies = [
+  "numpy>=2.0,<3",
+  "pydantic>=2.7,<3",
+  "pyyaml>=6.0,<7",
+  "typer>=0.12,<1",
+]
+
+[project.scripts]
+armbench = "armbench.cli:app"
+
+[project.urls]
+Repository = "https://github.com/aiambo08/energy-aware-arm-agent"
+
+[dependency-groups]
+dev = [
+  "hypothesis>=6.100",
+  "mypy>=1.10",
+  "pre-commit>=3.7",
+  "pytest>=8.2",
+  "pytest-timeout>=2.3",
+  "ruff>=0.5",
+  "types-pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/armbench"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "ANN", "N", "PL", "PT", "S", "T20"]
+ignore = ["PLR2004", "ANN401"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "PLR0913", "ANN"]
+"scripts/**" = ["T201", "S603", "S607"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+files = ["src", "tests", "scripts"]
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --timeout=120"
+markers = [
+  "sim: requires the Gazebo simulation image (not run in the verify CI job)",
+]

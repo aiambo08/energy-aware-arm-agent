@@ -113,6 +113,9 @@ pick-and-place of `cube_0` (waypoints in `armbench_bringup/config/sim_check.yaml
 the cube's ground-truth pose from Gazebo to compute lift height and slip relative to the
 TCP during transport. Thresholds: ready ≤ 60 s, RTF ≥ 0.5, camera ≥ 10 FPS, grasp success
 ≥ 96 % with slip ≤ 5 mm.
+`--camera-fps-min` / `--rtf-min` / `--ready-timeout-s` override them and the effective values are
+recorded in the report; CI passes `--camera-fps-min 8` because GitHub's 4-vCPU runners render the
+camera at ~9.6 FPS with software ogre2.
 
 Measured on 2026-10-03 (8 vCPU, no GPU, `reports/f1_sim.json`, 3 runs): boots 3/3,
 controllers active in ≤ 18.2 s, RTF while moving ≥ 0.96, camera ≥ 10.9 FPS, grasp 3/3

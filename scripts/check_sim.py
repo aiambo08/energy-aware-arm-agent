@@ -125,7 +125,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", type=Path, default=Path("reports/f1_sim.json"))
     parser.add_argument("--ready-timeout-s", type=float, default=THRESHOLDS["ready_s"])
     parser.add_argument("--no-grasp", action="store_true", help="skip the pick-and-place")
+    parser.add_argument(
+        "--camera-fps-min",
+        type=float,
+        default=THRESHOLDS["camera_fps_min"],
+        help="override for slow hosts (e.g. 4-vCPU CI runners with software rendering)",
+    )
+    parser.add_argument("--rtf-min", type=float, default=THRESHOLDS["rtf_min"])
     args = parser.parse_args(argv)
+    thresholds = {
+        **THRESHOLDS,
+        "ready_s": args.ready_timeout_s,
+        "rtf_min": args.rtf_min,
+        "camera_fps_min": args.camera_fps_min,
+    }
 
     runs = [
         check_once(args.image, args.ready_timeout_s, args.no_grasp) for _ in range(args.repeats)
@@ -164,11 +177,11 @@ def main(argv: list[str] | None = None) -> int:
     passed = (
         summary["boots_ok"] == n
         and ready
-        and max(ready) < THRESHOLDS["ready_s"]
+        and max(ready) < thresholds["ready_s"]
         and rtf
-        and min(rtf) >= THRESHOLDS["rtf_min"]
+        and min(rtf) >= thresholds["rtf_min"]
         and fps
-        and min(fps) >= THRESHOLDS["camera_fps_min"]
+        and min(fps) >= thresholds["camera_fps_min"]
         and summary["effort_published_all_runs"]
         and summary["joint_sweep_all_runs"]
         and summary["gripper_all_runs"]
@@ -177,8 +190,8 @@ def main(argv: list[str] | None = None) -> int:
         passed = bool(
             passed
             and grasps
-            and grasp_ok / len(grasps) >= THRESHOLDS["grasp_success_rate_min"]
-            and (not slips or max(slips) <= THRESHOLDS["grasp_slip_max_m"])
+            and grasp_ok / len(grasps) >= thresholds["grasp_success_rate_min"]
+            and (not slips or max(slips) <= thresholds["grasp_slip_max_m"])
         )
 
     report = {
@@ -192,7 +205,7 @@ def main(argv: list[str] | None = None) -> int:
             "platform": platform.platform(),
             "ci": os.environ.get("GITHUB_ACTIONS") == "true",
         },
-        "thresholds": THRESHOLDS,
+        "thresholds": thresholds,
         "summary": summary,
         "runs": runs,
         "passed": bool(passed),

@@ -1,0 +1,27 @@
+    <!-- Fixed fixture for the F1 self-check: one 45 mm cube at (-0.50, 0.00) in the robot base frame. -->
+    <model name="cube_0">
+      <pose>-0.50 0.00 0.0225 0 0 0</pose>
+      <plugin filename="gz-sim-pose-publisher-system" name="gz::sim::systems::PosePublisher">
+        <publish_link_pose>false</publish_link_pose>
+        <publish_model_pose>true</publish_model_pose>
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        <update_frequency>50</update_frequency>
+      </plugin>
+      <link name="link">
+        <inertial>
+          <mass>0.05</mass>
+          <inertia><ixx>1.6875e-05</ixx><iyy>1.6875e-05</iyy><izz>1.6875e-05</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><box><size>0.045 0.045 0.045</size></box></geometry>
+          <surface>
+            <friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction>
+            <contact><ode><kp>1000000.0</kp><kd>100.0</kd><min_depth>0.001</min_depth></ode></contact>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.045 0.045 0.045</size></box></geometry>
+          <material><ambient>0.85 0.10 0.10 1</ambient><diffuse>0.85 0.10 0.10 1</diffuse></material>
+        </visual>
+      </link>
+    </model>

@@ -38,6 +38,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=ghcr.io/astral-sh/uv:0.8.22 /uv /uvx /usr/local/bin/
 
 WORKDIR /work
+
+# ROS 2 workspace (armbench_description, armbench_bringup): launch files, xacro, worlds, rclpy
+# nodes only, so the build takes seconds and the layer is small.
+COPY ros_ws/src /work/ros_ws/src
+RUN bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash \
+    && cd /work/ros_ws \
+    && colcon build --event-handlers console_direct+ \
+    && rm -rf build log"
+
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

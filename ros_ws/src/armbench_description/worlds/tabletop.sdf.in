@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!--
+  armbench tabletop world template. The robot base sits at the world origin on the table
+  surface (z = 0). `armbench scene` replaces the ARMBENCH_SCENE marker with seeded cube models.
+-->
+<sdf version="1.9">
+  <world name="armbench_tabletop">
+    <physics name="1ms" type="dart">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact"/>
+
+    <scene>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0.75 0.80 0.85 1</background>
+      <shadows>false</shadows>
+    </scene>
+
+    <light type="directional" name="sun">
+      <cast_shadows>false</cast_shadows>
+      <pose>0 0 3 0 0 0</pose>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>-0.3 0.2 -1.0</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <pose>0 0 -0.75 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>10 10</size></plane></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>10 10</size></plane></geometry>
+          <material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Table: 1.6 m x 1.0 m top, 0.75 m high; top surface at z = 0; robot base at its centre-right. -->
+    <model name="table">
+      <static>true</static>
+      <pose>-0.45 0 -0.375 0 0 0</pose>
+      <link name="top">
+        <collision name="collision">
+          <geometry><box><size>1.6 1.0 0.75</size></box></geometry>
+          <surface>
+            <friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction>
+            <contact><ode><kp>1000000.0</kp><kd>100.0</kd><min_depth>0.001</min_depth></ode></contact>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>1.6 1.0 0.75</size></box></geometry>
+          <material><ambient>0.85 0.85 0.82 1</ambient><diffuse>0.92 0.92 0.90 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Fixed RGB-D camera 1.0 m above the workspace centre, looking straight down.
+         Gazebo cameras look along +x; pitch +90 deg points +x to -z. -->
+    <model name="rgbd_camera">
+      <static>true</static>
+      <pose>-0.5 0 1.0 0 1.5707963 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.03 0.09 0.03</size></box></geometry>
+          <material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.1 0.1 0.1 1</diffuse></material>
+        </visual>
+        <sensor name="rgbd" type="rgbd_camera">
+          <always_on>true</always_on>
+          <update_rate>15</update_rate>
+          <visualize>false</visualize>
+          <topic>camera</topic>
+          <gz_frame_id>camera_link</gz_frame_id>
+          <camera name="rgbd">
+            <horizontal_fov>1.0472</horizontal_fov>
+            <image><width>640</width><height>480</height><format>R8G8B8</format></image>
+            <clip><near>0.1</near><far>3.0</far></clip>
+            <depth_camera><clip><near>0.1</near><far>3.0</far></clip></depth_camera>
+          </camera>
+        </sensor>
+      </link>
+    </model>
+
+    <!-- ARMBENCH_SCENE -->
+  </world>
+</sdf>

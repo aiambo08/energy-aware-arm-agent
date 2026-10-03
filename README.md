@@ -8,7 +8,7 @@ A reproducible benchmark around a simulated **UR5e** (ROS 2 Jazzy + Gazebo
 Harmonic, Docker, no GPU required) to answer that question with paired seeds,
 confidence intervals and a pre-registered protocol.
 
-**Status: phase F1 (arm simulation).** There are no benchmark results yet.
+**Status: phase F2 (energy model and torque source) merged.** There are no benchmark results yet.
 Anything in this repository that looks like a number is either a configuration
 value or a measurement stored under `reports/` with the script that produced it.
 
@@ -19,12 +19,14 @@ value or a measurement stored under `reports/` with the script that produced it.
 | Python package `armbench` (`src/armbench`) | seed-split loader with the final-evaluation lock, UR5e kinematics (FK/Jacobian/IK, numpy only), seeded scene generator → SDF, `armbench` CLI |
 | Quality gates | `ruff`, `ruff format`, `mypy --strict`, `pytest` (+ `hypothesis`), `pre-commit` |
 | Simulation image | `docker/Dockerfile`: ROS 2 Jazzy + Gazebo Harmonic + UR5e/Robotiq/Pinocchio packages, `ros_ws` built in the image |
+| Energy model (F2) | `src/armbench/energy`: P_mech variants A/B, copper losses, P₀, η sensitivity, trapezoidal integration (batch and streaming `EnergyMeter`), JSONL episode logs, `armbench energy` CLI; `configs/energy.yaml` holds the electrical assumptions |
+| Torque source (F2) | `armbench_bringup` nodes `energy_meter` (online Wh on `/armbench/energy`), `torque_probe` and `torque_compare` (Pinocchio inverse dynamics); `scripts/torque_source.py` runs critical gate 2 → `reports/f2_torque_source.json`, decision in ADR-004 |
 | Simulation (F1) | `ros_ws/src/armbench_description` (UR5e + parallel gripper xacro, tabletop world with fixed RGB-D camera), `ros_ws/src/armbench_bringup` (`sim.launch.py`, controllers, `sim_check` node) |
 | CI | `verify` (lint, types, tests, no ROS) and `sim-image` (build image, F0 boot gate, F1 self-check gate) |
 | Docs | `docs/plan.es.md` (full phased plan, Spanish), ADRs in `docs/adr/`, `docs/PROJECT_STATE.md` |
 
 Roadmap (one PR per phase, see `docs/plan.es.md` and `docs/PROJECT_STATE.md`):
-~~F1 arm simulation~~ · F2 torque source and energy model · F3 perception ·
+~~F1 arm simulation~~ · ~~F2 torque source and energy model~~ · F3 perception ·
 F4 primitives · F5 tasks, baseline and runner · F6 LLM agent and sandbox ·
 F7 skill library · F8 energy-aware agent · F9 pre-registered evaluation ·
 F10 publication.
@@ -123,6 +125,55 @@ with slip ≤ 0.05 mm, lift 14.5 cm.
 50-run tirada on the same host (`reports/f1_sim_50runs.json`, containers isolated with
 `--network none`): boots 50/50, controllers active in ≤ 18.7 s (mean 8.9 s), RTF while moving
 ≥ 0.77, camera ≥ 10.6 FPS, grasp 50/50 with slip ≤ 0.25 mm, lift 14.5 cm in every run.
+
+## Energy model and torque source (F2)
+
+The electrical power of the arm is modelled from joint torque τᵢ and velocity ωᵢ
+(`docs/adr/ADR-004-torque-source.md`, `configs/energy.yaml`):
+
+```text
+P_mech,A = Σ max(τᵢ ωᵢ, 0)        # no regeneration (default)
+P_mech,B = Σ |τᵢ ωᵢ|              # upper bound
+P_cu     = Σ Rᵢ (τᵢ / k_t,i)²     # copper losses
+P_el     = P_mech / η + P_cu + P₀  # η = 0.70 (sensitivity 0.60 / 0.80), P₀ = 100 W
+E        = ∫ P_el dt  (trapezoidal), reported in Wh
+```
+
+η excludes the copper losses (otherwise they would be counted twice). k_t (10 N·m/A base
+joints, 4 N·m/A wrists), R (0.5 Ω / 1.0 Ω) and P₀ are **assumptions**, not UR5e data:
+absolute Wh depend on them, comparisons between methods on the same episodes do not.
+
+Recompute the energy of any episode log (JSONL rows `{"t", "q", "qd", "tau"}`) on the host:
+
+```bash
+# e.g. a segment left by the gate run below (reports/_f2_torque_work/ is not committed)
+uv run armbench energy reports/_f2_torque_work/traj_00.jsonl                 # table, variant A
+uv run armbench energy reports/_f2_torque_work/traj_00.jsonl --full --json   # A/B × η sensitivity
+```
+
+Inside the simulation `ros2 run armbench_bringup energy_meter --log episode.jsonl` integrates
+the 100 Hz `energy_state_broadcaster` stream online and publishes `/armbench/energy`
+(`[t_sim, Wh_A, Wh_B, Wh_mech_A, Wh_cu, Wh_p0]`) and a human-readable `/armbench/energy_table`;
+`/armbench/energy/reset` (std_srvs/Trigger) starts a new episode.
+
+Critical gate 2 — is Gazebo's `effort` a usable torque? — runs from the host:
+
+```bash
+uv run python scripts/torque_source.py --image armbench-sim:dev --out reports/f2_torque_source.json
+```
+
+It boots one isolated container (`--network none`), records 5 static holds, 20 scripted
+trajectories and 10 repeats of the first one (`torque_probe`, windows delimited in simulation
+time), computes Pinocchio inverse dynamics for every segment (`torque_compare`) and compares:
+static effort vs gravity torque (rel. diff < 10 %), effort vs inverse dynamics during motion
+(NRMSE median < 0.15), Wh repeatability over the 10 repeats (CV < 2 %) and the CPU of the
+`energy_meter` process (< 5 % of the container's CPU time). Thresholds live in
+`THRESHOLDS` in the script and are copied into the report.
+
+Measured on 2026-10-03 (8 vCPU, `reports/f2_torque_source.json`): static rel. diff ≤ 1.6 %,
+motion NRMSE median 0.06, Wh CV 1.1 % (Gazebo) / 0.07 % (inverse dynamics), meter 5.2 % of
+one core = 2.3 % of the container's CPU time, 100 Hz decimation changes Wh by ≤ 2.6 %. Decision: **torque source = Gazebo effort**, inverse dynamics kept as
+cross-check (ADR-004).
 
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 

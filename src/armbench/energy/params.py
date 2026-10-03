@@ -9,8 +9,9 @@ import numpy as np
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-REPO_ROOT: Final = Path(__file__).resolve().parents[3]
-DEFAULT_ENERGY_FILE: Final = REPO_ROOT / "configs" / "energy.yaml"
+from armbench.paths import CONFIG_DIR
+
+DEFAULT_ENERGY_FILE: Final = CONFIG_DIR / "energy.yaml"
 
 
 class JointElectricalParams(BaseModel):

@@ -5,9 +5,9 @@ phase PR.
 
 | Field | Value |
 |---|---|
-| Current phase | F1 merged (critical gate 1 passed); F2 awaits go |
-| Last green commit | `0c1c1b0` (F1 merged, `main`) |
-| Next phase | F2 — torque source experiment and energy model (critical gate 2) |
+| Current phase | F2 merged (critical gate 2 passed); F3 awaits go |
+| Last green commit | F2_COMMIT_PLACEHOLDER (F2 merged, `main`) |
+| Next phase | F3 — perception `detect()` (HSV + depth) on 200 seeded scenes |
 | Blockers | none |
 
 ## Phase status
@@ -16,7 +16,7 @@ phase PR.
 |---|---|---|
 | F0 skeleton, Docker, quality | merged (PR #1) | `reports/f0_quality.json` (ruff, format, mypy strict, 13 tests, 1.2 s), `reports/f0_sim.json` (boot 2.5 s, image 4.46 GB) |
 | F1 arm simulation | done (PR #3) | `reports/f1_sim.json` (3 runs) and `reports/f1_sim_50runs.json` (50 runs: boots 50/50, ready ≤ 18.7 s, RTF ≥ 0.77, camera ≥ 10.6 FPS, grasp 50/50, slip ≤ 0.25 mm); kinematics + scene generator unit tests |
-| F2 torque source and energy model | not started | — |
+| F2 torque source and energy model | done (PR F2_PR_PLACEHOLDER) | `reports/f2_torque_source.json` (static effort vs gravity ≤ 1.6 %, motion NRMSE median 0.06, Wh CV 1.1 %, meter 2.3 % of container CPU); energy model unit + hypothesis tests; ADR-004 |
 | F3 perception `detect()` | not started | — |
 | F4 primitives with contracts | not started | — |
 | F5 tasks, baseline A, runner | not started | — |
@@ -33,13 +33,12 @@ phase PR.
 | ADR-001 | Simulation stack, repository name and package name | accepted |
 | ADR-002 | Simulation image size threshold raised to 5 GB | accepted |
 | ADR-003 | Simple parallel-jaw gripper instead of Robotiq 2F-85 (D2) | accepted |
+| ADR-004 | Torque source = Gazebo effort, η excludes copper losses (D3, D4) | accepted |
 
 ## Open decisions (from `docs/plan.es.md` §7)
 
 | # | Decision | Due |
 |---|---|---|
-| D3 | Torque source (Gazebo effort vs inverse dynamics) | F2 |
-| D4 | η excludes copper losses | F2 |
 | D5 | Single-turn vs retries | F6 |
 | D6 | LLM model and provider | F6 |
 | D7 | Frozen skill library | F7 |

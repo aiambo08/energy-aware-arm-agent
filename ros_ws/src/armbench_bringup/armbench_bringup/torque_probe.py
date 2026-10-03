@@ -52,6 +52,7 @@ class TorqueProbe(Node):
         super().__init__("armbench_torque_probe")
         self.clock_sim = float("nan")
         self.recording: list[dict] | None = None
+        self.paused = False
         self.last_js: JointState | None = None
         self.create_subscription(Clock, "/clock", self._on_clock, 10)
         self.create_subscription(JointState, "/joint_states", self._on_js, 200)
@@ -65,7 +66,7 @@ class TorqueProbe(Node):
 
     def _on_js(self, msg: JointState) -> None:
         self.last_js = msg
-        if self.recording is None:
+        if self.recording is None or self.paused:
             return
         idx = {n: i for i, n in enumerate(msg.name)}
         if any(j not in idx for j in ARM_JOINTS) or len(msg.effort) != len(msg.name):
@@ -81,10 +82,13 @@ class TorqueProbe(Node):
         )
 
     # ------------------------------------------------------------------ helpers
-    def spin_for(self, seconds: float) -> None:
-        end = time.time() + seconds
-        while time.time() < end:
-            rclpy.spin_once(self, timeout_sec=0.02)
+    def spin_for(self, sim_seconds: float) -> bool:
+        """Spin until the simulation clock advances ``sim_seconds`` (wall-clock guarded)."""
+        end = self.clock_sim + sim_seconds
+        guard = time.time() + 4.0 * sim_seconds + 5.0
+        while self.clock_sim < end and time.time() < guard:
+            rclpy.spin_once(self, timeout_sec=0.005)
+        return self.clock_sim >= end
 
     def wait_until(self, pred, timeout: float, what: str) -> bool:  # noqa: ANN001
         end = time.time() + timeout
@@ -106,7 +110,12 @@ class TorqueProbe(Node):
         active = {c.name for c in res.controller if c.state == "active"}
         return {"joint_state_broadcaster", "joint_trajectory_controller"} <= active
 
-    def execute(self, points: list[tuple[list[float], float]]) -> bool:
+    def execute(self, points: list[tuple[list[float], float]], settle_s: float = 0.0) -> bool:
+        """Send the trajectory, spin ``T + settle_s`` of sim time, then collect the result.
+
+        The recording window is therefore fixed in simulation time; the (jittery) arrival of
+        the action result is waited for with recording paused.
+        """
         goal = FollowJointTrajectory.Goal()
         traj = JointTrajectory()
         traj.joint_names = ARM_JOINTS
@@ -124,9 +133,14 @@ class TorqueProbe(Node):
         if handle is None or not handle.accepted:
             return False
         res_fut = handle.get_result_async()
-        deadline = time.time() + points[-1][1] * 4 + 15
-        while not res_fut.done() and time.time() < deadline:
-            rclpy.spin_once(self, timeout_sec=0.02)
+        self.spin_for(points[-1][1] + settle_s)
+        self.paused = True
+        try:
+            deadline = time.time() + 15
+            while not res_fut.done() and time.time() < deadline:
+                rclpy.spin_once(self, timeout_sec=0.02)
+        finally:
+            self.paused = False
         if not res_fut.done():
             return False
         return res_fut.result().result.error_code == FollowJointTrajectory.Result.SUCCESSFUL
@@ -137,14 +151,14 @@ class TorqueProbe(Node):
     def record(self, out: Path, action) -> dict:  # noqa: ANN001
         """Run ``action`` while buffering joint states; write them to ``out``."""
         self.recording = []
-        t_wall0, t_sim0 = time.time(), self.clock_sim
+        t_wall0 = time.time()
         ok = action()
         samples, self.recording = self.recording, None
         with out.open("w") as fh:
             for s in samples:
                 fh.write(json.dumps(s) + "\n")
         wall = time.time() - t_wall0
-        sim = self.clock_sim - t_sim0
+        sim = samples[-1]["t"] - samples[0]["t"] if len(samples) > 1 else 0.0
         return {
             "file": out.name,
             "ok": bool(ok),
@@ -166,6 +180,7 @@ def run(args: argparse.Namespace) -> dict:
     rclpy.init()
     node = TorqueProbe()
     report: dict = {"segments": [], "cpu_samples": []}
+    cpu = CpuSampler(args.cpu_pid) if args.cpu_pid else None
     try:
         ok = node.wait_until(node.controllers_active, args.timeout, "controllers active")
         ok = ok and node.wait_until(lambda: node.last_js is not None, 20, "joint_states")
@@ -194,15 +209,13 @@ def run(args: argparse.Namespace) -> dict:
             fname = f"{name}.jsonl" if tag == "trajectory" else f"{tag}_{name}.jsonl"
 
             def _go(rest: list = rest) -> bool:
-                done = node.execute(rest)
-                node.spin_for(settle_s)
-                return done
+                return node.execute(rest, settle_s)
 
             seg = node.record(out_dir / fname, _go)
             seg.update({"kind": tag if tag != "trajectory" else "trajectory", "name": name})
             report["segments"].append(seg)
-            if args.cpu_pid:
-                report["cpu_samples"].append(_cpu_percent(args.cpu_pid))
+            if cpu is not None:
+                report["cpu_samples"].append(cpu.sample())
         node.move(HOME, move_s)
         report["all_ok"] = all(s["ok"] for s in report["segments"])
         return report
@@ -211,20 +224,41 @@ def run(args: argparse.Namespace) -> dict:
         rclpy.shutdown()
 
 
-def _cpu_percent(pid: int) -> float | None:
-    """Lifetime CPU share of ``pid`` from /proc (single-core percent)."""
-    try:
-        with open(f"/proc/{pid}/stat") as fh:
-            fields = fh.read().split(")")[-1].split()
-        with open("/proc/uptime") as fh:
-            uptime = float(fh.read().split()[0])
-    except OSError:
-        return None
-    hz = os.sysconf("SC_CLK_TCK")
-    total = (int(fields[11]) + int(fields[12])) / hz
-    start = int(fields[19]) / hz
-    elapsed = uptime - start
-    return round(100.0 * total / elapsed, 2) if elapsed > 0 else None
+class CpuSampler:
+    """CPU time of ``pid`` and of the whole container (cgroup v2) between successive samples."""
+
+    def __init__(self, pid: int) -> None:
+        self.pid = pid
+        self.hz = os.sysconf("SC_CLK_TCK")
+        self.prev = self._read()
+
+    def _read(self) -> tuple[float, float, float] | None:
+        try:
+            with open(f"/proc/{self.pid}/stat") as fh:
+                fields = fh.read().split(")")[-1].split()
+            with open("/sys/fs/cgroup/cpu.stat") as fh:
+                usage = {k: v for k, v in (ln.split() for ln in fh if ln.strip())}
+        except OSError:
+            return None
+        proc = (int(fields[11]) + int(fields[12])) / self.hz
+        return time.time(), proc, int(usage["usage_usec"]) * 1e-6
+
+    def sample(self) -> dict | None:
+        cur = self._read()
+        if cur is None or self.prev is None:
+            self.prev = cur
+            return None
+        d_wall = cur[0] - self.prev[0]
+        d_proc = cur[1] - self.prev[1]
+        d_cont = cur[2] - self.prev[2]
+        self.prev = cur
+        if d_wall <= 0 or d_cont <= 0:
+            return None
+        return {
+            "meter_core_percent": round(100.0 * d_proc / d_wall, 2),
+            "container_core_percent": round(100.0 * d_cont / d_wall, 1),
+            "meter_share_percent": round(100.0 * d_proc / d_cont, 2),
+        }
 
 
 def main() -> None:

@@ -14,6 +14,8 @@ otherwise ``P_cu`` would be counted twice (ADR-004).
 
 from __future__ import annotations
 
+import math
+from collections.abc import Sequence
 from enum import StrEnum
 
 import numpy as np
@@ -158,8 +160,8 @@ class EnergyMeter:
 
     def __init__(self, params: EnergyParams) -> None:
         self.params = params
-        self._kt = params.torque_constants()
-        self._r = params.winding_resistances()
+        self._kt = tuple(float(k) for k in params.torque_constants())
+        self._r = tuple(float(r) for r in params.winding_resistances())
         self._combos = [(v, e) for v in Variant for e in params.etas()]
         self.reset()
 
@@ -172,17 +174,25 @@ class EnergyMeter:
         self.mechanical_j: dict[Variant, float] = dict.fromkeys(Variant, 0.0)
         self.copper_j = 0.0
 
-    def update(self, t: float, omega: np.ndarray, tau: np.ndarray) -> None:
-        om = np.asarray(omega, dtype=float)
-        ta = np.asarray(tau, dtype=float)
-        if om.shape != (self.params.n_joints,) or ta.shape != (self.params.n_joints,):
-            msg = f"expected {self.params.n_joints} joints, got {om.shape} and {ta.shape}"
+    def update(
+        self, t: float, omega: Sequence[float] | np.ndarray, tau: Sequence[float] | np.ndarray
+    ) -> None:
+        """Add one sample (plain Python arithmetic: NumPy on six elements dominates at 500 Hz)."""
+        om = [float(x) for x in omega]
+        ta = [float(x) for x in tau]
+        n = self.params.n_joints
+        if len(om) != n or len(ta) != n:
+            msg = f"expected {n} joints, got {len(om)} and {len(ta)}"
             raise ValueError(msg)
-        if not (np.isfinite(t) and np.all(np.isfinite(om)) and np.all(np.isfinite(ta))):
+        if not (math.isfinite(t) and all(map(math.isfinite, om)) and all(map(math.isfinite, ta))):
             msg = "non-finite sample"
             raise ValueError(msg)
-        mech = {v: float(mechanical_power(ta, om, v)) for v in Variant}
-        cu = float((self._r * (ta / self._kt) ** 2).sum())
+        prod = [a * b for a, b in zip(ta, om, strict=True)]
+        mech = {
+            Variant.A: sum(p for p in prod if p > 0.0),
+            Variant.B: sum(abs(p) for p in prod),
+        }
+        cu = sum(r * (a / k) ** 2 for r, a, k in zip(self._r, ta, self._kt, strict=True))
         if self.n_samples:
             if t < self.t_last:
                 msg = f"time went backwards: {t} < {self.t_last}"

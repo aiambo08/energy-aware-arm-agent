@@ -29,9 +29,9 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from armbench.kinematics.se3 import rot_x, rot_z, rot_z_4x4, rotation_vector, transform
+from armbench.paths import CONFIG_DIR
 
-REPO_ROOT: Final = Path(__file__).resolve().parents[3]
-DEFAULT_KINEMATICS_FILE: Final = REPO_ROOT / "configs" / "ur5e_kinematics.yaml"
+DEFAULT_KINEMATICS_FILE: Final = CONFIG_DIR / "ur5e_kinematics.yaml"
 
 JOINT_NAMES: Final = (
     "shoulder_pan_joint",

@@ -52,6 +52,8 @@ RUN bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash \
 # against; the two missing runtime deps are added explicitly.
 COPY pyproject.toml README.md LICENSE /work/armbench/
 COPY src /work/armbench/src
+COPY configs /work/armbench/configs
+ENV ARMBENCH_CONFIG_DIR=/work/armbench/configs
 RUN uv pip install --system --break-system-packages --no-cache --no-deps /work/armbench \
     && uv pip install --system --break-system-packages --no-cache "pydantic>=2.7,<3" "typer>=0.12,<1" \
     && python3 -c "import armbench.energy, pydantic, numpy; print(armbench.__version__, numpy.__version__)"

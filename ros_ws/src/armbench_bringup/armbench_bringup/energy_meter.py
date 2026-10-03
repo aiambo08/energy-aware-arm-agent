@@ -1,4 +1,4 @@
-"""``energy_meter`` node: integrates the energy model on every ``/joint_states`` message.
+"""``energy_meter`` node: integrates the energy model on the 100 Hz energy_state_broadcaster.
 
 Publishes ``/armbench/energy`` (``std_msgs/Float64MultiArray``:
 ``[duration_s, wh_A_nominal, wh_B_nominal]``) and ``/armbench/energy_table``
@@ -14,7 +14,6 @@ import argparse
 import json
 from pathlib import Path
 
-import numpy as np
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
@@ -24,16 +23,18 @@ from std_srvs.srv import Trigger
 from armbench.energy import EnergyMeter, Variant, load_energy_params
 from armbench.energy.params import DEFAULT_ENERGY_FILE
 
+DEFAULT_TOPIC = "/energy_state_broadcaster/joint_states"
+
 
 class EnergyMeterNode(Node):
-    def __init__(self, config: Path, log: Path | None, publish_hz: float) -> None:
+    def __init__(self, config: Path, log: Path | None, publish_hz: float, topic: str) -> None:
         super().__init__("armbench_energy_meter")
         self.params = load_energy_params(config)
         self.joints = list(self.params.joint_order)
         self.meter = EnergyMeter(self.params)
         self.log_fh = log.open("a") if log else None
         self.n_dropped = 0
-        self.create_subscription(JointState, "/joint_states", self._on_js, 200)
+        self.create_subscription(JointState, topic, self._on_js, 200)
         self.pub = self.create_publisher(Float64MultiArray, "/armbench/energy", 10)
         self.pub_table = self.create_publisher(String, "/armbench/energy_table", 10)
         self.create_service(Trigger, "/armbench/energy/reset", self._on_reset)
@@ -46,8 +47,8 @@ class EnergyMeterNode(Node):
             return
         sel = [idx[j] for j in self.joints]
         t = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
-        qd = np.array([msg.velocity[i] for i in sel])
-        tau = np.array([msg.effort[i] for i in sel])
+        qd = [msg.velocity[i] for i in sel]
+        tau = [msg.effort[i] for i in sel]
         try:
             self.meter.update(t, qd, tau)
         except ValueError as exc:  # time jump backwards (sim reset) -> start over
@@ -56,9 +57,7 @@ class EnergyMeterNode(Node):
             self.meter.update(t, qd, tau)
         if self.log_fh is not None:
             q = [msg.position[i] for i in sel]
-            self.log_fh.write(
-                json.dumps({"t": t, "q": q, "qd": qd.tolist(), "tau": tau.tolist()}) + "\n"
-            )
+            self.log_fh.write(json.dumps({"t": t, "q": q, "qd": qd, "tau": tau}) + "\n")
 
     def _on_reset(self, _req: Trigger.Request, res: Trigger.Response) -> Trigger.Response:
         self.meter.reset()
@@ -83,9 +82,14 @@ def main() -> None:
     parser.add_argument("--config", type=Path, default=DEFAULT_ENERGY_FILE)
     parser.add_argument("--log", type=Path, default=None, help="append samples as JSONL")
     parser.add_argument("--publish-hz", type=float, default=10.0)
+    parser.add_argument(
+        "--topic",
+        default=DEFAULT_TOPIC,
+        help="JointState topic to integrate (default: the 100 Hz energy_state_broadcaster)",
+    )
     args = parser.parse_args()
     rclpy.init()
-    node = EnergyMeterNode(args.config, args.log, args.publish_hz)
+    node = EnergyMeterNode(args.config, args.log, args.publish_hz, args.topic)
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:

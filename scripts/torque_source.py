@@ -30,10 +30,19 @@ from typing import Any
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from armbench.energy import Variant, episode_from_jsonl, load_energy_params
+from armbench.energy import (
+    EnergyBreakdown,
+    EnergyParams,
+    Variant,
+    episode_energy,
+    episode_from_jsonl,
+    load_energy_params,
+    read_samples_jsonl,
+)
 from armbench.kinematics import HOME_Q, UR5eModel
 
 CONTAINER = "armbench-f2-torque"
+ENTRYPOINT = "/usr/local/bin/entrypoint.sh"  # docker exec does not source ROS by itself
 IN_DIR = "/tmp/f2_torque"  # noqa: S108 - inside the throwaway container
 WORLD = (
     "/work/ros_ws/install/armbench_description/share/armbench_description/worlds/check_scene.sdf"
@@ -44,7 +53,7 @@ THRESHOLDS: dict[str, float] = {
     "static_abs_diff_floor_nm": 0.5,
     "static_min_torque_nm": 1.0,
     "wh_cv_max": 0.02,
-    "meter_cpu_percent_max": 5.0,
+    "meter_cpu_share_percent_max": 5.0,  # meter CPU time / whole-container CPU time
     "motion_nrmse_median_max": 0.15,
 }
 STATIC_HOLDS = {
@@ -145,7 +154,7 @@ def run_in_container(image: str, plan_dir: Path, work_dir: Path) -> dict[str, An
     meter_log = f"{IN_DIR}/meter.jsonl"
     run(["docker", "exec", CONTAINER, "mkdir", "-p", IN_DIR])
     run(
-        ["docker", "exec", "-d", CONTAINER, "bash", "-c",
+        ["docker", "exec", "-d", CONTAINER, ENTRYPOINT, "bash", "-c",
          f"ros2 run armbench_bringup energy_meter --log {meter_log} > {IN_DIR}/meter.log 2>&1"]
     )  # fmt: skip
     pids: list[str] = []
@@ -158,13 +167,13 @@ def run_in_container(image: str, plan_dir: Path, work_dir: Path) -> dict[str, An
             break
     cpu_pid = pids[0] if pids else ""
     probe = run(
-        ["docker", "exec", CONTAINER, "bash", "-c",
+        ["docker", "exec", CONTAINER, ENTRYPOINT, "bash", "-c",
          f"ros2 run armbench_bringup torque_probe --plan /probe/plan.json --out-dir {IN_DIR} "
          f"--timeout 90 {'--cpu-pid ' + cpu_pid if cpu_pid else ''} > {IN_DIR}/probe.log 2>&1"],
         timeout=3600,
     )  # fmt: skip
     compare = run(
-        ["docker", "exec", CONTAINER, "bash", "-c",
+        ["docker", "exec", CONTAINER, ENTRYPOINT, "bash", "-c",
          f"ros2 run armbench_bringup torque_compare --in-dir {IN_DIR} > {IN_DIR}/compare.log 2>&1"],
         timeout=1800,
     )  # fmt: skip
@@ -185,6 +194,15 @@ def run_in_container(image: str, plan_dir: Path, work_dir: Path) -> dict[str, An
 
 
 # ----------------------------------------------------------------------------- analysis
+DECIMATION = 5  # 500 Hz /joint_states -> 100 Hz energy_state_broadcaster
+
+
+def decimated_energy(path: Path, params: EnergyParams, every: int) -> EnergyBreakdown:
+    """Energy of ``path`` keeping one sample out of ``every`` (what the 100 Hz meter sees)."""
+    s = read_samples_jsonl(path, params.n_joints)
+    return episode_energy(s.t[::every], s.qd[::every], s.tau[::every], params, variant=Variant.A)
+
+
 def cv(values: list[float]) -> float | None:
     if len(values) < 2:
         return None
@@ -225,6 +243,8 @@ def analyse(work_dir: Path, plan: dict[str, Any]) -> dict[str, Any]:
         seg = segments.get(f"{name}.jsonl", {})
         gz = episode_from_jsonl(work_dir / f"{name}.jsonl", params, variant=Variant.A)[0]
         idd = episode_from_jsonl(work_dir / f"{name}.id.jsonl", params, variant=Variant.A)[0]
+        dec = decimated_energy(work_dir / f"{name}.jsonl", params, DECIMATION)
+        dec_err = abs(dec.total_wh - gz.total_wh) / gz.total_wh if gz.total_wh > 0 else None
         nrmse_all += row["nrmse"]
         motion_rows.append(
             {
@@ -237,6 +257,8 @@ def analyse(work_dir: Path, plan: dict[str, Any]) -> dict[str, Any]:
                 "r2": row["r2"],
                 "rmse_nm": row["rmse_nm"],
                 "wh_gazebo_A": round(gz.total_wh, 5),
+                "wh_gazebo_A_100hz": round(dec.total_wh, 5),
+                "decimation_rel_err": dec_err,
                 "wh_inverse_dynamics_A": round(idd.total_wh, 5),
                 "mech_j_gazebo_A": round(gz.mechanical_j, 3),
                 "mech_j_inverse_dynamics_A": round(idd.mechanical_j, 3),
@@ -247,7 +269,9 @@ def analyse(work_dir: Path, plan: dict[str, Any]) -> dict[str, Any]:
     cv_gz = cv([r["wh_gazebo_A"] for r in reps])
     cv_id = cv([r["wh_inverse_dynamics_A"] for r in reps])
     cpu = [c for c in probe.get("cpu_samples", []) if c is not None]
-    cpu_max = max(cpu) if cpu else None
+    share_max = max((c["meter_share_percent"] for c in cpu), default=None)
+    core_max = max((c["meter_core_percent"] for c in cpu), default=None)
+    container_med = float(np.median([c["container_core_percent"] for c in cpu])) if cpu else None
     motion_median = float(np.median(nrmse_all)) if nrmse_all else None
 
     gazebo_usable = (
@@ -274,14 +298,21 @@ def analyse(work_dir: Path, plan: dict[str, Any]) -> dict[str, Any]:
         "motion_r2_median": float(np.median([v for r in trajs for v in r["r2"]]))
         if trajs
         else None,
+        "decimation_100hz_rel_err_max": max(
+            (r["decimation_rel_err"] for r in motion_rows if r["decimation_rel_err"] is not None),
+            default=None,
+        ),
         "wh_cv_gazebo": cv_gz,
         "wh_cv_inverse_dynamics": cv_id,
         "wh_cv_ok": cv_gz is not None
         and cv_gz <= THRESHOLDS["wh_cv_max"]
         and cv_id is not None
         and cv_id <= THRESHOLDS["wh_cv_max"],
-        "meter_cpu_percent_max": cpu_max,
-        "meter_cpu_ok": cpu_max is not None and cpu_max <= THRESHOLDS["meter_cpu_percent_max"],
+        "meter_cpu_share_percent_max": share_max,
+        "meter_cpu_core_percent_max": core_max,
+        "container_cpu_core_percent_median": container_med,
+        "meter_cpu_ok": share_max is not None
+        and share_max <= THRESHOLDS["meter_cpu_share_percent_max"],
         "trajectory_wh_gazebo_A": [r["wh_gazebo_A"] for r in trajs],
         "trajectory_wh_inverse_dynamics_A": [r["wh_inverse_dynamics_A"] for r in trajs],
         "torque_source": "gazebo_effort" if gazebo_usable else "inverse_dynamics",

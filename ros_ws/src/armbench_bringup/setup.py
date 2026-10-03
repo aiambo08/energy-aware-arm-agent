@@ -23,6 +23,9 @@ setup(
     entry_points={
         "console_scripts": [
             "sim_check = armbench_bringup.sim_check:main",
+            "torque_probe = armbench_bringup.torque_probe:main",
+            "torque_compare = armbench_bringup.torque_compare:main",
+            "energy_meter = armbench_bringup.energy_meter:main",
         ],
     },
 )

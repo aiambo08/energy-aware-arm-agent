@@ -99,7 +99,9 @@ def integrate(t: np.ndarray, p: np.ndarray) -> float:
     """Trapezoidal integral of ``p`` over ``t`` (0 for fewer than 2 samples)."""
     if len(t) < 2:
         return 0.0
-    return float(np.trapezoid(p, t))
+    tt = np.asarray(t, dtype=float)
+    pp = np.asarray(p, dtype=float)
+    return float(np.sum(0.5 * (pp[1:] + pp[:-1]) * np.diff(tt)))
 
 
 def episode_energy(  # noqa: PLR0913

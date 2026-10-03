@@ -10,6 +10,7 @@ import numpy as np
 import typer
 
 from armbench import __version__
+from armbench.energy import DEFAULT_ENERGY_FILE, Variant, episode_from_jsonl, load_energy_params
 from armbench.kinematics import N_JOINTS, UR5eModel, rotation_vector
 from armbench.scene import (
     DEFAULT_SCENE_FILE,
@@ -96,6 +97,35 @@ def fk(
     rotvec = rotation_vector(pose[:3, :3])
     typer.echo(f"xyz_m:      {xyz[0]:+.6f} {xyz[1]:+.6f} {xyz[2]:+.6f}")
     typer.echo(f"rotvec_rad: {rotvec[0]:+.6f} {rotvec[1]:+.6f} {rotvec[2]:+.6f}")
+
+
+@app.command()
+def energy(  # noqa: PLR0913
+    log: Annotated[Path, typer.Argument(help="Episode JSONL log ({t, q, qd, tau} per line).")],
+    *,
+    config: Annotated[Path, typer.Option(help="Energy model YAML.")] = DEFAULT_ENERGY_FILE,
+    variant: Annotated[Variant, typer.Option(help="Mechanical-power variant.")] = Variant.A,
+    eta: Annotated[float | None, typer.Option(min=0.0, max=1.0, help="Override eta.")] = None,
+    full: Annotated[bool, typer.Option("--full", help="All variant x eta combinations.")] = False,
+    as_json: Annotated[bool, typer.Option("--json", help="Machine-readable output.")] = False,
+) -> None:
+    """Integrate the energy model over a recorded episode log and print Wh."""
+    params = load_energy_params(config)
+    rows = episode_from_jsonl(log, params, variant=variant, eta=eta, full_sensitivity=full)
+    if as_json:
+        payload = [{**r.model_dump(mode="json"), "total_wh": r.total_wh} for r in rows]
+        typer.echo(json.dumps(payload, indent=2))
+        return
+    header = ("variant", "eta", "T[s]", "mech[J]", "cu[J]", "base[J]", "Wh")
+    typer.echo(
+        f"{header[0]:7s} {header[1]:>5s} {header[2]:>8s} {header[3]:>10s} "
+        f"{header[4]:>10s} {header[5]:>10s} {header[6]:>9s}"
+    )
+    for r in rows:
+        typer.echo(
+            f"{r.variant.value:7s} {r.eta:5.2f} {r.duration_s:8.3f} {r.mechanical_j:10.3f} "
+            f"{r.copper_j:10.3f} {r.base_j:10.3f} {r.total_wh:9.5f}"
+        )
 
 
 if __name__ == "__main__":  # pragma: no cover

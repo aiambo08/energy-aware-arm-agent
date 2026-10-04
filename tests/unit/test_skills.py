@@ -12,6 +12,7 @@ from armbench.agents import LLMAgent, get_agent
 from armbench.agents.prompt import build_messages, skills_section
 from armbench.llm import StaticProvider, load_llm_params, make_provider
 from armbench.llm.fake import TemplateProvider, offered_skills, template_skill_program
+from armbench.paths import SKILLS_DIR
 from armbench.perception import Camera, load_perception_params
 from armbench.primitives import (
     KinematicBackend,
@@ -535,3 +536,18 @@ def test_primitive_error_inside_a_skill_is_a_robot_failure(frozen_dir: Path) -> 
     )
     assert not rec.ok and rec.failure is not None
     assert rec.failure.stage == "robot" and rec.failure.code == OutOfReach.code
+
+
+def test_committed_library_is_frozen_and_validated() -> None:
+    """``skills/`` in the repository: frozen, hash matches the manifest, every skill accepted
+    on the skill_validation split at the protocol's pass rate."""
+    lib = SkillLibrary.load(SKILLS_DIR, require_frozen=True)
+    manifest = json.loads((SKILLS_DIR / "FROZEN.json").read_text())
+    assert lib.frozen and manifest["sha256"] == lib.sha256()
+    assert manifest["skills"] == {s.name: s.sha256() for s in lib}
+    assert set(lib.names) >= {"pick_place_cube", "stack_cube", "sort_cubes", "place_cube_over_wall"}
+    for s in lib:
+        v = s.validation
+        assert v is not None and v.accepted and v.split == "skill_validation"
+        assert v.seeds == tuple(range(20, 40)) and v.n_ok >= 0.9 * len(v.seeds)
+        assert check_program(s.bind(s.placeholder_args())).ok

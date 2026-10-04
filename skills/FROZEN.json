@@ -1,0 +1,12 @@
+{
+ "sha256": "18ba25b859cee9b33cec8a43c44f4ddf1c2006c6dea17b8b391f430b4ab7c6a3",
+ "n_skills": 4,
+ "frozen_at": "2026-10-04T12:07:21+00:00",
+ "armbench": "0.0.1",
+ "skills": {
+  "pick_place_cube": "2b21f43ce772a4055a5250b522a35feb367d1899129f31334365f56a9bdafa76",
+  "stack_cube": "cef5ef4a24ed23131be2aa5b09331afe94776363e2bd062db3e113a55805aae2",
+  "sort_cubes": "85e6f4f2dbd76a8f2c156775c7b8b97de11f68c0d7743c50571b7e85d515aef6",
+  "place_cube_over_wall": "8bdc2c0d473ebc55d2c244ea4f8bd74caf8eee32f5299715c3d5edbccacea074"
+ }
+}

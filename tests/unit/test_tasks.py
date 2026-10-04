@@ -12,7 +12,7 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from armbench.agents import ScriptedAgent, detect_all, get_agent
-from armbench.agents.scripted import OBSERVE_POSES, merge
+from armbench.agents.scripted import FINGER_SWEEP_M, OBSERVE_POSES, grasp_yaw, merge
 from armbench.perception import Camera, Detection, load_perception_params
 from armbench.perception.synthetic import ARM_RGB
 from armbench.primitives import KinematicBackend, Robot, load_primitive_params
@@ -335,12 +335,12 @@ def test_any_seed_yields_a_consistent_instance(seed: int) -> None:
 # -- partial detections --------------------------------------------------------------------------
 
 
-def _det(color: str, x: float, *, complete: bool) -> Detection:
+def _det(color: str, x: float, *, complete: bool, y: float = 0.0, yaw: float = 0.0) -> Detection:
     return Detection(
         color=color,
-        position=(x, 0.0, 0.0225),
-        top_center=(x, 0.0, 0.045),
-        yaw_rad=0.0,
+        position=(x, y, 0.0225),
+        top_center=(x, y, 0.045),
+        yaw_rad=yaw,
         pixel=(320.0, 240.0),
         bbox=(300, 220, 40, 40),
         area_px=700 if complete else 150,
@@ -348,6 +348,23 @@ def _det(color: str, x: float, *, complete: bool) -> Detection:
         complete=complete,
         depth_m=0.955,
     )
+
+
+def test_grasp_yaw_turns_the_open_fingers_away_from_a_close_neighbour() -> None:
+    """Fingers lie perpendicular to the grasp yaw: at yaw 0 they descend along y, so a cube
+    9 cm away along y is inside their sweep and the equivalent yaw -pi/2 is chosen; the same
+    neighbour along x, a far one, or none at all keep the detected yaw."""
+    target = _det("red", 0.0, complete=True)
+    along_fingers = _det("blue", 0.0, complete=True, y=0.09)
+    assert grasp_yaw(target, [target, along_fingers]) == pytest.approx(-math.pi / 2)
+    assert grasp_yaw(target, [target, _det("blue", 0.09, complete=True)]) == 0.0
+    assert grasp_yaw(target, [target, _det("blue", 0.0, complete=True, y=0.3)]) == 0.0
+    assert grasp_yaw(target, [target]) == 0.0
+    tilted = _det("red", 0.0, complete=True, yaw=0.5)
+    assert grasp_yaw(
+        tilted, [tilted, _det("blue", -0.09 * math.sin(0.5), complete=True, y=0.09 * math.cos(0.5))]
+    ) == pytest.approx(0.5 - math.pi / 2)
+    assert 0.055 < FINGER_SWEEP_M < 0.09
 
 
 def test_merge_prefers_complete_detections_and_keeps_the_first_complete_one() -> None:

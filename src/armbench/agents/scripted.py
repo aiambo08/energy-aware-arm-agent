@@ -32,6 +32,13 @@ SAME_CUBE_M: Final = 0.03
 WALL_CARRY_DZ_M: Final = 0.18
 """Carry height over a 10 cm wall: fingers and the held cube clear its top by > 5 cm."""
 PICKS_PER_PRIMITIVES: Final = 8
+FINGER_SWEEP_M: Final = 0.06
+"""Half-length of the open gripper along its finger axis (outer finger faces at 54.5 mm,
+ADR-003) plus margin: another cube's centre within this of the axis is hit on the way down."""
+CLEAR_ENOUGH_M: Final = 0.05
+"""Clearance beyond which a neighbour cannot be touched (finger half-width 12.5 mm plus a
+cube's half-diagonal 32 mm); clearances saturate here so far cubes never decide the yaw."""
+YAW_SWITCH_GAIN_M: Final = 0.01
 
 
 def merge(found: dict[str, Detection], new: Iterable[Detection]) -> None:
@@ -68,6 +75,39 @@ def detect_all(robot: Robot, colors: Iterable[str]) -> tuple[dict[str, Detection
     return found, moves
 
 
+def finger_axis_clearance_m(
+    xy: tuple[float, float], yaw: float, others: Iterable[Detection]
+) -> float:
+    """Distance from the nearest other cube centre to the open-finger segment of a top-down grasp
+    at ``xy`` with ``yaw`` (fingers lie along the gripper y axis, perpendicular to ``yaw``),
+    capped at ``CLEAR_ENOUGH_M``."""
+    ux, uy = -math.sin(yaw), math.cos(yaw)
+    best = CLEAR_ENOUGH_M
+    for o in others:
+        rx, ry = o.xy[0] - xy[0], o.xy[1] - xy[1]
+        along, perp = abs(rx * ux + ry * uy), abs(rx * uy - ry * ux)
+        best = min(best, math.hypot(max(along - FINGER_SWEEP_M, 0.0), perp))
+    return best
+
+
+def grasp_yaw(det: Detection, others: Iterable[Detection]) -> float:
+    """Of the two equivalent top-down grasps of a square cube (``yaw`` and ``yaw -/+ pi/2``),
+    the one whose open fingers descend farther from the other cubes; the detected yaw unless
+    the alternative gains more than ``YAW_SWITCH_GAIN_M``."""
+    yaw = det.yaw_rad
+    alt = yaw - math.pi / 2 if yaw >= 0 else yaw + math.pi / 2
+    rest = [o for o in others if o.color != det.color]
+    if finger_axis_clearance_m(det.xy, alt, rest) > finger_axis_clearance_m(det.xy, yaw, rest) + (
+        YAW_SWITCH_GAIN_M
+    ):
+        return alt
+    return yaw
+
+
+def pick_pose(det: Detection, others: Iterable[Detection]) -> Pose:
+    return grasp_pose(det).with_yaw(grasp_yaw(det, others))
+
+
 def _hash_source(module: ModuleType) -> str:
     return hashlib.sha256(inspect.getsource(module).encode("utf-8")).hexdigest()
 
@@ -80,13 +120,13 @@ class ScriptedAgent:
         dets, observe_moves = detect_all(robot, instance.required_colors())
         n = 1 + observe_moves * 2  # detect + (move_to, detect) per observe pose
         if isinstance(goal, PlaceGoal):
-            pick = grasp_pose(dets[goal.target_color])
+            pick = pick_pose(dets[goal.target_color], dets.values())
             place = Pose(x=goal.at.x, y=goal.at.y, z=pick.z)
             carry = WALL_CARRY_DZ_M if instance.obstacles else APPROACH_DZ_M
             n += len(pick_and_place(robot, pick, place, carry_dz_m=carry))
         elif isinstance(goal, StackGoal):
             top, base = dets[goal.top_color], dets[goal.base_color]
-            pick = grasp_pose(top)
+            pick = pick_pose(top, dets.values())
             size = instance.cube(goal.top_color).size
             place = Pose(x=base.position[0], y=base.position[1], z=pick.z + size, yaw=base.yaw_rad)
             n += len(pick_and_place(robot, pick, place))
@@ -118,7 +158,7 @@ class ScriptedAgent:
                 ready = [next(iter(pending))]
             color = min(ready, key=lambda c: goal.bins[c].dist(*pending[c].xy))
             d = pending.pop(color)
-            pick = grasp_pose(d)
+            pick = pick_pose(d, dets.values())
             place = Pose(x=goal.bins[color].x, y=goal.bins[color].y, z=pick.z)
             n += len(pick_and_place(robot, pick, place))
         return n

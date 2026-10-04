@@ -112,7 +112,8 @@ def run_chunk(
             info["error"] = f"docker cp failed: {copied.stderr.strip()}"
             return info
         log = chunk_dir / "episodes.jsonl"
-        if log.exists():
+        had_log = log.exists()
+        if had_log:
             with (out_dir / "episodes.jsonl").open("a") as dst, log.open() as src:
                 shutil.copyfileobj(src, dst)
             for sub in ("samples", "mcap"):
@@ -122,7 +123,12 @@ def run_chunk(
                     dst_dir.mkdir(exist_ok=True)
                     for item in src_dir.iterdir():
                         shutil.move(str(item), dst_dir / item.name)
-        info["ok"] = proc.returncode == 0 and log.exists()
+        status = chunk_dir / "status.json"
+        if status.exists():
+            (out_dir / "chunks").mkdir(exist_ok=True)
+            shutil.move(str(status), out_dir / "chunks" / f"{name}.json")
+        shutil.rmtree(chunk_dir, ignore_errors=True)
+        info["ok"] = proc.returncode == 0 and had_log
     except subprocess.TimeoutExpired:
         info["error"] = f"chunk exceeded {opts.timeout_s:.0f} s"
     finally:

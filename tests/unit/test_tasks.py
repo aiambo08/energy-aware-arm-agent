@@ -159,15 +159,15 @@ def test_obstacle_wall_sits_across_the_path_and_renders(config: SceneConfig) -> 
             assert math.hypot(wall.x - c.x, wall.y - c.y) >= 0.12
         sdf = box_to_sdf_model(wall)
         assert '<model name="obstacle">' in sdf
-        assert "0.04 0.16 0.1" in sdf
+        assert "0.16 0.04 0.1" in sdf
         assert "0.35 0.35 0.35 1" in sdf
 
 
 def test_box_inertia_matches_cube_formula() -> None:
     assert box_inertia(0.05, (CUBE, CUBE, CUBE)) == pytest.approx((cube_inertia(0.05, CUBE),) * 3)
     ixx, iyy, izz = box_inertia(0.5, OBSTACLE_SIZE)
-    assert izz < ixx  # the long y side dominates rotation about x
-    assert iyy < ixx
+    assert ixx < izz  # the long x side dominates rotation about y and z
+    assert izz < iyy
 
 
 # -- checkers on synthetic final states -----------------------------------------------------------
@@ -275,7 +275,7 @@ def test_baseline_clears_the_wall(
     for seed in DEV_SEEDS:
         inst, backend, robot, _n = solve_on_fake("place_obstacle@1", seed, config, params, camera)
         wall = inst.obstacles[0]
-        half_long, half_short = wall.size[1] / 2 + 0.04, wall.size[0] / 2 + 0.04
+        half_long, half_short = wall.size[0] / 2 + 0.04, wall.size[1] / 2 + 0.04
         c, s = math.cos(wall.yaw), math.sin(wall.yaw)
         lowest = math.inf
         qs = [np.asarray(params.ready_q)] + [np.asarray(q) for q, _ in backend.follow_log]

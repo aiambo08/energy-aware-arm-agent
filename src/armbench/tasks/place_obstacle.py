@@ -31,7 +31,7 @@ from armbench.tasks.spec import (
 N_CUBES: Final = (3, 2, 1)
 """Cubes to spawn; fewer only when no cube of the seed leaves room for the wall."""
 OBSTACLE_NAME: Final = "obstacle"
-OBSTACLE_SIZE: Final = (0.04, 0.16, 0.10)
+OBSTACLE_SIZE: Final = (0.16, 0.04, 0.10)
 OBSTACLE_MASS_KG: Final = 0.5
 GOAL_MIN_DIST_M: Final = 0.22
 GOAL_CLEARANCE_M: Final = 0.09
@@ -63,7 +63,7 @@ class PlaceObstacle:
         target = scene.cubes[idx]
         taken = [(c.x, c.y) for c in scene.cubes]
         ws = config.workspace
-        half = OBSTACLE_SIZE[1] / 2.0
+        half = OBSTACLE_SIZE[0] / 2.0
         for _ in range(GOAL_TRIES):
             at = free_xy(
                 rng,
@@ -105,7 +105,7 @@ class PlaceObstacle:
             prompt = (
                 f"Move the {target.color} cube so that its centre is at x={at.x:.3f}, "
                 f"y={at.y:.3f} (base_link, metres) resting on the table. A grey wall "
-                f"{OBSTACLE_SIZE[2] * 100:.0f} cm high and {OBSTACLE_SIZE[1] * 100:.0f} cm "
+                f"{OBSTACLE_SIZE[2] * 100:.0f} cm high and {OBSTACLE_SIZE[0] * 100:.0f} cm "
                 f"long stands between the cube and the goal, centred at x={mx:.3f}, "
                 f"y={my:.3f}; the camera does not see it. Do not touch the wall or the "
                 "other cubes."

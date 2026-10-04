@@ -347,3 +347,9 @@ def test_cli_run_refuses_locked_seeds(tmp_path: Path) -> None:
               "--final-eval", "--out", str(tmp_path)],
     )  # fmt: skip
     assert res.exit_code == 2
+
+
+def test_report_without_log_exits_cleanly(tmp_path: Path) -> None:
+    result = CliRunner().invoke(app, ["report", str(tmp_path)])
+    assert result.exit_code == 2
+    assert "no episode log" in result.output

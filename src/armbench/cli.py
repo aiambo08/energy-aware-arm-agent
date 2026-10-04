@@ -276,6 +276,10 @@ def report(
     from armbench.runner import build_report, table, write_report  # noqa: PLC0415
 
     paths = [p / "episodes.jsonl" if p.is_dir() else p for p in sources]
+    missing = [p for p in paths if not p.is_file()]
+    if missing:
+        typer.echo(f"no episode log at: {', '.join(str(p) for p in missing)}", err=True)
+        raise typer.Exit(code=2)
     n_rows = len(Variant) * len(load_energy_params(energy_file).etas())
     rep = build_report(paths, n_rows_expected=n_rows, require_repeats=require_repeats)
     typer.echo(table(rep))

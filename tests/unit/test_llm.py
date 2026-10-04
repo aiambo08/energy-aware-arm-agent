@@ -155,6 +155,18 @@ def test_default_config_loads_and_is_strict(tmp_path: Path) -> None:
     assert DEFAULT_LLM_FILE.name == "llm.yaml"
 
 
+def test_run_provider_ledger_counts_cache_hits_without_repricing(tmp_path: Path) -> None:
+    params = load_llm_params(DEFAULT_LLM_FILE)
+    provider = make_provider(params, cache_dir=tmp_path, ledger_path=tmp_path / "ledger.json")
+    assert isinstance(provider, BudgetedProvider)
+    first = provider.complete(req("same prompt"))
+    second = provider.complete(req("same prompt"))
+    assert not first.cached and second.cached
+    assert second.cost_usd == 0.0 and second.latency_s == 0.0
+    assert provider.ledger.n_calls == 1 and provider.ledger.n_cached == 1
+    assert Ledger.load(tmp_path / "ledger.json").n_cached == 1
+
+
 def test_template_programs_pass_the_static_check_for_every_task() -> None:
     cfg = load_scene_config()
     for tid in TASK_IDS:

@@ -27,7 +27,8 @@ def make_provider(
     ledger_path: Path | None = None,
 ) -> Provider:
     """Provider stack for a run: ``replay`` is cache-only; the others are
-    ``CachedProvider(BudgetedProvider(base))`` so hits cost nothing and misses are capped."""
+    ``BudgetedProvider(CachedProvider(base))`` so the ledger sees every answer (hits are
+    counted, cost nothing and are never re-priced) and misses are priced and capped."""
     which = kind or params.provider
     cache = ResponseCache(cache_dir or params.cache_dir)
     if which == "replay":
@@ -35,10 +36,12 @@ def make_provider(
     base: Provider = (
         TemplateProvider() if which == "template" else OpenAICompatProvider(params.openai)
     )
-    budgeted = BudgetedProvider(
-        base, params.prices_usd_per_1m, max_usd=params.max_usd_per_run, ledger_path=ledger_path
+    return BudgetedProvider(
+        CachedProvider(base, cache),
+        params.prices_usd_per_1m,
+        max_usd=params.max_usd_per_run,
+        ledger_path=ledger_path,
     )
-    return CachedProvider(budgeted, cache)
 
 
 __all__ = [

@@ -4,6 +4,9 @@ Inputs are two `armbench run` directories produced on the simulation backend:
   --live    agent B with the provider named in configs/llm.yaml (programs fetched on the host,
             replayed inside the containers from the run's own bundle);
   --replay  the same tasks/seeds run again with --provider replay (no provider call at all).
+The live run must start from an empty response cache (`rm -rf cache/llm`): a prefetch served
+entirely from a previous run's cache has no live calls, so no cost or latency to report, and the
+`cost_measured`/`latency_reported` checks fail.
 
 Thresholds (docs/plan.es.md, F6): >= 40 attacks stopped (tests in CI), malformed programs never
 crash the runner (tests), replay reproduces the primitive calls of every episode, cost per
@@ -21,6 +24,7 @@ import sys
 from pathlib import Path
 
 from armbench import __version__
+from armbench.energy import Variant, load_energy_params
 from armbench.llm import Ledger
 from armbench.runner import EpisodeRecord, build_report
 from armbench.runner.report import Report
@@ -40,31 +44,35 @@ def key(r: EpisodeRecord) -> tuple[str, int, int]:
 
 
 def replay_check(live: list[EpisodeRecord], replay: list[EpisodeRecord]) -> dict[str, object]:
+    """``exact``: same response, program and primitive-call sequence (what replay promises).
+    ``outcome_agree``: same success verdict; reported, not required, because the verdict is
+    Gazebo's and the physics is not bit-reproducible (F5 repeat CV)."""
     by_key = {key(r): r for r in live}
-    compared = exact = 0
+    compared = exact = outcome_agree = 0
     mismatches: list[dict[str, object]] = []
     for r in replay:
         ref = by_key.get(key(r))
         if ref is None or ref.trace is None or r.trace is None:
             continue
         compared += 1
-        same = (
+        same_calls = (
             ref.trace.program_calls == r.trace.program_calls
             and ref.trace.program_sha256 == r.trace.program_sha256
             and ref.trace.response_sha256 == r.trace.response_sha256
-            and ref.ok == r.ok
         )
-        if same:
-            exact += 1
-        else:
+        exact += same_calls
+        outcome_agree += ref.ok == r.ok
+        if not (same_calls and ref.ok == r.ok):
             mismatches.append(
-                {"task": r.task, "seed": r.seed, "live": ref.trace.program_calls,
-                 "replay": r.trace.program_calls, "live_ok": ref.ok, "replay_ok": r.ok}
+                {"task": r.task, "seed": r.seed, "same_calls": same_calls,
+                 "live": ref.trace.program_calls, "replay": r.trace.program_calls,
+                 "live_ok": ref.ok, "replay_ok": r.ok}
             )  # fmt: skip
     cached = sum(1 for r in replay if r.trace is not None and r.trace.llm_cached)
     return {
         "compared": compared,
         "exact": exact,
+        "outcome_agree": outcome_agree,
         "replay_cached": cached,
         "replay_n": len(replay),
         "mismatches": mismatches[:20],
@@ -148,13 +156,13 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--live", type=Path, required=True)
     parser.add_argument("--replay", type=Path, required=True)
-    parser.add_argument("--n-rows", type=int, required=True, help="expected rows per task table")
     parser.add_argument("--out", type=Path, default=ROOT / "reports" / "f6_agent_b.json")
     args = parser.parse_args(argv)
 
     live, replay = read_records(args.live), read_records(args.replay)
-    report = build_report([args.live / "episodes.jsonl"], n_rows_expected=args.n_rows)
-    replay_report = build_report([args.replay / "episodes.jsonl"], n_rows_expected=args.n_rows)
+    n_rows = len(Variant) * len(load_energy_params().etas())
+    report = build_report([args.live / "episodes.jsonl"], n_rows_expected=n_rows)
+    replay_report = build_report([args.replay / "episodes.jsonl"], n_rows_expected=n_rows)
     rep_check = replay_check(live, replay)
     battery = attack_battery()
     host = host_llm(args.live, len(live))

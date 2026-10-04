@@ -395,9 +395,12 @@ uv run armbench run --task all --agent B --backend fake --seeds dev --out runs/b
 
 # Gazebo: programs are fetched on the host, the bundle runs/b_sim/llm/ is copied into each
 # --network none container and replayed there; replay the whole run later without any provider
+rm -rf cache/llm   # the gate's live run must really call the provider (cost and latency are measured)
 uv run armbench run --task all --agent B --backend sim --seeds dev --out runs/b_sim
 uv run armbench run --task all --agent B --backend sim --seeds dev --out runs/b_sim_replay --provider replay
-uv run python scripts/f6_gate.py --live runs/b_sim --replay runs/b_sim_replay --n-rows 10   # → reports/f6_agent_b.json
+uv run python scripts/f6_gate.py --live runs/b_sim --replay runs/b_sim_replay   # → reports/f6_agent_b.json
+# replay reproduces the LLM side exactly (response, program, primitive calls); the success verdict
+# is Gazebo's and can differ between two physics runs of the same program (see the report)
 
 # try a program against the sandbox by hand
 uv run python -c "

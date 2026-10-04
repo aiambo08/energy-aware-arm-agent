@@ -26,11 +26,17 @@ this phase), `StaticProvider` (tests), `OpenAICompatProvider` (`urllib.request` 
 `/v1/chat/completions`, key from `ARMBENCH_LLM_API_KEY`, never called in CI), `CachedProvider`
 (disk cache `<dir>/<key[:2]>/<key>.json`, atomic writes) and `ReplayProvider` (cache only;
 `CacheMiss` is a typed error). Prices, the per-run `max_usd` guard and the `Ledger`
-(tokens, USD, calls, failures) live in `BudgetedProvider`, which also prices cached answers so
-the extrapolated cost of the final evaluation is visible before a single live call.
+(tokens, USD, calls, cache hits, failures) live in `BudgetedProvider`, which wraps the cache so
+it sees every answer: hits are counted at zero cost and never re-priced, misses are priced and
+capped. The extrapolated cost of the final evaluation is read from the ledger of a live run.
 
 **Rejected:** the `openai` SDK (adds a dependency to the simulation image for one HTTP call) and
 a vector store for prompts (not needed: the key is exact, replay is exact).
+
+Replay is exact on the LLM side: same response, same program, same primitive-call sequence,
+checked per episode by `scripts/f6_gate.py`. The success verdict is Gazebo's and the physics is
+not bit-reproducible (F5 repeat CV), so two runs of the same program can judge differently; the
+gate reports outcome agreement but only requires call-sequence equality.
 
 ### `TemplateProvider` is infrastructure, not evidence
 

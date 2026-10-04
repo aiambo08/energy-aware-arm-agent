@@ -105,6 +105,10 @@ class BudgetedProvider:
             self.ledger.n_failed += 1
             self._flush()
             raise
+        if response.cached:
+            self.ledger.record(response)
+            self._flush()
+            return response
         priced = response.model_copy(update={"cost_usd": self.prices.cost_usd(response.usage)})
         self.ledger.record(priced)
         self._flush()

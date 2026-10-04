@@ -21,6 +21,7 @@ value or a measurement stored under `reports/` with the script that produced it.
 | Simulation image | `docker/Dockerfile`: ROS 2 Jazzy + Gazebo Harmonic + UR5e/Robotiq/Pinocchio packages, `ros_ws` built in the image |
 | Energy model (F2) | `src/armbench/energy`: P_mech variants A/B, copper losses, P₀, η sensitivity, trapezoidal integration (batch and streaming `EnergyMeter`), JSONL episode logs, `armbench energy` CLI; `configs/energy.yaml` holds the electrical assumptions |
 | Perception (F3) | `src/armbench/perception`: pinhole + camera extrinsics (`Camera`), HSV + depth `detect()` → `Detection` (colour, position and yaw in `base_link`); `configs/perception.yaml`; `armbench_bringup` node `scene_capture` (RGB-D + Gazebo ground truth per seed); `scripts/perception_eval.py` runs the F3 gate → `reports/f3_perception.json` |
+| Primitives (F4) | `src/armbench/primitives`: `Robot` with `observe()`, `detect()`, `move_to()`, `grasp()`, `release()`, `reset()`, `execute_skill()` (stub until F7); Pydantic `Pose`/`Observation`/`Detection`/`Result`; typed errors (`OutOfReach`, `Singularity`, `Collision`, `Timeout`, `NoObjectGrasped`, `CameraTimeout`); pre-flight IK/branch/singularity/table-clearance checks (ADR-005); `KinematicBackend` (no ROS) and `RosBackend` (`armbench_bringup`); `configs/primitives.yaml`; `scripts/primitives_eval.py` runs the F4 gate → `reports/f4_primitives.json` |
 | Torque source (F2) | `armbench_bringup` nodes `energy_meter` (online Wh on `/armbench/energy`), `torque_probe` and `torque_compare` (Pinocchio inverse dynamics); `scripts/torque_source.py` runs critical gate 2 → `reports/f2_torque_source.json`, decision in ADR-004 |
 | Simulation (F1) | `ros_ws/src/armbench_description` (UR5e + parallel gripper xacro, tabletop world with fixed RGB-D camera), `ros_ws/src/armbench_bringup` (`sim.launch.py`, controllers, `sim_check` node) |
 | CI | `verify` (lint, types, tests, no ROS) and `sim-image` (build image, F0 boot gate, F1 self-check gate) |
@@ -28,7 +29,7 @@ value or a measurement stored under `reports/` with the script that produced it.
 
 Roadmap (one PR per phase, see `docs/plan.es.md` and `docs/PROJECT_STATE.md`):
 ~~F1 arm simulation~~ · ~~F2 torque source and energy model~~ · ~~F3 perception~~ ·
-F4 primitives · F5 tasks, baseline and runner · F6 LLM agent and sandbox ·
+~~F4 primitives~~ · F5 tasks, baseline and runner · F6 LLM agent and sandbox ·
 F7 skill library · F8 energy-aware agent · F9 pre-registered evaluation ·
 F10 publication.
 
@@ -226,6 +227,85 @@ scenes, recall ≥ 99 %, false positives ≤ 1 % of cubes, XY median < 5 mm and 
 
 **Measured (seeds 200–399, 200 scenes, 891 cubes, `reports/f3_perception.json`):** recall 100 % (891/891 visible cubes matched), 0 false positives, XY error median 1.39 mm / p95 2.34 mm / max 2.83 mm, Z error p95 < 0.001 mm (Gazebo depth is noise-free), yaw error (folded to the square's 90° symmetry) median 0.15° / p95 1.0°, `detect()` latency median 9.7 ms / p95 14.4 ms on CPU. Ground truth comes from Gazebo's `PosePublisher` (max 0.7 µm from the requested poses). The capture runs 25 seeds per fresh simulation container: a long-lived world degrades after a few hundred spawn/remove cycles (gz-transport service calls start timing out), which chunking avoids; one scene needed the built-in single retry.
 
+## Robot primitives (F4)
+
+`armbench.primitives.Robot` is the closed instruction set that agent programs, skills and the
+scripted baseline use. Every call returns a Pydantic model or raises a typed
+`PrimitiveError` (`code` + `details`, see `to_dict()`); the arm never receives a goal that
+the pre-flight checks reject (ADR-005). `configs/primitives.yaml` holds the workspace box,
+the IK branch, the singularity threshold, the table clearances and the gripper efforts.
+
+```python
+from armbench.perception import Camera, load_perception_params
+from armbench.primitives import KinematicBackend, Pose, Robot, load_primitive_params
+from armbench.primitives.scripted import grasp_pose
+from armbench.scene import generate_scene, load_scene_config
+
+params = load_primitive_params()  # configs/primitives.yaml
+camera = Camera.from_spec(load_perception_params().camera)
+scene = generate_scene(0, load_scene_config())
+backend = KinematicBackend(params, camera, cubes=list(scene.cubes))  # no ROS
+robot = Robot(backend, params=params)
+obs = robot.observe()  # t_sim, q, qd, tcp, gripper opening, holding, detections
+cube = robot.detect("red")[0]  # armbench.perception.Detection, sorted by x then y
+target = grasp_pose(cube)  # pads centred on the cube, yaw aligned
+robot.move_to(target.above(0.10))  # may raise OutOfReach / Singularity / Collision / Timeout
+robot.move_to(target, speed_scale=0.5)
+robot.grasp()  # NoObjectGrasped if the fingers close on nothing
+robot.move_to(Pose(x=-0.5, y=0.0, z=0.25))
+robot.release()
+robot.reset()  # home, open gripper; the recovery entry point after any error
+```
+
+- `move_to(pose, speed_scale)`: top-down grasp orientation (`yaw` about z); `speed_scale` ∈
+  [0.1, 1] scales the joint speed so duration is strictly monotone in it — it is the energy
+  lever of F8. Checks, in order: workspace box → table → IK (`UR5eModel.ik_top_down`, joints
+  unwrapped towards the current configuration) → IK branch → joint limits → Jacobian
+  singular value → sampled joint-space path clearance (links and finger tips above the table).
+  After the controller succeeds the robot waits until the joints are at rest before
+  measuring the final pose.
+- `grasp()` / `release()`: effort command to the parallel gripper, settle time, opening check.
+- `observe()` / `detect(target)`: one fresh RGB-D pair (stamped after the call) → F3
+  `detect()`; `CameraTimeout` if none arrives in `camera_timeout_s`.
+- `reset()`: open the gripper and return to `ready_pose`; also the first thing the gate does.
+- `KinematicBackend` executes motions exactly, renders the cubes with
+  `armbench.perception.synthetic` and moves a held cube with the gripper, so the whole stack
+  (perception → planning → scripted pick-and-place) runs in the unit tests in seconds;
+  `RosBackend` (`ros_ws/src/armbench_bringup/armbench_bringup/ros_backend.py`) drives the
+  Gazebo simulation through `/joint_trajectory_controller/follow_joint_trajectory`,
+  `/gripper_controller/commands`, `/joint_states` and the camera bridges, and monitors the
+  minimum link and finger-tip height during every motion.
+
+F4 gate (`primitives_check` node in the container, orchestrated from the host; one fresh
+simulation per section and per 25 pick-and-place seeds):
+
+```bash
+uv run python scripts/primitives_eval.py --seeds 400-499 --out reports/f4_primitives.json
+# re-judge without re-running the simulation
+uv run python scripts/primitives_eval.py --skip-contracts --skip-pick
+```
+
+Thresholds (`THRESHOLDS` in the script, copied into the report): 200 random reachable poses
+with position error p95 < 5 mm and yaw p95 < 2° and 0 table contacts (finger tips never
+below the table top, from `/joint_states` at 100 Hz); 100 unreachable poses, 100 % raised
+as `OutOfReach` with no goal sent and max |Δq| < 1 mrad; duration strictly decreasing over
+`speed_scale` ∈ {0.1, 0.2, 0.35, 0.5, 0.75, 1}; 100 `reset()` from random poses in < 5 s of
+simulation; scripted pick-and-place (`armbench.primitives.scripted`: detect → approach →
+descend → grasp → lift → move → descend → release → retreat, Gazebo poses as ground truth,
+placement error < 15 mm, other cubes undisturbed) ≥ 95 % on the 100 `dev_extended` seeds.
+
+**Measured (`reports/f4_primitives.json`, seeds 400–499, isolated containers):** 200/200
+reachable poses reached with position error median 0.13 mm / p95 0.23 mm / max 0.30 mm and
+yaw p95 0.03°, 0 table contacts (lowest finger tip 7.7 mm above the table); 100/100
+unreachable poses raised `OutOfReach` with 0 goals sent and max |Δq| 0.3 mrad; `speed_scale`
+0.1 → 1.0 gives 8.01 → 0.88 s of simulation, strictly decreasing; 100/100 resets in
+≤ 1.96 s of simulation with joint error ≤ 0.3 mrad and the gripper open; pick-and-place
+98/100 (placement error median 2.2 mm, p95 7.4 mm; the two failures, seeds 418 and 489,
+placed the cube 22.6 and 15.5 mm off, reproducibly across three runs; 0 scene/infrastructure
+errors). `detect()` from the ready pose saw every cube in only 42/100 episodes because the
+forearm and wrist sit under the camera (ADR-005); the scripted pick is unaffected, but F5
+tasks that need every cube must look from elsewhere.
+
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 
 ```bash
@@ -264,6 +344,7 @@ after settling, camera at 12.7 FPS.
 |---|---|---|
 | `dev` | 0–9 | free |
 | `skill_validation` | 20–39 | only to accept/reject skills |
+| `dev_extended` | 400–499 | free; F4 primitives gate and scripted-baseline tuning |
 | `final_eval` | 100–119 | **locked**: `check_seeds_allowed` raises unless `final_eval=True` and a protocol hash are given |
 
 The split is data (`configs/seeds.yaml`), validated for disjointness, and
@@ -276,7 +357,7 @@ requires an ADR.
 docker/            Dockerfile, entrypoint
 ros_ws/src/        ROS 2 packages: armbench_description (xacro, worlds), armbench_bringup (launch, controllers, sim_check)
 src/armbench/      pure-Python package, testable without ROS
-configs/           seeds.yaml, ur5e_kinematics.yaml, scene.yaml, energy.yaml, perception.yaml (tasks.yaml… later)
+configs/           seeds.yaml, ur5e_kinematics.yaml, scene.yaml, energy.yaml, perception.yaml, primitives.yaml (tasks.yaml… later)
 scripts/           check scripts that write reports/*.json
 tests/unit/        tests without ROS; tests marked `sim` need the image
 reports/           committed JSON metrics per phase (the DoD evidence)

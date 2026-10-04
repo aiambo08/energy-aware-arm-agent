@@ -56,6 +56,7 @@ ignore = ["PLR2004", "ANN401"]
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "PLR0913", "ANN"]
 "scripts/**" = ["T201", "S603", "S607"]
+"src/armbench/primitives/errors.py" = ["N818"]  # error names are the plan's public contract
 
 [tool.mypy]
 python_version = "3.12"

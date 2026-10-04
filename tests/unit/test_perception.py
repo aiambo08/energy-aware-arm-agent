@@ -6,7 +6,6 @@ import math
 import re
 import time
 
-import cv2
 import numpy as np
 import pytest
 import yaml
@@ -26,19 +25,11 @@ from armbench.perception import (
     load_perception_params,
     yaw_difference,
 )
+from armbench.perception.synthetic import (
+    ARM_RGB,
+    render,
+)
 from armbench.scene import Cube, generate_scene, load_scene_config
-
-# Mean RGB of the cubes as rendered by Gazebo Harmonic (headless, sun without shadows).
-RENDERED_RGB = {
-    "red": (224, 83, 83),
-    "green": (80, 197, 97),
-    "blue": (76, 118, 206),
-    "yellow": (209, 204, 75),
-}
-TABLE_RGB = (232, 232, 229)
-ARM_RGB = (65, 65, 65)
-TABLE_Z = 0.0
-SUBPIXEL_SHIFT = 4  # fillConvexPoly fixed-point bits: corners placed at 1/16 px
 
 
 @pytest.fixture(scope="module")
@@ -49,53 +40,6 @@ def params() -> PerceptionParams:
 @pytest.fixture(scope="module")
 def camera(params: PerceptionParams) -> Camera:
     return Camera.from_spec(params.camera)
-
-
-def cube_corners_top(cube: Cube) -> np.ndarray:
-    """Top-face corners (4, 3) in base_link."""
-    h = cube.size / 2.0
-    c, s = math.cos(cube.yaw), math.sin(cube.yaw)
-    local = np.array([[-h, -h], [h, -h], [h, h], [-h, h]])
-    xy = local @ np.array([[c, s], [-s, c]]) + np.array([cube.x, cube.y])
-    return np.column_stack([xy, np.full(4, cube.z + h)])
-
-
-def render(
-    cubes: list[Cube],
-    camera: Camera,
-    *,
-    noise_sigma: float = 0.0,
-    seed: int = 0,
-    side_faces: bool = True,
-) -> tuple[np.ndarray, np.ndarray]:
-    """Top-down synthetic RGB-D: table plane plus cube top faces (and darker side faces)."""
-    intr = camera.intrinsics
-    h, w = intr.height, intr.width
-    rgb = np.empty((h, w, 3), dtype=np.uint8)
-    rgb[:] = TABLE_RGB
-    _, d_table = camera.project_base(np.array([[0.0, 0.0, TABLE_Z]]))
-    depth = np.full((h, w), float(d_table[0]), dtype=np.float32)
-    rng = np.random.default_rng(seed)
-    for cube in cubes:
-        top = cube_corners_top(cube)
-        if side_faces:
-            # the four vertical faces: top corners + the same corners on the table
-            bottom = top - np.array([0.0, 0.0, cube.size])
-            for i in range(4):
-                quad = np.array([top[i], top[(i + 1) % 4], bottom[(i + 1) % 4], bottom[i]])
-                px, dz = camera.project_base(quad)
-                poly = np.round(px * 2**SUBPIXEL_SHIFT).astype(np.int32)
-                shade = tuple(int(v * 0.6) for v in RENDERED_RGB[cube.color])
-                cv2.fillConvexPoly(rgb, poly, shade, shift=SUBPIXEL_SHIFT)
-                cv2.fillConvexPoly(depth, poly, float(dz.mean()), shift=SUBPIXEL_SHIFT)
-        px, dz = camera.project_base(top)
-        poly = np.round(px * 2**SUBPIXEL_SHIFT).astype(np.int32)
-        cv2.fillConvexPoly(rgb, poly, RENDERED_RGB[cube.color], shift=SUBPIXEL_SHIFT)
-        cv2.fillConvexPoly(depth, poly, float(dz.mean()), shift=SUBPIXEL_SHIFT)
-    if noise_sigma > 0:
-        noisy = rgb.astype(float) + rng.normal(0.0, noise_sigma, rgb.shape)
-        rgb = np.clip(noisy, 0, 255).astype(np.uint8)
-    return rgb, depth
 
 
 def make_cube(

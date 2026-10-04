@@ -7,8 +7,8 @@ phase PR.
 |---|---|
 | Current phase | F8 done (energy-aware agents C and C+S on a frozen baseline-A energy reference, D8 option 2; Gazebo pilot B/C/B+S/C+S 40/40 each with the deterministic template provider); F9 next |
 | Last green commit | `main` after PR F6 — see `git log -1 main` |
-| Next phase | F9 — pre-registered evaluation (protocol frozen in a commit before the 400 episodes on the locked `final_eval` seeds 100–119, H1–H3, Wilson/IQM/bootstrap, η sensitivity). Needs a real OpenAI-compatible provider: an `ARMBENCH_LLM_API_KEY` and the model choice (D6) |
-| Blockers | F9 needs the keys (`ARMBENCH_GEMINI_API_KEY` for pilots, `ARMBENCH_NEBIUS_API_KEY` for the evaluation) and the Nebius model id (D6); everything up to F8 runs without one. Spending tools are ready: `armbench llm check/models/estimate`, `run --dry-run`, `max_usd_total`, resumable prefetch |
+| Next phase | F9 — pre-registered evaluation (protocol frozen in a commit before the 400 episodes on the locked `final_eval` seeds 100–119, H1–H3, Wilson/IQM/bootstrap, η sensitivity). Provider and model fixed (D6): Nebius `Qwen/Qwen3-235B-A22B-Instruct-2507`; free Gemini pilot on dev seeds first |
+| Blockers | F9 needs the keys (`ARMBENCH_GEMINI_API_KEY` for pilots, `ARMBENCH_NEBIUS_API_KEY` for the evaluation), both verified with `armbench llm check` on 2026-10-04; everything up to F8 runs without one. Spending tools are ready: `armbench llm check/models/estimate`, `run --dry-run`, `max_usd_total`, resumable prefetch |
 
 ## Phase status
 
@@ -45,7 +45,7 @@ phase PR.
 | # | Decision | Due |
 |---|---|---|
 | D5 | Single-turn vs retries — single turn (`max_attempts: 1`), retries kept configurable (ADR-007) | decided F6 |
-| D6 | LLM model and provider — interface and replay decided (ADR-007); hybrid plan: Gemini (AI Studio free tier, `configs/llm.gemini.yaml`) for development and pilots, Nebius Token Factory (`configs/llm.nebius.yaml`, one fixed model, total cap 3 USD) for the pre-registered evaluation; the exact Nebius model id and prices are fixed with `armbench llm models` once the key is available, before F9 | open (provider split decided) |
+| D6 | LLM model and provider — interface and replay decided (ADR-007); hybrid plan: Gemini (AI Studio free tier, `configs/llm.gemini.yaml`) for development and pilots, Nebius Token Factory (`configs/llm.nebius.yaml`, one fixed model, total cap 3 USD) for the pre-registered evaluation; Nebius model `Qwen/Qwen3-235B-A22B-Instruct-2507` at 0.20/0.60 USD per 1M tokens (instruct, no thinking: short, predictable completions; strong at code; cheap). `meta-llama/Llama-3.3-70B-Instruct`, the earlier placeholder, is not offered. Worst case for the full F9 LLM grid (4 agents × 4 tasks × 20 seeds) ≈ 0.42 USD, inside the 3 USD cap | decided 2026-10-04 |
 | D7 | Frozen skill library — built from dev programs, validated on 20–39, frozen by hash and read-only for evaluation (ADR-008) | decided F7 |
 | D8 | Meaning of "previous Wh" in C — option 2: baseline A's Wh for the same task from a frozen, hashed reference (ADR-009); no retry/previous-episode memory | decided F8 |
 | D10 | Whether to build F11 (live demo) | F10 |

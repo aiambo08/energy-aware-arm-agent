@@ -7,7 +7,7 @@
 #   uv run armbench llm check  --llm-config configs/llm.nebius.yaml
 schema_version: 1
 provider: openai
-model: meta-llama/Llama-3.3-70B-Instruct   # placeholder: confirm with `armbench llm models` (D6)
+model: Qwen/Qwen3-235B-A22B-Instruct-2507   # D6: fixed for F9 (listed by `armbench llm models`, 2026-10-04)
 temperature: 0.0
 max_tokens: 1500
 seed: 0
@@ -15,7 +15,7 @@ max_attempts: 1
 max_tokens_per_episode: 8000
 max_usd_per_run: 2.0
 max_usd_total: 3.0
-prices_usd_per_1m: {input: 0.5, output: 1.5}   # deliberate upper bound until `llm models` gives the real ones
+prices_usd_per_1m: {input: 0.2, output: 0.6}   # Token Factory list price, 2026-10-04
 cache_dir: cache/llm
 openai:
   base_url: https://api.tokenfactory.nebius.com/v1/

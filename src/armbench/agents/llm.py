@@ -1,4 +1,5 @@
-"""Agent B: one LLM call (by default) writes a program over the primitives; the sandbox runs it.
+"""Agents B, B+S, C and C+S: one LLM call (by default) writes a program over the primitives;
+the sandbox runs it.
 
 The agent is provider-agnostic (:mod:`armbench.llm`) and never sees the robot directly: the
 program it obtains is checked, executed in a child process and accounted for by
@@ -15,7 +16,13 @@ from pathlib import Path
 from typing import Final
 
 from armbench.agents.base import AgentError, AgentTrace
-from armbench.agents.prompt import build_messages, feedback_message, system_prompt
+from armbench.agents.prompt import (
+    build_messages,
+    energy_section,
+    feedback_message,
+    system_prompt,
+)
+from armbench.energy import EnergyParams, EnergyReference, load_energy_params
 from armbench.llm import (
     LLMParams,
     LLMRequest,
@@ -55,12 +62,17 @@ class LLMAgent:
         artifacts_dir: Path | None = None,
         cube_size_m: float | None = None,
         library: SkillLibrary | None = None,
+        energy_ref: EnergyReference | None = None,
+        energy_params: EnergyParams | None = None,
     ) -> None:
         self.id = agent_id
         self.provider = provider
         self.params = params
         self.library = library
-        """B+S: the frozen library whose skills are offered in the prompt (B has none)."""
+        """B+S / C+S: the frozen library whose skills are offered in the prompt (B has none)."""
+        self.energy_ref = energy_ref
+        """C / C+S: baseline A's Wh per task, shown in the prompt as the budget (D8)."""
+        self.energy_params = energy_params
         self.limits = limits or params.sandbox.limits()
         self.artifacts_dir = artifacts_dir
         self.cube_size_m = (
@@ -82,11 +94,23 @@ class LLMAgent:
         hits = self.library.retrieve(instance.prompt, k=SKILLS_PER_PROMPT)
         return tuple(h.skill for h in hits)
 
+    def energy_for(self, instance: TaskInstance) -> str | None:
+        """The ``# Energy`` block for the instance's task, or ``None`` for B and B+S. A task
+        missing from the reference raises ``EnergyReferenceError`` before any LLM call."""
+        if self.energy_ref is None:
+            return None
+        if self.energy_params is None:
+            self.energy_params = load_energy_params()
+        task_ref = self.energy_ref.for_task(str(instance.task))
+        return energy_section(self.energy_ref, task_ref, self.energy_params)
+
     def request(self, params: PrimitiveParams, instance: TaskInstance) -> LLMRequest:
         """The first-turn request for an instance (what the host pre-fetches and caches)."""
         return LLMRequest(
             model=self.params.model,
-            messages=build_messages(instance, self.system(params), self.skills_for(instance)),
+            messages=build_messages(
+                instance, self.system(params), self.skills_for(instance), self.energy_for(instance)
+            ),
             temperature=self.params.temperature,
             max_tokens=self.params.max_tokens,
             seed=self.params.seed,
@@ -137,6 +161,8 @@ class LLMAgent:
             )
         last = runs[-1]
         skills_used = tuple(dict.fromkeys(n for r in runs for n in r.skills_used))
+        speeds = [v for r in runs for v in r.move_speed_scales]
+        ref = None if self.energy_ref is None else self.energy_ref.for_task(str(instance.task))
         trace = AgentTrace(
             attempts=len(runs),
             n_primitives=sum(r.n_primitive_calls for r in runs),
@@ -155,6 +181,11 @@ class LLMAgent:
             program_calls=last.primitives,
             program_error=last.error_message if last.outcome != "completed" else None,
             sandbox_isolation=last.isolation,
+            n_moves=len(speeds),
+            n_slow_moves=sum(1 for v in speeds if v < 1.0),
+            speed_scale_min=min(speeds) if speeds else None,
+            energy_reference_wh=None if ref is None else ref.wh_median,
+            energy_reference_sha256=None if self.energy_ref is None else self.energy_ref.sha256(),
             notes=f"{last.describe()}; isolation={','.join(last.isolation)}",
         )
         if last.outcome != "completed":

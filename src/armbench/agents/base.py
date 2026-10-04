@@ -40,6 +40,15 @@ class AgentTrace(BaseModel):
     """Primitive names the last program invoked, in order (replay compares these)."""
     program_error: str | None = None
     sandbox_isolation: tuple[str, ...] = ()
+    n_moves: int = Field(ge=0, default=0)
+    """``move_to`` calls the arm ran (skill bodies included)."""
+    n_slow_moves: int = Field(ge=0, default=0)
+    """Moves with ``speed_scale < 1`` — the energy lever the plan asks F8 to report."""
+    speed_scale_min: float | None = None
+    energy_reference_wh: float | None = None
+    """Baseline A's median Wh for the task, as shown to agents C/C+S (D8); ``None`` for A/B."""
+    energy_reference_sha256: str | None = None
+    """Hash of the reference file the energy block was built from."""
     notes: str = ""
 
 

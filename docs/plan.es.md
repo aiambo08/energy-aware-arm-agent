@@ -341,7 +341,7 @@ Formato de cada fase: **objetivo**, **entregables**, **métricas de aceptación 
 
 **Entregables**
 - Prompt con presupuesto de Wh por tarea (por ejemplo, la mediana de A en semillas de desarrollo × factor) y explicación de las palancas (`speed_scale` y rutas más cortas).
-- **Definición de "Wh del intento anterior"** (resuelve la ambigüedad del informe): con `N_max = 1`, C recibe el Wh de **su último episodio de la misma tarea en semillas de desarrollo** (memoria de energía fija, congelada como las skills). Con `N_max > 1`, también recibe el Wh del intento previo del mismo episodio. Se fija una de las dos opciones en un ADR antes de F9.
+- **Definición de "Wh del intento anterior"** (resuelve la ambigüedad del informe): **decidido en F8 (D8, ADR-009)**: C recibe el Wh de la **línea base A en la misma tarea** (mediana sobre las semillas de desarrollo, variante A, η nominal) como presupuesto de referencia, leído de un artefacto congelado (`energy_ref/reference.json`, hash registrado en cada `run.json`). Nunca recibe el Wh de su propio intento o episodio anterior: con `N_max = 1` no existe, y usarlo rompería el emparejamiento con B o mezclaría el efecto de los reintentos con el de la información energética.
 
 **DoD**
 
@@ -483,7 +483,7 @@ Los resultados de la investigación (H1–H3) **no son métricas de aceptación*
 | D5 | Agente: un turno vs reintentos | Un turno en la evaluación principal; reintentos como experimento extra si sobra tiempo | F6 |
 | D6 | Modelo LLM y proveedor | Uno comercial barato para la evaluación + uno local para la demo pública | F6 |
 | D7 | Biblioteca de skills congelada | Sí | F7 |
-| D8 | Significado de "Wh anterior" en C | Memoria de energía congelada desde semillas de desarrollo | F8 |
+| D8 | Significado de "Wh anterior" en C | **Decidido (ADR-009)**: Wh de la línea base A en la misma tarea, artefacto congelado con hash | F8 |
 | D9 | Nombre del proyecto y del repo | Provisional `armbench`; comprobar que el nombre está libre en PyPI y GitHub | F0 |
 | D10 | Hacer o no F11 | Decidir tras F10 según presupuesto | F10 |
 

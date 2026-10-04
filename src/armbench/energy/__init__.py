@@ -19,14 +19,28 @@ from armbench.energy.params import (
     JointElectricalParams,
     load_energy_params,
 )
+from armbench.energy.reference import (
+    REFERENCE_FILE,
+    EnergyReference,
+    EnergyReferenceError,
+    ReferenceSample,
+    ReferenceSource,
+    TaskReference,
+)
 
 __all__ = [
     "DEFAULT_ENERGY_FILE",
     "J_PER_WH",
+    "REFERENCE_FILE",
     "EnergyBreakdown",
     "EnergyMeter",
     "EnergyParams",
+    "EnergyReference",
+    "EnergyReferenceError",
     "JointElectricalParams",
+    "ReferenceSample",
+    "ReferenceSource",
+    "TaskReference",
     "Variant",
     "copper_power",
     "electrical_power",

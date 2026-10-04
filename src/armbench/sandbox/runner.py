@@ -93,6 +93,10 @@ class CallRecord(BaseModel):
     inner_calls: tuple[str, ...] = ()
     """Primitives the skill body ran (a skill call is one call to the program, several to the
     robot; ``ProgramRun.n_primitive_calls`` counts the latter)."""
+    speed_scale: float | None = None
+    """``speed_scale`` of a ``move_to`` call (the energy lever agent C is told about)."""
+    inner_speed_scales: tuple[float, ...] = ()
+    """``speed_scale`` of every ``move_to`` the skill body ran."""
 
 
 class ProgramRun(BaseModel):
@@ -134,6 +138,16 @@ class ProgramRun(BaseModel):
     @property
     def skills_used(self) -> tuple[str, ...]:
         return tuple(c.skill for c in self.calls if c.skill is not None and c.ok)
+
+    @property
+    def move_speed_scales(self) -> tuple[float, ...]:
+        """``speed_scale`` of every move the arm ran (skill bodies included), in order."""
+        out: list[float] = []
+        for c in self.calls:
+            if c.speed_scale is not None:
+                out.append(c.speed_scale)
+            out.extend(c.inner_speed_scales)
+        return tuple(out)
 
     def primitive_error(self) -> PrimitiveError | None:
         """The unhandled primitive error, rebuilt as the parent-side class (``None`` otherwise)."""
@@ -242,12 +256,19 @@ class _Dispatcher:
         ok, code = True, None
         skill: str | None = None
         inner: tuple[str, ...] = ()
+        speed: float | None = None
+        inner_speeds: tuple[float, ...] = ()
         try:
             result = self._invoke(name, args, kwargs)
             reply: dict[str, object] = {"ok": True, "result": result}
             if name == "execute_skill" and isinstance(result, dict):
                 skill = str(result.get("skill"))
                 inner = tuple(str(c) for c in result.get("calls", ()))
+                inner_speeds = tuple(float(v) for v in _floats(result.get("speed_scales", ())))
+            elif name == "move_to" and isinstance(result, dict):
+                plan = result.get("plan")
+                if isinstance(plan, dict) and isinstance(plan.get("speed_scale"), int | float):
+                    speed = float(plan["speed_scale"])
         except PrimitiveError as exc:
             ok, code = False, exc.code
             self.last_error = exc
@@ -266,6 +287,8 @@ class _Dispatcher:
                 wall_s=time.time() - t_wall,
                 skill=skill,
                 inner_calls=inner,
+                speed_scale=speed,
+                inner_speed_scales=inner_speeds,
             )
         )
         return reply
@@ -302,6 +325,12 @@ class _Dispatcher:
             raise TypeError(msg)
         rest = {k: v for k, v in kwargs.items() if k != "name"}
         return r.execute_skill(skill, **rest).model_dump(mode="json")
+
+
+def _floats(values: object) -> tuple[float, ...]:
+    if not isinstance(values, list | tuple):
+        return ()
+    return tuple(float(v) for v in values if isinstance(v, int | float))
 
 
 def _arity(name: str, args: list[object], kwargs: dict[str, object], n: int) -> None:

@@ -115,6 +115,8 @@ class SkillResult(Result):
     skill_sha256: str
     calls: tuple[str, ...]
     """Primitives the skill body invoked, in order (they count towards the episode's calls)."""
+    speed_scales: tuple[float, ...] = ()
+    """``speed_scale`` of every ``move_to`` in ``calls`` (energy accounting of agent C+S)."""
     postconditions_checked: tuple[str, ...] = ()
     postconditions_deferred: tuple[str, ...] = ()
     """Conditions that need the world state and are only verified at validation time."""

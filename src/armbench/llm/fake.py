@@ -1,7 +1,9 @@
 """Providers that need no network: a deterministic *template* model and a fixed-text stub.
 
 ``TemplateProvider`` reads the task sentence in the prompt and answers with a program written
-over the sandbox API (observe poses, grasp-yaw choice and pick-and-place like baseline A). It
+over the sandbox API (observe poses, grasp-yaw choice and pick-and-place like baseline A); when
+the prompt offers skills it calls one, and when it carries an ``# Energy`` section it writes the
+energy-aware variant of the same program (lower lifts, full-speed transfers). It
 exists so that the whole F6 pipeline — prompt, cache, replay, sandbox, cost ledger, episode
 log — can be built, tested and run end to end before a real model is plugged in. It is not a
 language model: its results say nothing about what an LLM would achieve.
@@ -133,6 +135,24 @@ while pending:
 """
 
 
+ENERGY_EDITS: Final[tuple[tuple[str, str], ...]] = (
+    ("APPROACH = 0.10", "APPROACH = 0.06"),
+    ("SLOW = 0.5", "SLOW = 0.7"),
+    ("robot.move_to(pick.above(carry), SLOW)", "robot.move_to(pick.above(carry))"),
+)
+"""What the template changes when the prompt has an ``# Energy`` section: the block says P0
+dominates, so it shortens the vertical legs (6 cm approach/carry instead of 10, still above a
+4.5 cm neighbour), lifts at full speed and keeps a reduced — but faster — speed_scale only for the
+final descents. A fixed recipe, not a model's reasoning."""
+
+
+def energy_program(program: str) -> str:
+    """The energy-aware variant of a template program (see ``ENERGY_EDITS``)."""
+    for old, new in ENERGY_EDITS:
+        program = program.replace(old, new)
+    return program
+
+
 def template_program(task_text: str) -> str | None:
     """The program for a task sentence, or ``None`` when the sentence is not understood."""
     m = STACK_RE.search(task_text)
@@ -243,7 +263,11 @@ class TemplateProvider:
     def complete(self, request: LLMRequest) -> LLMResponse:
         t0 = time.monotonic()
         task_text = request.last_user()
-        program = template_skill_program(task_text) or template_program(task_text)
+        program = template_skill_program(task_text)
+        if program is None:
+            program = template_program(task_text.rsplit("# Task", 1)[-1])
+            if program is not None and "# Energy" in task_text:
+                program = energy_program(program)
         text = "I do not understand this task." if program is None else f"```python\n{program}```\n"
         return LLMResponse(
             text=text,

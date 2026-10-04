@@ -24,7 +24,8 @@ value or a measurement stored under `reports/` with the script that produced it.
 | Tasks and baseline A (F5) | `src/armbench/tasks`: four versioned tasks (`pick_place@1`, `stack2@1`, `sort3@1`, `place_obstacle@1`) as pure functions of `(task, seed)` with ground-truth success checkers; `src/armbench/agents`: `Agent` protocol, `AgentTrace`, `ScriptedAgent` (baseline A, primitives only, observes from extra poses when the forearm occludes a cube); ADR-006 |
 | Episode runner and reports (F5) | `src/armbench/runner`: `EpisodeRecord` JSONL schema v1 (verdict, typed failure stage, sim/wall time, Wh A/B × η, agent trace, instance hash), `run_episode` over a `World` protocol (`FakeWorld` without ROS, Gazebo in `armbench_bringup` `episode_runner`), Docker chunk orchestration (`--network none`, fresh container per 25 seeds), `armbench run` / `armbench report` (Wilson CI, Wh median/IQM/p95, repeat CV, infra rate, thresholds) → `reports/f5_baseline.json` |
 | LLM agent B, sandbox, cache/replay (F6) | `src/armbench/llm`: `Provider` protocol with `TemplateProvider` (deterministic, no key), `OpenAICompatProvider` (`urllib`, key from `ARMBENCH_LLM_API_KEY`, unused until a key exists), `CachedProvider`/`ReplayProvider` (content-addressed disk cache), `BudgetedProvider` (token/USD ledger); `src/armbench/agents`: reproducible prompt, `LLMAgent` (B) with tokens/cost/latency/hash trace; `src/armbench/sandbox` + `src/armbench/guest`: AST whitelist, rlimited child interpreter, typed RPC to `robot`, call/sim/wall caps; host prefetch → replay inside the network-less containers; `scripts/f6_gate.py` → `reports/f6_agent_b.json`; ADR-007 |
-| Primitives (F4) | `src/armbench/primitives`: `Robot` with `observe()`, `detect()`, `move_to()`, `grasp()`, `release()`, `reset()`, `execute_skill()` (stub until F7); Pydantic `Pose`/`Observation`/`Detection`/`Result`; typed errors (`OutOfReach`, `Singularity`, `Collision`, `Timeout`, `NoObjectGrasped`, `CameraTimeout`); pre-flight IK/branch/singularity/table-clearance checks (ADR-005); `KinematicBackend` (no ROS) and `RosBackend` (`armbench_bringup`); `configs/primitives.yaml`; `scripts/primitives_eval.py` runs the F4 gate → `reports/f4_primitives.json` |
+| Skill library and agent B+S (F7) | `src/armbench/skills`: `Skill` (typed params, closed-vocabulary pre/post-conditions, origin, validation record, order-independent hash), `SkillLibrary` (dedup by signature, lexical retrieval, `library.json` + `FROZEN.json` manifest, read-only once frozen), proposer (B's completed dev programs → parametrised candidates), `Validator` (sandbox + conditions + task checker on seeds 20–39, ≥ 90 %), `SkillRunner` behind `Robot.execute_skill()` (nested sandbox, `SkillPreconditionFailed`/`SkillPostconditionFailed`/`SkillFailed`, inner calls accounted in the trace); agent `B+S` (frozen library required, `# Skills` prompt section, `trace.skills_used`); `armbench skills propose|validate|freeze|show`; frozen library in `skills/`; `scripts/f7_gate.py` → `reports/f7_skills.json`; ADR-008 |
+| Primitives (F4) | `src/armbench/primitives`: `Robot` with `observe()`, `detect()`, `move_to()`, `grasp()`, `release()`, `reset()`, `execute_skill()` (wired to the F7 library); Pydantic `Pose`/`Observation`/`Detection`/`Result`; typed errors (`OutOfReach`, `Singularity`, `Collision`, `Timeout`, `NoObjectGrasped`, `CameraTimeout`); pre-flight IK/branch/singularity/table-clearance checks (ADR-005); `KinematicBackend` (no ROS) and `RosBackend` (`armbench_bringup`); `configs/primitives.yaml`; `scripts/primitives_eval.py` runs the F4 gate → `reports/f4_primitives.json` |
 | Torque source (F2) | `armbench_bringup` nodes `energy_meter` (online Wh on `/armbench/energy`), `torque_probe` and `torque_compare` (Pinocchio inverse dynamics); `scripts/torque_source.py` runs critical gate 2 → `reports/f2_torque_source.json`, decision in ADR-004 |
 | Simulation (F1) | `ros_ws/src/armbench_description` (UR5e + parallel gripper xacro, tabletop world with fixed RGB-D camera), `ros_ws/src/armbench_bringup` (`sim.launch.py`, controllers, `sim_check` node) |
 | CI | `verify` (lint, types, tests, no ROS) and `sim-image` (build image, F0 boot gate, F1 self-check gate) |
@@ -33,7 +34,7 @@ value or a measurement stored under `reports/` with the script that produced it.
 Roadmap (one PR per phase, see `docs/plan.es.md` and `docs/PROJECT_STATE.md`):
 ~~F1 arm simulation~~ · ~~F2 torque source and energy model~~ · ~~F3 perception~~ ·
 ~~F4 primitives~~ · ~~F5 tasks, baseline and runner~~ · ~~F6 LLM agent and sandbox~~ ·
-F7 skill library · F8 energy-aware agent · F9 pre-registered evaluation ·
+~~F7 skill library~~ · F8 energy-aware agent · F9 pre-registered evaluation ·
 F10 publication.
 
 ## Quick start (host, no ROS)
@@ -440,6 +441,61 @@ call floods, malformed code, random mutations).
 
 > `TemplateProvider` exercises the pipeline, not a model: its success rate and Wh say nothing
 > about what an LLM would achieve. The numbers below are an infrastructure gate.
+## Skill library and agent B+S (F7)
+
+A *skill* is a validated program of agent B whose goal constants became typed parameters,
+with executable pre/post-conditions, its origin (run, task, seeds, program hash) and its
+validation record (`armbench.skills`, ADR-008). B+S is agent B plus a **frozen** library: the
+prompt gains a `# Skills` section with the top-3 skills retrieved by the task wording, and the
+program may call `robot.execute_skill("name", param=value, ...)`, which runs the skill body in a
+nested sandbox, checks the contract and raises `SkillPreconditionFailed` /
+`SkillPostconditionFailed` / `SkillFailed` (or the primitive error that stopped it).
+
+```bash
+# 1. candidates from agent B's completed dev programs (one per task, goal constants parametrised)
+uv run armbench skills propose --run runs/f6_live --out skills/candidates.json
+
+# 2. validate on the skill_validation seeds 20-39: sandbox + pre/post-conditions + task checker,
+#    accepted at >= 90 % (18/20); writes skills/library.json (unfrozen) and a per-seed report
+uv run armbench skills validate --candidates skills/candidates.json --out skills \
+    --report reports/f7_skill_validation.json
+
+# 3. freeze (D7): skills/FROZEN.json with the library hash; nothing can be added afterwards
+uv run armbench skills freeze --dir skills
+uv run armbench skills show --dir skills           # contracts, origin, validation, hash (--json)
+
+# 4. B vs B+S pilot — kinematic backend, then Gazebo (the bundle runs/<out>/llm/skills/ carries the
+#    frozen library into the --network none containers; an unfrozen or edited library is refused)
+rm -rf cache/llm      # live pilot: the prompts must really reach the provider
+uv run armbench run --task all --agent B   --backend fake --seeds dev --out runs/f7_fake_B
+uv run armbench run --task all --agent B+S --backend fake --seeds dev --out runs/f7_fake_BS
+uv run armbench run --task all --agent B+S --backend sim  --seeds dev --out runs/f7_live_BS
+uv run armbench run --task all --agent B   --backend sim  --seeds dev --out runs/f7_live_B
+uv run armbench report runs/f7_live_BS     # the llm block adds skills used per task and primitives/episode
+uv run python scripts/f7_gate.py --b runs/f7_live_B --bs runs/f7_live_BS \
+    --fake-b runs/f7_fake_B --fake-bs runs/f7_fake_BS      # → reports/f7_skills.json
+```
+
+**Library** (`skills/`): `library.json` (skills sorted by name) + `FROZEN.json` (SHA-256 of the
+library, per-skill hashes, timestamp). Deduplication is by signature (`name(param: kind, ...)`);
+a name reused with another signature is an error. `SkillLibrary.load(..., require_frozen=True)`
+recomputes the hash and refuses an unfrozen or edited library; `armbench run --agent B+S`,
+`skills validate` and `skills freeze` refuse to modify a frozen one — a new library is a new
+directory with a new hash, recorded in every `run.json` (`skills.sha256`).
+
+**Conditions** are a closed vocabulary (`not_holding`, `holding`, `tcp_above`, `cube_near`),
+not Python. Robot-state conditions are checked by `execute_skill` on the live robot; world
+conditions (`cube_near`) are checked by the validator and the task checker and reported as
+*deferred* inside an episode (the agent's robot has no ground truth). Fault-injection tests in
+`tests/unit/test_skills.py` show a body that places 5 cm off, or ends holding the cube, is
+rejected on every validation seed.
+
+**Accounting**: one `execute_skill` is one call for the agent and several primitives for the
+arm; the sandbox run keeps the inner calls, so `trace.n_primitives` counts what the arm did and
+`trace.skills_used` the skills that completed. The report's `llm` block adds `skills_used` and
+`skill_episode_rate`. Retrieval is deterministic word overlap (no embeddings); `TemplateProvider`
+answers a B+S prompt with one skill call when an offered skill matches the task kind.
+
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 
 ```bash
@@ -490,9 +546,10 @@ requires an ADR.
 ```
 docker/            Dockerfile, entrypoint
 ros_ws/src/        ROS 2 packages: armbench_description (xacro, worlds), armbench_bringup (launch, controllers, sim_check)
-src/armbench/      pure-Python package (energy, perception, primitives, tasks, agents, runner), testable without ROS
+src/armbench/      pure-Python package (energy, perception, primitives, tasks, agents, llm, sandbox, skills, runner), testable without ROS
 configs/           seeds.yaml, ur5e_kinematics.yaml, scene.yaml, energy.yaml, perception.yaml, primitives.yaml
 scripts/           check scripts that write reports/*.json
+skills/            the frozen skill library (library.json + FROZEN.json, D7) used by agent B+S
 tests/unit/        tests without ROS; tests marked `sim` need the image
 reports/           committed JSON metrics per phase (the DoD evidence)
 docs/              plan, ADRs, PROJECT_STATE.md

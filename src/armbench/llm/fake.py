@@ -156,6 +156,82 @@ def template_program(task_text: str) -> str | None:
     return None
 
 
+SKILL_CALL_RE: Final = re.compile(
+    r'^- robot\.execute_skill\("(?P<name>\w+)"(?P<params>(?:, \w+=<\w+>)*)\)$'
+)
+"""A skill line of the ``# Skills`` section agent B+S receives (see ``agents.prompt``)."""
+
+
+def offered_skills(task_text: str) -> list[tuple[str, tuple[str, ...], str]]:
+    """``(name, parameter names, description line)`` for every skill the prompt offers."""
+    lines = task_text.splitlines()
+    out: list[tuple[str, tuple[str, ...], str]] = []
+    for i, line in enumerate(lines):
+        m = SKILL_CALL_RE.match(line)
+        if m is None:
+            continue
+        names = tuple(p.split("=")[0] for p in m.group("params").split(", ") if p)
+        desc = lines[i + 1].strip() if i + 1 < len(lines) else ""
+        out.append((m.group("name"), names, desc))
+    return out
+
+
+def _pick_skill(
+    offered: list[tuple[str, tuple[str, ...], str]], wanted: set[str], wall: bool
+) -> str | None:
+    fits = [(n, d) for n, params, d in offered if set(params) == wanted]
+    if not fits:
+        return None
+    walls = [n for n, d in fits if "wall" in d.lower()]
+    plain = [n for n, d in fits if "wall" not in d.lower()]
+    pref = (walls or plain) if wall else (plain or walls)
+    return pref[0]
+
+
+def template_skill_program(task_text: str) -> str | None:
+    """Agent B+S's deterministic answer: one ``execute_skill`` call when an offered skill's
+    parameters match the task kind, else ``None`` (the caller falls back to the plain program).
+    The task constants are passed through verbatim."""
+    offered = offered_skills(task_text)
+    if not offered:
+        return None
+    task_text = task_text.rsplit("# Task", 1)[-1]
+    wall = "wall" in task_text
+    m = STACK_RE.search(task_text)
+    if m:
+        name = _pick_skill(offered, {"top", "base"}, wall)
+        return (
+            None
+            if name is None
+            else (
+                f'robot.execute_skill("{name}", top="{m.group("top")}", base="{m.group("base")}")\n'
+            )
+        )
+    if "Sort the cubes" in task_text:
+        bins = list(SORT_RE.finditer(task_text))
+        wanted = {f"{k}_{i}" for i in range(1, len(bins) + 1) for k in ("color", "x", "y")}
+        name = _pick_skill(offered, wanted, wall)
+        if name is None or not bins:
+            return None
+        args = ", ".join(
+            f'color_{i}="{b.group("color")}", x_{i}={b.group("x")}, y_{i}={b.group("y")}'
+            for i, b in enumerate(bins, start=1)
+        )
+        return f'robot.execute_skill("{name}", {args})\n'
+    m = PLACE_RE.search(task_text)
+    if m:
+        name = _pick_skill(offered, {"color", "x", "y"}, wall)
+        return (
+            None
+            if name is None
+            else (
+                f'robot.execute_skill("{name}", color="{m.group("color")}", '
+                f"x={m.group('x')}, y={m.group('y')})\n"
+            )
+        )
+    return None
+
+
 def _tokens(text: str) -> int:
     return max(1, round(len(text) / CHARS_PER_TOKEN))
 
@@ -166,7 +242,8 @@ class TemplateProvider:
 
     def complete(self, request: LLMRequest) -> LLMResponse:
         t0 = time.monotonic()
-        program = template_program(request.last_user())
+        task_text = request.last_user()
+        program = template_skill_program(task_text) or template_program(task_text)
         text = "I do not understand this task." if program is None else f"```python\n{program}```\n"
         return LLMResponse(
             text=text,

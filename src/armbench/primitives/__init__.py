@@ -9,7 +9,10 @@ from armbench.primitives.errors import (
     OutOfReach,
     PrimitiveError,
     Singularity,
+    SkillFailed,
     SkillNotAvailable,
+    SkillPostconditionFailed,
+    SkillPreconditionFailed,
     Timeout,
 )
 from armbench.primitives.fake import KinematicBackend
@@ -18,7 +21,7 @@ from armbench.primitives.params import (
     PrimitiveParams,
     load_primitive_params,
 )
-from armbench.primitives.robot import Robot
+from armbench.primitives.robot import Robot, SkillExecutor
 from armbench.primitives.types import (
     GripperResult,
     MotionPlan,
@@ -26,6 +29,7 @@ from armbench.primitives.types import (
     Observation,
     Pose,
     Result,
+    SkillResult,
 )
 
 __all__ = [
@@ -49,7 +53,12 @@ __all__ = [
     "Result",
     "Robot",
     "Singularity",
+    "SkillExecutor",
+    "SkillFailed",
     "SkillNotAvailable",
+    "SkillPostconditionFailed",
+    "SkillPreconditionFailed",
+    "SkillResult",
     "Timeout",
     "load_primitive_params",
 ]

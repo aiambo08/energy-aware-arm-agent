@@ -61,9 +61,27 @@ class CameraTimeout(PrimitiveError):
 
 
 class SkillNotAvailable(PrimitiveError):
-    """``execute_skill()`` was called for a skill that is not in the library (F7 fills it)."""
+    """``execute_skill()`` named a skill that is not in the library the robot was given."""
 
     code = "skill_not_available"
+
+
+class SkillPreconditionFailed(PrimitiveError):
+    """A skill's precondition did not hold when ``execute_skill()`` was called; nothing moved."""
+
+    code = "skill_precondition_failed"
+
+
+class SkillPostconditionFailed(PrimitiveError):
+    """The skill body ran to completion but a postcondition does not hold afterwards."""
+
+    code = "skill_postcondition_failed"
+
+
+class SkillFailed(PrimitiveError):
+    """The skill body stopped before completing (sandbox limit, exception in the body)."""
+
+    code = "skill_failed"
 
 
 ERRORS: tuple[type[PrimitiveError], ...] = (
@@ -74,5 +92,8 @@ ERRORS: tuple[type[PrimitiveError], ...] = (
     NoObjectGrasped,
     CameraTimeout,
     SkillNotAvailable,
+    SkillPreconditionFailed,
+    SkillPostconditionFailed,
+    SkillFailed,
 )
 """All concrete error classes, for agents' prompts and for the log schema."""

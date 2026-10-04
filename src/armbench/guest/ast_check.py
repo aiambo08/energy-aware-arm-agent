@@ -64,6 +64,9 @@ ALLOWED_EXCEPTIONS: Final[tuple[str, ...]] = (
     "NoObjectGrasped",
     "CameraTimeout",
     "SkillNotAvailable",
+    "SkillPreconditionFailed",
+    "SkillPostconditionFailed",
+    "SkillFailed",
 )
 ALLOWED_GLOBALS: Final[tuple[str, ...]] = ("robot", "Pose", "math")
 ALLOWED_NAMES: Final[frozenset[str]] = frozenset(

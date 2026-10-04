@@ -16,7 +16,9 @@ from pydantic import BaseModel, ConfigDict, Field
 from armbench.perception import Detection
 
 Vec6 = tuple[float, float, float, float, float, float]
-Primitive = Literal["move_to", "grasp", "release", "reset", "observe", "detect", "home"]
+Primitive = Literal[
+    "move_to", "grasp", "release", "reset", "observe", "detect", "execute_skill", "home"
+]
 
 
 class Pose(BaseModel):
@@ -104,3 +106,15 @@ class Observation(BaseModel):
     gripper_opening_m: float = Field(ge=0)
     holding: bool
     detections: tuple[Detection, ...]
+
+
+class SkillResult(Result):
+    """``execute_skill()`` completed: the body ran and every checked postcondition held."""
+
+    skill: str
+    skill_sha256: str
+    calls: tuple[str, ...]
+    """Primitives the skill body invoked, in order (they count towards the episode's calls)."""
+    postconditions_checked: tuple[str, ...] = ()
+    postconditions_deferred: tuple[str, ...] = ()
+    """Conditions that need the world state and are only verified at validation time."""

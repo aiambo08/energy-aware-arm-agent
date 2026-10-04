@@ -1,0 +1,3115 @@
+{
+ "seeds": [
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39
+ ],
+ "min_pass_rate": 0.9,
+ "reports": [
+  {
+   "skill": "pick_place_cube",
+   "signature": "pick_place_cube(color: color, x: float, y: float)",
+   "sha256": "2b21f43ce772a4055a5250b522a35feb367d1899129f31334365f56a9bdafa76",
+   "task": "pick_place@1",
+   "split": "skill_validation",
+   "results": [
+    {
+     "seed": 20,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 21,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 22,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 23,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.497000303866258,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 24,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 25,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 26,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 27,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 28,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.005578448581465,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 29,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.005788877731941,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 30,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 31,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 32,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 33,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 34,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 35,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.364484012509933,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 36,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 37,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 38,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    },
+    {
+     "seed": 39,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal"
+    }
+   ],
+   "n_ok": 20,
+   "min_pass_rate": 0.9,
+   "accepted": true
+  },
+  {
+   "skill": "stack_cube",
+   "signature": "stack_cube(top: color, base: color)",
+   "sha256": "cef5ef4a24ed23131be2aa5b09331afe94776363e2bd062db3e113a55805aae2",
+   "task": "stack2@1",
+   "split": "skill_validation",
+   "results": [
+    {
+     "seed": 20,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.055914834618724,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 21,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 22,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.067609487867642,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 23,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.429914040055058,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 24,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 25,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.290572960868635,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 26,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 27,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 28,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.53001588067338,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 29,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 30,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 31,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.075124349610817,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 32,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.261098954628646,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 33,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 34,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.247487421035598,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 35,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.226083187572513,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 36,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 37,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.052184468925478,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 38,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    },
+    {
+     "seed": 39,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.330121424157828,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "stacked"
+    }
+   ],
+   "n_ok": 20,
+   "min_pass_rate": 0.9,
+   "accepted": true
+  },
+  {
+   "skill": "sort_cubes",
+   "signature": "sort_cubes(color_1: color, x_1: float, y_1: float, color_2: color, x_2: float, y_2: float, color_3: color, x_3: float, y_3: float)",
+   "sha256": "85e6f4f2dbd76a8f2c156775c7b8b97de11f68c0d7743c50571b7e85d515aef6",
+   "task": "sort3@1",
+   "split": "skill_validation",
+   "results": [
+    {
+     "seed": 20,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.264328532485855,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 21,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.226577355869004,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 22,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.371585511244874,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 23,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.499071203452274,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 24,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.079190018892746,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 25,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.09986447728458,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 26,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.001080697632794,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 27,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.04235574011605,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 28,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.081330858285103,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 29,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.113045930220068,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 30,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 31,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.937993633658692,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 32,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.251764410298478,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 33,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.11120283698531,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 34,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.24072974757621,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 35,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.848461219484648,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 36,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 37,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.071102953213646,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 38,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.0,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    },
+    {
+     "seed": 39,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 25,
+     "sim_s": 15.213343816455012,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "all cubes in their bins"
+    }
+   ],
+   "n_ok": 20,
+   "min_pass_rate": 0.9,
+   "accepted": true
+  },
+  {
+   "skill": "place_cube_over_wall",
+   "signature": "place_cube_over_wall(color: color, x: float, y: float)",
+   "sha256": "8bdc2c0d473ebc55d2c244ea4f8bd74caf8eee32f5299715c3d5edbccacea074",
+   "task": "place_obstacle@1",
+   "split": "skill_validation",
+   "results": [
+    {
+     "seed": 20,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.213372657211034,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 21,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.52138482796687,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 22,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.278356739354921,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 23,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.573062022245576,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 24,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.156858992817922,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 25,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.412955816236494,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 26,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.111343095769652,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 27,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.314916506362809,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 28,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.398500737938174,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 29,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.473285077539294,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 30,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.451557424172251,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 31,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.366448826859439,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 32,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.238941036395068,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 33,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.507160148282903,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 34,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.366860427889706,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 35,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 6.1464667772242265,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 36,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.137926937612408,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 37,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.540294774936721,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 38,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.392298926435697,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    },
+    {
+     "seed": 39,
+     "ok": true,
+     "reason": "",
+     "outcome": "completed",
+     "n_calls": 9,
+     "sim_s": 5.283080005553204,
+     "checks": [
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "not holding",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": true
+      },
+      {
+       "condition": "cube color within 2 cm of (x, y)",
+       "ok": true,
+       "reason": "",
+       "deferred": false
+      }
+     ],
+     "verdict": "target at goal, wall untouched"
+    }
+   ],
+   "n_ok": 20,
+   "min_pass_rate": 0.9,
+   "accepted": true
+  }
+ ]
+}

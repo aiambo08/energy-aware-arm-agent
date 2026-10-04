@@ -132,6 +132,10 @@ class LLMStats(BaseModel):
     program_outcomes: dict[str, int]
     isolation: dict[str, int]
     """How many episodes ran under each sandbox layer set (e.g. without ``unshare_net``)."""
+    skills_used: dict[str, int] = {}
+    """Episodes in which each library skill completed (agent B+S; empty for B)."""
+    skill_episode_rate: float = 0.0
+    """Share of episodes that completed at least one skill call."""
 
 
 class TaskSummary(BaseModel):
@@ -242,6 +246,8 @@ def _llm_stats(records: list[EpisodeRecord]) -> LLMStats | None:
         attempts=Dist.of([float(t.attempts) for t in traces]),
         program_outcomes=dict(sorted(Counter(t.program_outcome or "?" for t in traces).items())),
         isolation=dict(sorted(Counter(",".join(t.sandbox_isolation) for t in traces).items())),
+        skills_used=dict(sorted(Counter(n for t in traces for n in t.skills_used).items())),
+        skill_episode_rate=sum(1 for t in traces if t.skills_used) / n,
     )
 
 
@@ -366,6 +372,12 @@ def table(report: Report) -> str:
                 f"cost {t.llm.cost_usd:.4f} USD ({t.llm.cost_per_400_episodes_usd:.2f}/400 ep), "
                 f"cached {t.llm.cached_rate:.0%}, latency p95 {lat}, programs: {outcomes}"
             )
+            if t.llm.skills_used:
+                used = ", ".join(f"{k}={v}" for k, v in t.llm.skills_used.items())
+                lines.append(
+                    f"{'':18s} skills: {used} ({t.llm.skill_episode_rate:.0%} of episodes); "
+                    f"primitives/ep med {t.n_primitives.median:.0f}"
+                )
     lines.append("")
     for name, ok in report.checks.items():
         lines.append(f"[{'PASS' if ok else 'FAIL'}] {name}")

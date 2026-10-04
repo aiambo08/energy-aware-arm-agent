@@ -94,6 +94,20 @@ visiting observe poses until every required colour is complete (a colour partial
 pose keeps its best detection rather than failing). The flag is part of the primitive
 contract the LLM agents will see in F6, so they can make the same decision.
 
+### The grasp yaw keeps the open fingers clear of neighbours
+
+A square cube has two equivalent top-down grasps, `yaw` and `yaw -/+ pi/2`. The first full
+dev_extended run (seeds 400–449) lost two episodes, both of scene 443: a second cube sat 93 mm
+from the target almost exactly along the finger axis of the detected yaw, and the open gripper
+(outer finger faces 54.5 mm from the TCP, 25 mm wide; ADR-003) pushed it 45 mm aside on the
+way down. `place_obstacle@1` then failed the "no other cube moved" check and `sort3@1` closed on
+empty air at the stale detection of that cube. `grasp_yaw()` scores both grasps by the distance
+from the nearest other detected cube to the open-finger segment (`FINGER_SWEEP_M`, saturated at
+`CLEAR_ENOUGH_M` so far cubes never decide) and switches only when the alternative gains more
+than 1 cm; distractors count because `detect()` returns every colour. Re-detecting after each
+pick was rejected for baseline A: it adds observation moves (and Wh) to every episode to cover
+a case the yaw choice removes at no cost.
+
 ### One episode = one JSONL line, schema version 1
 
 `armbench.runner.EpisodeRecord` (`schema_version: 1`) records task/version, agent, seed,

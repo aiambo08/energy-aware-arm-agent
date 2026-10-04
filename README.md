@@ -352,7 +352,29 @@ variant and η, Wh CV across repeats of the same seed, infra rate, sim/wall dist
 the F5 thresholds (success ≥ 95 %, infra < 1 %, wall < 120 s, energy table complete, repeat
 CV < 3 %).
 
-F5_MEASURED_PLACEHOLDER
+Measured (`reports/f5_baseline.json`, 250 Gazebo episodes, image `armbench-sim:dev`, 8 vCPU host,
+one fresh container per 25 episodes, `--network none`):
+
+| task / split | n | success (Wilson 95 %) | Wh A η=0.70 median | Wh B η=0.70 | Wh A η=0.60 / 0.80 | sim s median | wall s p95 |
+|---|---:|---|---:|---:|---|---:|---:|
+| `pick_place@1` dev (+10 repeats of seed 0) | 20 | 100 % [83.9, 100] | 0.214 | 0.228 | 0.216 / 0.213 | 6.76 | 13.4 |
+| `pick_place@1` dev_extended 400–449 | 50 | 100 % [92.9, 100] | 0.210 | 0.225 | 0.212 / 0.209 | 6.59 | 15.2 |
+| `stack2@1` dev | 10 | 100 % [72.2, 100] | 0.226 | 0.241 | 0.228 / 0.224 | 7.18 | 14.3 |
+| `stack2@1` dev_extended | 50 | 100 % [92.9, 100] | 0.216 | 0.234 | 0.218 / 0.214 | 6.73 | 16.0 |
+| `sort3@1` dev | 10 | 100 % [72.2, 100] | 0.584 | 0.625 | 0.590 / 0.580 | 18.3 | 24.3 |
+| `sort3@1` dev_extended | 50 | 100 % [92.9, 100] | 0.581 | 0.624 | 0.588 / 0.577 | 18.2 | 26.6 |
+| `place_obstacle@1` dev | 10 | 100 % [72.2, 100] | 0.228 | 0.247 | 0.231 / 0.226 | 7.17 | 12.9 |
+| `place_obstacle@1` dev_extended | 50 | 100 % [92.9, 100] | 0.224 | 0.241 | 0.226 / 0.222 | 7.02 | 15.3 |
+
+Energy table complete in 250/250 episodes, 0 infra failures, 0 duplicates, Wh CV across the 10
+repeats of `pick_place@1` seed 0: 0.36 % (A) — the simulation is effectively deterministic once
+the gripper controller is up (ADR-006). Baseline A needed one extra observation move in 102/250
+episodes (the forearm shadows ~30 % of the table from the ready pose). The ranking of the
+variants is the same everywhere: B > A by 6–9 % and η=0.60 / 0.80 shift Wh by about ±1 % only,
+because the base power `P0·T` dominates these short episodes. An earlier run of the same 250
+episodes lost `sort3@1` and `place_obstacle@1` on seed 443, where the open gripper swept a
+neighbouring cube on the way down; baseline A now picks the equivalent grasp yaw that keeps the
+fingers clear (ADR-006) and that run is not the one reported here.
 
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 

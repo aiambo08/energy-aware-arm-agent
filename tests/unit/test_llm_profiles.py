@@ -325,3 +325,20 @@ def test_cli_check_and_models_without_key_fail_cleanly(monkeypatch: pytest.Monke
     assert res.exit_code == 1 and "ARMBENCH_NEBIUS_API_KEY" in res.output
     res = runner.invoke(app, ["llm", "models", "--llm-config", str(NEBIUS)])
     assert res.exit_code == 1 and "ARMBENCH_NEBIUS_API_KEY" in res.output
+
+
+@pytest.mark.parametrize(
+    ("path", "suffix"), [(GEMINI, "/models"), (NEBIUS, "/models?verbose=true")]
+)
+def test_models_url_per_profile(path: Path, suffix: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: list[str] = []
+
+    def fake(request: urllib.request.Request, timeout: float) -> io.BytesIO:
+        seen.append(request.full_url)
+        return io.BytesIO(b'{"data": []}')
+
+    spec = load_llm_params(path).openai
+    monkeypatch.setenv(spec.api_key_env, "k")
+    monkeypatch.setattr(urllib.request, "urlopen", fake)
+    assert OpenAICompatProvider(spec).list_models() == b'{"data": []}'
+    assert seen == [spec.base_url.rstrip("/") + suffix]

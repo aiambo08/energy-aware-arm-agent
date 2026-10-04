@@ -22,6 +22,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
 MAX_CUBES = 6
+MODEL_NAMES = (*[f"cube_{i}" for i in range(MAX_CUBES)], "obstacle")
 ARM_CONTROLLERS = ["joint_state_broadcaster", "joint_trajectory_controller", "gripper_controller"]
 ENERGY_CONTROLLERS = ["energy_state_broadcaster"]
 
@@ -107,8 +108,8 @@ def launch_setup(context):  # noqa: ANN001, ANN201
             # Ground-truth cube poses (gz PosePublisher on each cube model; absent cubes are
             # simply never published).
             *[
-                f"/model/cube_{i}/pose@geometry_msgs/msg/PoseStamped[gz.msgs.Pose"
-                for i in range(MAX_CUBES)
+                f"/model/{name}/pose@geometry_msgs/msg/PoseStamped[gz.msgs.Pose"
+                for name in MODEL_NAMES
             ],
         ],
         parameters=[{"use_sim_time": True}],

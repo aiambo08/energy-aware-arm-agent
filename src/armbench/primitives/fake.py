@@ -22,6 +22,8 @@ from armbench.scene import Cube
 GRASP_XY_TOL_M = 0.012
 """Pad centre must be within this of the cube centre (in the plane) to pick it up."""
 GRASP_Z_TOL_M = 0.02
+SUPPORT_OVERLAP = 0.6
+"""A dropped cube rests on another when their centres overlap by this fraction of a cube."""
 """Pad centre must be within this of the cube centre height to pick it up."""
 
 
@@ -132,8 +134,16 @@ class KinematicBackend:
         self._replace(c.model_copy(update={"x": float(p[0]), "y": float(p[1]), "z": float(p[2])}))
 
     def _drop(self) -> None:
+        """Let the held cube fall straight down onto the table or onto a cube under it."""
         if self.held is None:
             return
         c = self.cube(self.held)
-        self._replace(c.model_copy(update={"z": c.size / 2.0}))
+        support = 0.0
+        for o in self.cubes:
+            if o.name == c.name:
+                continue
+            overlap = (c.size + o.size) / 2.0 * SUPPORT_OVERLAP
+            if abs(o.x - c.x) < overlap and abs(o.y - c.y) < overlap:
+                support = max(support, o.z + o.size / 2.0)
+        self._replace(c.model_copy(update={"z": support + c.size / 2.0}))
         self.held = None

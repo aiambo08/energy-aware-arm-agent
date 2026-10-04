@@ -28,6 +28,7 @@ setup(
             "energy_meter = armbench_bringup.energy_meter:main",
             "scene_capture = armbench_bringup.scene_capture:main",
             "primitives_check = armbench_bringup.primitives_check:main",
+            "episode_runner = armbench_bringup.episode_runner:main",
         ],
     },
 )

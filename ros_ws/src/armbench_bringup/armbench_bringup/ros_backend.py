@@ -35,11 +35,13 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 from armbench.kinematics import JOINT_NAMES, UR5eModel
 from armbench.primitives import JointSnapshot, MotionOutcome, PrimitiveParams
-from armbench.scene import Cube, Scene, cube_to_sdf_model
+from armbench.scene import Box, Cube, Scene, box_to_sdf_model, cube_to_box
 from armbench.scene.generator import SceneConfig
 
 FINGER_JOINTS = ("left_finger_joint", "right_finger_joint")
-MAX_CUBES = 6  # /model/cube_{0..5}/pose are bridged in sim.launch.py
+MAX_CUBES = 6
+MODEL_NAMES = (*[f"cube_{i}" for i in range(MAX_CUBES)], "obstacle")
+"""Models whose ``/model/<name>/pose`` is bridged in sim.launch.py."""
 GZ_TIMEOUT_MS = 5000
 GZ_ATTEMPTS = 3  # the gz CLI reply is lost now and then while the world steps
 CLI_TIMEOUT_S = 90.0
@@ -109,8 +111,7 @@ class RosBackend(Node):
         self.create_subscription(
             Image, "/camera/depth_image", self._on_depth, qos_profile_sensor_data
         )
-        for i in range(MAX_CUBES):
-            name = f"cube_{i}"
+        for name in MODEL_NAMES:
             self.create_subscription(
                 PoseStamped,
                 f"/model/{name}/pose",
@@ -312,20 +313,19 @@ class GzScene:
         self.log.error(f"{what} failed after {GZ_ATTEMPTS} attempts")
         return False
 
-    def spawn(self, cube: Cube) -> bool:
-        sdf_path = self.sdf_dir / f"{cube.name}.sdf"
+    def spawn(self, model: Cube | Box) -> bool:
+        box = cube_to_box(model, self.config) if isinstance(model, Cube) else model
+        sdf_path = self.sdf_dir / f"{box.name}.sdf"
         sdf_path.write_text(
-            '<?xml version="1.0"?><sdf version="1.8">'
-            + cube_to_sdf_model(cube, self.config)
-            + "</sdf>"
+            '<?xml version="1.0"?><sdf version="1.8">' + box_to_sdf_model(box) + "</sdf>"
         )
         cmd = [
             "gz", "service", "-s", f"/world/{self.world}/create",
             "--reqtype", "gz.msgs.EntityFactory", "--reptype", "gz.msgs.Boolean",
             "--timeout", str(GZ_TIMEOUT_MS),
-            "--req", f'sdf_filename: "{sdf_path}" name: "{cube.name}"',
+            "--req", f'sdf_filename: "{sdf_path}" name: "{box.name}"',
         ]  # fmt: skip
-        return self._gz(cmd, f"spawn {cube.name}", lambda: cube.name in self.backend.s.poses)
+        return self._gz(cmd, f"spawn {box.name}", lambda: box.name in self.backend.s.poses)
 
     def remove(self, name: str) -> bool:
         cmd = [
@@ -340,30 +340,34 @@ class GzScene:
 
         return self._gz(cmd, f"remove {name}", gone)
 
-    def place(self, scene: Scene) -> str | None:
-        """Clear leftovers, spawn every cube; returns an error tag or None."""
+    def place(self, scene: Scene, obstacles: Sequence[Box] = ()) -> str | None:
+        """Clear leftovers, spawn every cube and obstacle; returns an error tag or None."""
         self.leftover = {name for name in self.leftover if not self.remove(name)}
         if self.leftover:
             return f"leftover: {sorted(self.leftover)}"
-        for c in scene.cubes:
-            self.backend.s.poses.pop(c.name, None)
-        if not all(self.spawn(c) for c in scene.cubes):
+        models: list[Cube | Box] = [*scene.cubes, *obstacles]
+        for m in models:
+            self.backend.s.poses.pop(m.name, None)
+        if not all(self.spawn(m) for m in models):
             return "spawn"
         return None
 
-    def settled(self, scene: Scene, t_after: float, tol_m: float = 0.005) -> bool:
-        for cube in scene.cubes:
-            p = self.backend.s.poses.get(cube.name)
+    def settled(
+        self, scene: Scene, t_after: float, obstacles: Sequence[Box] = (), tol_m: float = 0.005
+    ) -> bool:
+        for m in (*scene.cubes, *obstacles):
+            p = self.backend.s.poses.get(m.name)
             if p is None or p.t < t_after:
                 return False
-            if max(abs(p.x - cube.x), abs(p.y - cube.y), abs(p.z - cube.z)) > tol_m:
+            if max(abs(p.x - m.x), abs(p.y - m.y), abs(p.z - m.z)) > tol_m:
                 return False
         return True
 
-    def clear(self, scene: Scene) -> bool:
-        removed = [self.remove(c.name) for c in scene.cubes]
-        self.leftover |= {c.name for c, ok in zip(scene.cubes, removed, strict=True) if not ok}
+    def clear(self, scene: Scene, obstacles: Sequence[Box] = ()) -> bool:
+        names = [m.name for m in (*scene.cubes, *obstacles)]
+        removed = [self.remove(n) for n in names]
+        self.leftover |= {n for n, ok in zip(names, removed, strict=True) if not ok}
         self.backend.spin_sim(0.2)
-        for c in scene.cubes:
-            self.backend.s.poses.pop(c.name, None)
+        for n in names:
+            self.backend.s.poses.pop(n, None)
         return all(removed)

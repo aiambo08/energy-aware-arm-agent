@@ -35,21 +35,28 @@ PICKS_PER_PRIMITIVES: Final = 8
 
 
 def merge(found: dict[str, Detection], new: Iterable[Detection]) -> None:
-    """Keep one detection per colour (first seen wins; later ones must be the same cube)."""
+    """Keep one detection per colour: the first complete one wins; a partial one (top face
+    occluded by the arm or cut by the frame) is a placeholder until a later view completes it."""
     for d in new:
-        if d.color not in found:
+        have = found.get(d.color)
+        if have is None or (d.complete and not have.complete):
             found[d.color] = d
 
 
+def complete(found: dict[str, Detection]) -> set[str]:
+    return {c for c, d in found.items() if d.complete}
+
+
 def detect_all(robot: Robot, colors: Iterable[str]) -> tuple[dict[str, Detection], int]:
-    """Detections for every colour in ``colors``, moving to observe poses only when the view
-    from the current pose misses some. Returns the detections and the moves it took."""
+    """Detections for every colour in ``colors``, moving to observe poses only while the views so
+    far miss some colour or see it only partially. Returns the detections and the moves it took;
+    a colour that is partial from every pose keeps its best (last complete-or-first) detection."""
     wanted = set(colors)
     found: dict[str, Detection] = {}
     merge(found, robot.detect())
     moves = 0
     for pose in OBSERVE_POSES:
-        if wanted <= found.keys():
+        if wanted <= complete(found):
             break
         robot.move_to(pose)
         moves += 1

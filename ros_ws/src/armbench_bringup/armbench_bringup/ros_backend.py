@@ -46,6 +46,8 @@ GZ_TIMEOUT_MS = 5000
 GZ_ATTEMPTS = 3  # the gz CLI reply is lost now and then while the world steps
 CLI_TIMEOUT_S = 90.0
 SPIN_S = 0.01
+GRIPPER_MATCH_TIMEOUT_S = 5.0
+"""Wall-clock wait for the gripper controller to subscribe before an effort command."""
 
 
 def stamp_s(sec: int, nanosec: int) -> float:
@@ -198,14 +200,24 @@ class RosBackend(Node):
             rclpy.spin_once(self, timeout_sec=SPIN_S)
 
     def ready(self, timeout_s: float) -> bool:
-        """Clock, joint states, camera and trajectory action server all up."""
+        """Clock, joint states, camera, trajectory action server and gripper controller all up."""
         if not self.wait_until(
             lambda: not math.isnan(self.s.clock) and self.s.js is not None, timeout_s
         ):
             return False
         if not self.jtc.wait_for_server(timeout_sec=timeout_s):
             return False
+        if not self.gripper_listening(timeout_s):
+            return False
         return self.frame(timeout_s) is not None
+
+    def gripper_listening(self, timeout_s: float) -> bool:
+        """True once the gripper controller has subscribed to the effort command topic.
+
+        Commands published before the subscription matches are lost; the first ``release()``
+        after boot used to race the controller spawner and leave a finger wherever gravity
+        put it at the spawn configuration (one pad closed on the centre line)."""
+        return self.wait_until(lambda: self.gripper_pub.get_subscription_count() > 0, timeout_s)
 
     # -- Backend protocol ------------------------------------------------------------------
     def sim_time(self) -> float:
@@ -253,6 +265,7 @@ class RosBackend(Node):
     def gripper(self, effort_n: float, settle_s: float) -> None:
         msg = Float64MultiArray()
         msg.data = [float(effort_n), float(effort_n)]
+        self.gripper_listening(GRIPPER_MATCH_TIMEOUT_S)
         end = self.s.clock + settle_s
         guard = time.time() + 4.0 * settle_s + 5.0
         while self.s.clock < end and time.time() < guard:

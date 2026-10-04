@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass
 from itertools import pairwise
 
 import numpy as np
@@ -11,8 +12,9 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from armbench.agents import ScriptedAgent, detect_all, get_agent
-from armbench.agents.scripted import OBSERVE_POSES
-from armbench.perception import Camera, load_perception_params
+from armbench.agents.scripted import OBSERVE_POSES, merge
+from armbench.perception import Camera, Detection, load_perception_params
+from armbench.perception.synthetic import ARM_RGB
 from armbench.primitives import KinematicBackend, Robot, load_primitive_params
 from armbench.primitives.errors import CameraTimeout
 from armbench.primitives.params import PrimitiveParams
@@ -328,3 +330,74 @@ def test_any_seed_yields_a_consistent_instance(seed: int) -> None:
             inst.cube(color)
         if inst.obstacles:
             assert isinstance(inst.obstacles[0], Box)
+
+
+# -- partial detections --------------------------------------------------------------------------
+
+
+def _det(color: str, x: float, *, complete: bool) -> Detection:
+    return Detection(
+        color=color,
+        position=(x, 0.0, 0.0225),
+        top_center=(x, 0.0, 0.045),
+        yaw_rad=0.0,
+        pixel=(320.0, 240.0),
+        bbox=(300, 220, 40, 40),
+        area_px=700 if complete else 150,
+        top_face_fraction=1.0 if complete else 0.2,
+        complete=complete,
+        depth_m=0.955,
+    )
+
+
+def test_merge_prefers_complete_detections_and_keeps_the_first_complete_one() -> None:
+    found: dict[str, Detection] = {}
+    merge(found, [_det("red", -0.30, complete=False)])
+    assert [d.complete for d in found.values()] == [False]
+    merge(found, [_det("red", -0.31, complete=True), _det("blue", -0.5, complete=True)])
+    assert [(d.complete, d.position[0]) for d in found.values()] == [(True, -0.31), (True, -0.5)]
+    merge(found, [_det("red", -0.32, complete=True), _det("blue", -0.6, complete=False)])
+    assert [(d.complete, d.position[0]) for d in found.values()] == [(True, -0.31), (True, -0.5)]
+
+
+@dataclass
+class _ArmShadowBackend(KinematicBackend):
+    """The first frame has a dark forearm over most of ``shadowed`` cube's top face."""
+
+    shadowed: str = ""
+    shadow_frames: int = 1
+
+    def frame(self, timeout_s: float) -> tuple[np.ndarray, np.ndarray] | None:
+        out = super().frame(timeout_s)
+        if out is None or self.shadow_frames <= 0:
+            return out
+        self.shadow_frames -= 1
+        rgb, depth = out
+        cube = next(c for c in self.cubes if c.name == self.shadowed)
+        px, _ = self.camera.project_base(np.array([[cube.x, cube.y, cube.size]]))
+        ui, vi = round(float(px[0, 0])), round(float(px[0, 1]))
+        rgb[vi - 40 : vi + 40, ui - 8 : ui + 40] = ARM_RGB
+        depth[vi - 40 : vi + 40, ui - 8 : ui + 40] = 0.6
+        return rgb, depth
+
+
+def test_detect_all_moves_on_when_the_first_view_is_partial(
+    config: SceneConfig, params: PrimitiveParams, camera: Camera
+) -> None:
+    inst = get_task("pick_place@1").instance(418, config)
+    assert isinstance(inst.goal, PlaceGoal)
+    target = inst.cube(inst.goal.target_color)
+    backend = _ArmShadowBackend(params, camera, cubes=list(inst.scene.cubes), shadowed=target.name)
+    robot = Robot(backend, params=params)
+    robot.reset()
+    dets, moves = detect_all(robot, inst.required_colors())
+    assert moves >= 1
+    d = dets[target.color]
+    assert d.complete
+    assert math.hypot(d.position[0] - target.x, d.position[1] - target.y) < 0.003
+
+    plain = KinematicBackend(params, camera, cubes=list(inst.scene.cubes))
+    robot = Robot(plain, params=params)
+    robot.reset()
+    _, moves0 = detect_all(robot, inst.required_colors())
+    assert moves0 == 0

@@ -42,6 +42,13 @@ class Detection(BaseModel):
     pixel: tuple[float, float] = Field(description="top-face centroid (u, v)")
     bbox: tuple[int, int, int, int] = Field(description="component bbox (x, y, w, h)")
     area_px: int = Field(gt=0, description="top-face pixel count")
+    top_face_fraction: float = Field(
+        gt=0, description="area_px over the pixel area a full top face has at depth_m"
+    )
+    complete: bool = Field(
+        description="top face fully visible (fraction >= min_top_face_fraction); a partial face "
+        "(occluded by the arm or cut by the image border) biases the centroid towards what is seen"
+    )
     depth_m: float = Field(gt=0, description="median z-depth of the top face")
 
     @property
@@ -143,6 +150,7 @@ class _Frame:
             int(stats_row[k])
             for k in (cv2.CC_STAT_LEFT, cv2.CC_STAT_TOP, cv2.CC_STAT_WIDTH, cv2.CC_STAT_HEIGHT)
         )
+        fraction = area / self.expected_top_face_px(d_top)
         return Detection(
             color=colour,
             position=(float(centre[0]), float(centre[1]), float(centre[2])),
@@ -151,8 +159,16 @@ class _Frame:
             pixel=(u, v),
             bbox=(x, y, w, h),
             area_px=area,
+            top_face_fraction=fraction,
+            complete=fraction >= self.params.segmentation.min_top_face_fraction,
             depth_m=d_top,
         )
+
+    def expected_top_face_px(self, depth_m: float) -> float:
+        """Pixel area of a whole ``cube_size_m`` top face seen face-on at ``depth_m``."""
+        intr = self.camera.intrinsics
+        size = self.params.cube_size_m
+        return (size * intr.fx / depth_m) * (size * intr.fy / depth_m)
 
     def for_colour(self, colour: str) -> list[Detection]:
         seg = self.params.segmentation

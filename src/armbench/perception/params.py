@@ -49,6 +49,7 @@ class SegmentationSpec(BaseModel):
     min_saturation: int = Field(ge=0, le=255)
     min_value: int = Field(ge=0, le=255)
     min_area_px: int = Field(gt=0)
+    min_top_face_fraction: float = Field(gt=0, le=1)
     open_kernel_px: int = Field(ge=1)
     hue_ranges: dict[str, tuple[HueRange, ...]]
 

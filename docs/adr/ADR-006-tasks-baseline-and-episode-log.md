@@ -56,6 +56,44 @@ they cost energy and time that the LLM agents will also have to pay. For `place_
 the carry height is raised to 0.18 m so the cube clears the 0.10 m wall; everything else is
 the F4 `pick_and_place` sequence.
 
+### The gripper command channel is part of "ready"
+
+The first dev gate lost one episode per container now and then (`pick_place@1` seed 0 in one
+run, `stack2@1` seed 0 in the next): the arm stopped on the descent with the finger tips at
+the cube's top face, every joint pushing at its effort limit, zero velocity, until the
+controller deadline fired — and a retried descent stalled at exactly the same configuration.
+Instrumenting a fresh container showed the fingers after the boot `reset()` at
+`(0.000, 0.0425)`: one pad fully closed on the centre line, so it landed squarely on the cube.
+The cause is a start-up race, not physics: `release()` publishes its effort command right
+after `ready()`, which checked the clock, joint states, camera and trajectory server but not
+the gripper controller; a `Float64MultiArray` published before the controller's subscription
+has matched is simply lost, the fingers stay effort-free, and at the spawn configuration
+(arm horizontal, finger axis vertical) gravity drops the lower finger to its closed limit
+while the arm moves to `ready_q`. Later episodes always passed because every subsequent
+`release()` found the controller listening. `RosBackend.ready()` now also waits for a
+subscriber on `/gripper_controller/commands`, and `gripper()` waits (bounded) for one before
+publishing, so the first command of a container is never dropped. The baseline stays the plain
+F4 sequence: no retry logic hides this class of fault.
+
+### A partially visible cube is a partial detection, not a pose
+
+The extended split failed deterministically on seed 418 (`pick_place@1` 21 mm off,
+`stack2@1` 55 mm off) and the F4 gate had already flagged seeds 418 and 489. The green cube
+sits at x = −0.33 m, inside the ~30 % of the table the forearm shadows from `ready_pose`
+(ADR-005). From there `detect()` saw a 116 px sliver of its top face (a full face is ~680 px
+at that depth) and reported its centroid 19 mm from the cube centre — almost half a cube —
+so the grasp closed on an edge, the cube turned in the pads and landed off the goal (or jammed
+against the table and the descent timed out). `detect_all()` accepted that detection because
+the colour was "found" from the first view. `Detection` now carries
+`top_face_fraction = area_px / expected_px(depth)` and `complete = fraction >= 0.7`
+(`segmentation.min_top_face_fraction`): the top face of a cube is parallel to the image plane
+of the top-down camera, so a whole face always covers ~1.0 of the expected area regardless of
+where it lies, while an occluded or frame-cut face falls well below (0.17–0.45 in the seed-418
+frame). `merge()` lets a complete detection replace a partial one and `detect_all()` keeps
+visiting observe poses until every required colour is complete (a colour partial from every
+pose keeps its best detection rather than failing). The flag is part of the primitive
+contract the LLM agents will see in F6, so they can make the same decision.
+
 ### One episode = one JSONL line, schema version 1
 
 `armbench.runner.EpisodeRecord` (`schema_version: 1`) records task/version, agent, seed,

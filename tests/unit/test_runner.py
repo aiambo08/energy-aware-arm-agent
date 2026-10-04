@@ -244,7 +244,8 @@ def _write(path: Path, recs: list[EpisodeRecord]) -> Path:
 
 
 def test_report_passes_on_clean_sim_log(tmp_path: Path) -> None:
-    recs = [_rec(s, 0) for s in range(20)] + [_rec(0, r, wh=0.2 + 0.001 * r) for r in range(1, 10)]
+    recs = [_rec(s, 0) for s in range(400, 420)]
+    recs += [_rec(400, r, wh=0.2 + 0.001 * r) for r in range(1, 10)]
     rep = build_report(
         [_write(tmp_path / "e.jsonl", recs)], n_rows_expected=6, require_repeats=True
     )
@@ -255,7 +256,7 @@ def test_report_passes_on_clean_sim_log(tmp_path: Path) -> None:
     assert len(t.energy) == 6
     assert t.energy[0].variant is Variant.A
     assert t.energy[0].wh.median == pytest.approx(0.2, abs=1e-3)
-    assert t.repeats[0].seed == 0
+    assert t.repeats[0].seed == 400
     assert t.repeats[0].n == 10
     assert t.repeat_cv_max is not None
     assert t.repeat_cv_max < 0.03
@@ -266,9 +267,9 @@ def test_report_passes_on_clean_sim_log(tmp_path: Path) -> None:
 
 
 def test_report_fails_on_low_success_missing_energy_or_infra(tmp_path: Path) -> None:
-    recs = [_rec(s, 0, ok=s % 5 != 0) for s in range(20)]
-    recs[1] = _rec(1, 0, wh=None)
-    recs[2] = _rec(2, 0, ok=False, infra=True)
+    recs = [_rec(s, 0, ok=s % 5 != 0) for s in range(400, 420)]
+    recs[1] = _rec(401, 0, wh=None)
+    recs[2] = _rec(402, 0, ok=False, infra=True)
     rep = build_report([_write(tmp_path / "e.jsonl", recs)], n_rows_expected=6)
     t = rep.tasks[0]
     assert t.success == pytest.approx(15 / 20)
@@ -279,7 +280,7 @@ def test_report_fails_on_low_success_missing_energy_or_infra(tmp_path: Path) -> 
     assert any("success" in k for k in failed)
     assert any("energy table" in k for k in failed)
     assert any("infra" in k for k in failed)
-    assert t.failed_seeds == [0, 2, 5, 10, 15]
+    assert t.failed_seeds == [400, 402, 405, 410, 415]
 
 
 def test_report_repeat_cv_threshold(tmp_path: Path) -> None:
@@ -289,7 +290,20 @@ def test_report_repeat_cv_threshold(tmp_path: Path) -> None:
     )
     assert rep.tasks[0].repeat_cv_max is not None
     assert rep.tasks[0].repeat_cv_max > 0.03
-    assert not rep.checks["pick_place@1/A: repeat Wh CV < 3%"]
+    assert not rep.checks["pick_place@1/A [dev]: repeat Wh CV < 3%"]
+
+
+def test_report_keeps_seed_splits_apart(tmp_path: Path) -> None:
+    recs = [_rec(s, 0) for s in range(10)] + [_rec(s, 0, ok=s != 418) for s in range(400, 450)]
+    recs.append(_rec(777, 0))
+    rep = build_report([_write(tmp_path / "e.jsonl", recs)], n_rows_expected=6)
+    by_split = {t.split: t for t in rep.tasks}
+    assert set(by_split) == {"dev", "dev_extended", "custom"}
+    assert by_split["dev"].n == 10
+    assert by_split["dev"].success == 1.0
+    assert by_split["dev_extended"].failed_seeds == [418]
+    assert by_split["custom"].n == 1
+    assert rep.checks["pick_place@1/A [dev_extended]: success >= 95%"]
 
 
 def test_energy_rows_incomplete_when_an_eta_is_missing(tmp_path: Path) -> None:

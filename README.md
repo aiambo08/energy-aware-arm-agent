@@ -347,7 +347,8 @@ with its stage (`infra` | `agent` | `robot` | `judge`), `sim_s`, `wall_s`, the e
 agent trace (attempts, primitives, observation moves, tokens, latency, skills,
 prompt/response/program hashes — empty for A) and software versions. `armbench report`
 recomputes everything from the lines: success with Wilson 95 % CI, Wh median/IQM/p05/p95 per
-variant and η, Wh CV across repeats of the same seed, infra rate, sim/wall distributions, and
+variant and η, Wh CV across repeats of the same seed, infra rate, sim/wall distributions
+(one row per task × agent × backend × seed split, so dev and extended seeds never mix), and
 the F5 thresholds (success ≥ 95 %, infra < 1 %, wall < 120 s, energy table complete, repeat
 CV < 3 %).
 

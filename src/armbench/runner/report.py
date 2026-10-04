@@ -18,6 +18,7 @@ from pydantic import BaseModel, ConfigDict
 
 from armbench.energy import Variant
 from armbench.runner.schema import EpisodeRecord
+from armbench.seeds import SeedSplit, load_seed_split
 
 Z95 = 1.959964
 
@@ -113,6 +114,8 @@ class TaskSummary(BaseModel):
     task: str
     agent: str
     backend: str
+    split: str
+    """Seed split of ``configs/seeds.yaml`` the episodes belong to (``custom`` if none)."""
     n: int
     n_ok: int
     success: float
@@ -189,7 +192,7 @@ def _repeats(records: list[EpisodeRecord]) -> list[RepeatStats]:
     return out
 
 
-def summarise(records: list[EpisodeRecord], n_rows_expected: int) -> TaskSummary:
+def summarise(records: list[EpisodeRecord], n_rows_expected: int, split: str) -> TaskSummary:
     first = records[0]
     n, n_ok = len(records), sum(r.ok for r in records)
     infra = [r for r in records if r.infra_failure]
@@ -212,6 +215,7 @@ def summarise(records: list[EpisodeRecord], n_rows_expected: int) -> TaskSummary
         task=first.task,
         agent=first.agent,
         backend=first.backend,
+        split=split,
         n=n,
         n_ok=n_ok,
         success=n_ok / n,
@@ -237,7 +241,7 @@ def judge(tasks: list[TaskSummary], th: Thresholds, *, require_energy: bool) -> 
     """One boolean per DoD row; energy rows only bind for simulation runs."""
     checks: dict[str, bool] = {}
     for t in tasks:
-        key = f"{t.task}/{t.agent}"
+        key = f"{t.task}/{t.agent} [{t.split}]"
         checks[f"{key}: success >= {th.success_min:.0%}"] = t.success >= th.success_min
         checks[f"{key}: infra failures < {th.infra_rate_max:.0%}"] = (
             t.infra_rate < th.infra_rate_max
@@ -260,13 +264,16 @@ def build_report(
     n_rows_expected: int,
     thresholds: Thresholds | None = None,
     require_repeats: bool = False,
+    seed_split: SeedSplit | None = None,
 ) -> Report:
+    """One summary per (task, agent, backend, seed split) so dev and extended seeds never mix."""
     th = thresholds or Thresholds()
+    splits = seed_split or load_seed_split()
     records = read_records(paths)
-    groups: dict[tuple[str, str, str], list[EpisodeRecord]] = defaultdict(list)
+    groups: dict[tuple[str, str, str, str], list[EpisodeRecord]] = defaultdict(list)
     for r in records:
-        groups[(r.task, r.agent, r.backend)].append(r)
-    tasks = [summarise(g, n_rows_expected) for _, g in sorted(groups.items())]
+        groups[(r.task, r.agent, r.backend, splits.split_of(r.seed) or "custom")].append(r)
+    tasks = [summarise(g, n_rows_expected, k[3]) for k, g in sorted(groups.items())]
     sim = any(t.backend == "sim" for t in tasks)
     checks = judge(tasks, th, require_energy=sim)
     if require_repeats:
@@ -284,8 +291,8 @@ def build_report(
 def table(report: Report) -> str:
     """Plain-text table, one row per task."""
     head = (
-        f"{'task':18s} {'agent':5s} {'n':>4s} {'ok':>4s} {'success':>8s} {'CI95':>16s} "
-        f"{'infra':>5s} {'Wh A med':>9s} {'wall p95':>8s} {'CV max':>7s}"
+        f"{'task':18s} {'agent':5s} {'split':12s} {'n':>4s} {'ok':>4s} {'success':>8s} "
+        f"{'CI95':>16s} {'infra':>5s} {'Wh A med':>9s} {'wall p95':>8s} {'CV max':>7s}"
     )
     lines = [head]
     for t in report.tasks:
@@ -293,7 +300,7 @@ def table(report: Report) -> str:
         wh = t.energy[0].wh.median if t.energy else math.nan
         cvm = f"{t.repeat_cv_max:.1%}" if t.repeat_cv_max is not None else "-"
         lines.append(
-            f"{t.task:18s} {t.agent:5s} {t.n:4d} {t.n_ok:4d} {t.success:8.1%} "
+            f"{t.task:18s} {t.agent:5s} {t.split:12s} {t.n:4d} {t.n_ok:4d} {t.success:8.1%} "
             f"[{lo:5.1%}, {hi:5.1%}] {t.n_infra:5d} {wh:9.4f} {t.wall_s.p95:8.1f} {cvm:>7s}"
         )
     lines.append("")

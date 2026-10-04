@@ -5,10 +5,10 @@ phase PR.
 
 | Field | Value |
 |---|---|
-| Current phase | F7 done (skill library: 4 skills validated 20/20 on seeds 20–39 and frozen, `execute_skill()` wired, agent B+S; Gazebo pilot B 40/40 vs B+S 40/40 with the deterministic template provider); F8 next |
+| Current phase | F8 done (energy-aware agents C and C+S on a frozen baseline-A energy reference, D8 option 2; Gazebo pilot B/C/B+S/C+S 40/40 each with the deterministic template provider); F9 next |
 | Last green commit | `main` after PR F6 — see `git log -1 main` |
-| Next phase | F8 — energy-aware agent C (energy block in the prompt: model, Wh of the previous attempt/episode, budget; D8) and C+S on the frozen library. A real LLM run (`provider: openai_compat`) still needs an `ARMBENCH_LLM_API_KEY`; everything up to here runs without one |
-| Blockers | none for F8; a real-model run (and F9) needs an OpenAI-compatible API key (D6) |
+| Next phase | F9 — pre-registered evaluation (protocol frozen in a commit before the 400 episodes on the locked `final_eval` seeds 100–119, H1–H3, Wilson/IQM/bootstrap, η sensitivity). Needs a real OpenAI-compatible provider: an `ARMBENCH_LLM_API_KEY` and the model choice (D6) |
+| Blockers | F9 needs an OpenAI-compatible API key and the model choice (D6); everything up to F8 runs without one |
 
 ## Phase status
 
@@ -22,7 +22,7 @@ phase PR.
 | F5 tasks, baseline A, runner | done (PR F5) | `reports/f5_baseline.json` — 250 Gazebo episodes (4 tasks × dev 0–9, 10 repeats of `pick_place@1` seed 0, 4 tasks × dev_extended 400–449): success 250/250, energy table complete, 0 infra failures, wall p95 ≤ 26.6 s, repeat Wh CV 0.36 %; 82 task/runner/report unit tests (tests/unit/test_tasks.py, test_runner.py); ADR-006 |
 | F6 LLM agent, sandbox, cost control | done (PR F6) | `reports/f6_agent_b.json` — 40 Gazebo episodes of agent B (4 tasks × dev 0–9) with the deterministic `template` provider: success 40/40, 0 infra failures, every program `completed` in the sandbox, energy table complete, wall p95 ≤ 24.5 s; the replay run reproduces the LLM side of every episode exactly (same response, program and primitive-call sequence, 40/40 served from the cache) and judged 40/40 the same — in an earlier run of the same programs one `place_obstacle` episode judged differently with identical calls (place error 3 mm vs 63 mm), so the gate requires call-sequence equality and only reports outcome agreement (physics is Gazebo's, not bit-reproducible); host ledger 38 live calls + 2 cache hits (two `stack2` seeds share the goal, hence the prompt), 68 812 tokens, 0 USD (template prices are 0; extrapolation to 400 episodes reported); attack battery 86 cases, 82 stopped (≥ 40 required), 364 host tests; isolation layers recorded per episode (`ast,builtins,container,rlimits` — `unshare -rn` is not permitted inside the container, so no network namespace layer); ADR-007. These numbers validate the infrastructure, not an LLM: the template provider is not a language model |
 | F7 skill library (B+S) | done (PR F7) | `reports/f7_skill_validation.json` — 4 candidates proposed from the 40 completed B programs of `runs/f6_live` (one per task, goal constants parametrised), each validated on the 20 `skill_validation` seeds 20–39 in the sandbox with pre/post-conditions and the task checker: 20/20 accepted (`pick_place_cube`, `stack_cube`, `sort_cubes`, `place_cube_over_wall`); `skills/FROZEN.json` sha256 `18ba25b8…b6a3`, recorded in every B+S `run.json`. `reports/f7_skills.json` — Gazebo pilot 4 tasks × dev 0–9, cache emptied first: B 40/40 and B+S 40/40, 0 infra failures, energy tables complete; B+S called a skill in 40/40 episodes (one `execute_skill` per program) and the trace counts the inner primitives (median 9/9/27/11 per task for both agents — the skill bodies *are* B's programs); tokens/episode median 1 653–1 731 for B+S vs 1 753–1 920 for B (the `# Skills` section costs less than the inline steps the template writes); Wh A medians within −0.2 % … +2.3 % of B (same motions; differences are Gazebo run-to-run noise, no improvement claimed — H1 is tested in F9); fault-injection tests (5 cm offset, held cube, tampered frozen file, unknown skill, primitive error inside a skill) 7/7; 393 host tests; ADR-008. The template provider is not a language model: these numbers validate the library, the contract checks and the accounting, not skill reuse by an LLM |
-| F8 energy-aware agent (C, C+S) | not started | — |
+| F8 energy-aware agent (C, C+S) | done (PR F8) | `energy_ref/reference.json` — baseline A's Wh per task from `runs/f5_dev` (agent A, sim, dev 0–9, variant A, η 0.7): medians 0.2105 / 0.2257 / 0.5842 / 0.2279 Wh for `pick_place` / `stack2` / `sort3` / `place_obstacle`; sha256 `4213da2f…3c5` (timestamp excluded from the hash; the gate rebuilds it from the run bit for bit) and recorded in every C/C+S `run.json` and trace. `reports/f8_energy_aware.json` — Gazebo pilot 4 tasks × dev 0–9, cache emptied first: B 40/40, C 40/40, B+S 40/40, C+S 40/40, 0 infra failures, 0 cost aborts, energy tables complete; the `# Energy` block is in 40/40 C and C+S prompts and in 0/80 B and B+S prompts; `speed_scale < 1` used in 40/40 episodes of every agent (min 0.5 for B/B+S/C+S — the frozen skill bodies carry their own `SLOW = 0.5` — and 0.7 for C). Wh A medians C/B = 0.95–0.98 (template's energy edits: lower approach height, faster slow segment, one fewer slow move) and C+S/B+S = 0.99–1.00 (with a skill the program is a single `execute_skill` call, so the template has nothing to edit inside the frozen body); same move counts per pair; tokens/episode +~350 for the energy block. No improvement is claimed: there is no threshold, these are medians over 10 seeds with a stand-in provider, and H2/H3 are tested in F9. 21 F8 unit tests (`tests/unit/test_agent_c.py`), 414 host tests; ADR-009 |
 | F9 pre-registered evaluation | not started | — |
 | F10 publication | not started | — |
 
@@ -38,6 +38,7 @@ phase PR.
 | ADR-006 | Tasks, scripted baseline A and the episode log (gripper readiness, partial detections) | accepted |
 | ADR-007 | LLM agent B: provider interface, host prefetch + container replay, four-layer process sandbox (D5) | accepted |
 | ADR-008 | Skill library: validated parametrised programs, closed-vocabulary conditions, frozen by hash before evaluation, nested sandboxed `execute_skill`, agent B+S (D7) | accepted |
+| ADR-009 | Energy-aware agents C and C+S: baseline A's Wh as the frozen, hashed reference budget in the prompt; `speed_scale` accounting (D8) | accepted |
 
 ## Open decisions (from `docs/plan.es.md` §7)
 
@@ -46,5 +47,5 @@ phase PR.
 | D5 | Single-turn vs retries — single turn (`max_attempts: 1`), retries kept configurable (ADR-007) | decided F6 |
 | D6 | LLM model and provider — interface and replay decided (ADR-007); the real model/provider is chosen when a key is available, before F9 | open |
 | D7 | Frozen skill library — built from dev programs, validated on 20–39, frozen by hash and read-only for evaluation (ADR-008) | decided F7 |
-| D8 | Meaning of "previous Wh" in C | F8 |
+| D8 | Meaning of "previous Wh" in C — option 2: baseline A's Wh for the same task from a frozen, hashed reference (ADR-009); no retry/previous-episode memory | decided F8 |
 | D10 | Whether to build F11 (live demo) | F10 |

@@ -545,6 +545,16 @@ or from the fake backend is refused.
 C vs B / C+S vs B+S is reported without an improvement threshold: that is hypothesis H2, to be
 evaluated in F9 with a real provider.
 
+**Pilot (`reports/f8_energy_aware.json`)**: 4 tasks × dev 0–9 in Gazebo, cache emptied first —
+B, C, B+S and C+S each 40/40, 0 infra failures, 0 cost aborts; the `# Energy` block appears in
+40/40 C and C+S prompts and in no B/B+S prompt; the reference hash is in every C/C+S run and
+trace and the gate rebuilds the reference from `runs/f5_dev` bit for bit. Wh A medians: C/B
+0.95–0.98 (the template's energy recipe lowers the approach height, raises the slow segment to
+0.7 and drops one slow move), C+S/B+S 0.99–1.00 (with a skill the program is one `execute_skill`
+call, so the frozen body — `SLOW = 0.5` inside — is executed unchanged). Same move counts per
+pair; ~350 more tokens per episode for the block. These numbers validate the plumbing and the
+accounting with a fixed recipe, not energy awareness in a language model.
+
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 
 ```bash

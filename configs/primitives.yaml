@@ -1,0 +1,49 @@
+# Parameters of the robot primitives (armbench.primitives, phase F4). Poses are top-down TCP poses
+# in base_link. Geometry must match ros_ws/src/armbench_description (tests cross-check it).
+schema_version: 1
+frame: base_link
+tcp_offset_m: 0.125            # tool0 -> tcp: gripper base 0.075 + finger 0.060 - 0.010 (parallel_gripper.xacro)
+finger_tip_below_tcp_m: 0.010
+workspace:                     # TCP positions the agent may request; outside -> OutOfReach
+  x_min: -0.70
+  x_max: -0.30
+  y_min: -0.30
+  y_max: 0.30
+  z_min: 0.015                 # finger tips 5 mm above the table
+  z_max: 0.30
+motion:
+  max_joint_speed_rad_s: 1.5   # average speed of the limiting joint at speed_scale = 1 (UR5e limit: pi)
+  min_duration_s: 0.5
+  speed_scale_min: 0.1
+  goal_tolerance_rad: 0.02
+  settle_timeout_s: 1.0         # after the controller's success, wait until |qd| < settle_qd_rad_s
+  settle_qd_rad_s: 0.02
+  timeout_factor: 2.0          # controller deadline = duration * factor + margin (wall seconds)
+  timeout_margin_s: 5.0
+ik:
+  position_tol_m: 0.0001
+  orientation_tol_rad: 0.001
+  max_iters: 200
+  min_singular_value: 0.02     # of the geometric Jacobian at the target (typical in-workspace: 0.13-0.26)
+  # Joint intervals of the "elbow-up over the table" branch every solution must lie in. The
+  # damped-least-squares solver can otherwise land on the elbow-down branch, whose forearm
+  # passes through the table (ADR-005).
+  branch:
+    shoulder_lift_joint: [-3.1416, 0.0]
+    elbow_joint: [-3.1416, 0.0]
+    wrist_1_joint: [-3.1416, 0.0]
+    wrist_2_joint: [1.2708, 1.8708]
+collision:
+  table_z_m: 0.0
+  link_clearance_m: 0.05       # every arm frame origin (shoulder ... tool0) stays this high above the table
+  tip_clearance_m: 0.002       # finger tips never go below table + this along the path
+  path_samples: 25             # joint-space interpolation points checked per move
+gripper:
+  stroke_m: 0.0425
+  open_effort_n: -10.0
+  close_effort_n: 20.0
+  settle_s: 1.0
+  min_object_width_m: 0.015    # pad gap below this after closing -> NoObjectGrasped
+camera_timeout_s: 5.0
+ready_pose: [-0.5, 0.0, 0.25, 0.0]
+ready_q: [0.2699, -1.5864, -1.8473, -1.2787, 1.5708, 1.8407]

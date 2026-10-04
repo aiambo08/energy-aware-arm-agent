@@ -28,3 +28,4 @@ runs/
 # F2/F3 working directories (raw JSONL segments, RGB-D dataset)
 reports/_f2_*/
 reports/_f3_*/
+reports/_f4_*/

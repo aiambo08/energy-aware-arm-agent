@@ -15,3 +15,7 @@ splits:
     start: 100
     end: 119
     locked: true
+  dev_extended:
+    description: Extended development (F4 primitives gate, scripted baseline tuning). Free use; never for final evaluation.
+    start: 400
+    end: 499

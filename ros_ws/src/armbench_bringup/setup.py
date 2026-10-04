@@ -27,6 +27,7 @@ setup(
             "torque_compare = armbench_bringup.torque_compare:main",
             "energy_meter = armbench_bringup.energy_meter:main",
             "scene_capture = armbench_bringup.scene_capture:main",
+            "primitives_check = armbench_bringup.primitives_check:main",
         ],
     },
 )

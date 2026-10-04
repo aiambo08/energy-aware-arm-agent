@@ -23,7 +23,9 @@ def test_default_split_matches_plan(split: SeedSplit) -> None:
     assert split.splits["dev"].seeds == range(0, 10)
     assert split.splits["skill_validation"].seeds == range(20, 40)
     assert split.splits["final_eval"].seeds == range(100, 120)
+    assert split.splits["dev_extended"].seeds == range(400, 500)
     assert split.splits["final_eval"].locked
+    assert not split.splits["dev_extended"].locked
     assert not split.splits["dev"].locked
     assert not split.splits["skill_validation"].locked
 

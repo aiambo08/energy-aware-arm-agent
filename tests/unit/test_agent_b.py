@@ -49,7 +49,7 @@ def episode(rig: tuple[Robot, FakeWorld], agent: Agent, tid: str, seed: int) -> 
 
 
 def test_registry_keeps_a_and_adds_b(llm: LLMParams, tmp_path: Path) -> None:
-    assert AGENT_IDS == ("A", "B", "B+S")
+    assert AGENT_IDS == ("A", "B", "B+S", "C", "C+S")
     assert get_agent("A").id == "A"
     b = get_agent("B", llm=llm, provider=make_provider(llm, cache_dir=tmp_path))
     assert isinstance(b, LLMAgent) and b.id == "B" and b.library is None

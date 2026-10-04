@@ -25,6 +25,7 @@ value or a measurement stored under `reports/` with the script that produced it.
 | Episode runner and reports (F5) | `src/armbench/runner`: `EpisodeRecord` JSONL schema v1 (verdict, typed failure stage, sim/wall time, Wh A/B × η, agent trace, instance hash), `run_episode` over a `World` protocol (`FakeWorld` without ROS, Gazebo in `armbench_bringup` `episode_runner`), Docker chunk orchestration (`--network none`, fresh container per 25 seeds), `armbench run` / `armbench report` (Wilson CI, Wh median/IQM/p95, repeat CV, infra rate, thresholds) → `reports/f5_baseline.json` |
 | LLM agent B, sandbox, cache/replay (F6) | `src/armbench/llm`: `Provider` protocol with `TemplateProvider` (deterministic, no key), `OpenAICompatProvider` (`urllib`, key from `ARMBENCH_LLM_API_KEY`, unused until a key exists), `CachedProvider`/`ReplayProvider` (content-addressed disk cache), `BudgetedProvider` (token/USD ledger); `src/armbench/agents`: reproducible prompt, `LLMAgent` (B) with tokens/cost/latency/hash trace; `src/armbench/sandbox` + `src/armbench/guest`: AST whitelist, rlimited child interpreter, typed RPC to `robot`, call/sim/wall caps; host prefetch → replay inside the network-less containers; `scripts/f6_gate.py` → `reports/f6_agent_b.json`; ADR-007 |
 | Skill library and agent B+S (F7) | `src/armbench/skills`: `Skill` (typed params, closed-vocabulary pre/post-conditions, origin, validation record, order-independent hash), `SkillLibrary` (dedup by signature, lexical retrieval, `library.json` + `FROZEN.json` manifest, read-only once frozen), proposer (B's completed dev programs → parametrised candidates), `Validator` (sandbox + conditions + task checker on seeds 20–39, ≥ 90 %), `SkillRunner` behind `Robot.execute_skill()` (nested sandbox, `SkillPreconditionFailed`/`SkillPostconditionFailed`/`SkillFailed`, inner calls accounted in the trace); agent `B+S` (frozen library required, `# Skills` prompt section, `trace.skills_used`); `armbench skills propose|validate|freeze|show`; frozen library in `skills/`; `scripts/f7_gate.py` → `reports/f7_skills.json`; ADR-008 |
+| Energy-aware agents C and C+S (F8) | `src/armbench/energy/reference.py`: `EnergyReference` (baseline A's Wh per task — median/IQM/range, sim time, calls — with provenance and a content hash; D8), `armbench energy-ref build|show`, frozen reference in `energy_ref/`; `# Energy` prompt section (model constants, reference budget, levers) for `C`/`C+S` only; sandbox `CallRecord.speed_scale` and `SkillResult.speed_scales` → `trace.n_moves`/`n_slow_moves`/`speed_scale_min`, `trace.energy_reference_wh`/`_sha256`; report `llm` block with `energy_prompt_rate`, `wh_over_reference`, `slow_move_episode_rate`; bundle `energy_ref/` into the containers; `scripts/f8_gate.py` → `reports/f8_energy_aware.json`; ADR-009 |
 | Primitives (F4) | `src/armbench/primitives`: `Robot` with `observe()`, `detect()`, `move_to()`, `grasp()`, `release()`, `reset()`, `execute_skill()` (wired to the F7 library); Pydantic `Pose`/`Observation`/`Detection`/`Result`; typed errors (`OutOfReach`, `Singularity`, `Collision`, `Timeout`, `NoObjectGrasped`, `CameraTimeout`); pre-flight IK/branch/singularity/table-clearance checks (ADR-005); `KinematicBackend` (no ROS) and `RosBackend` (`armbench_bringup`); `configs/primitives.yaml`; `scripts/primitives_eval.py` runs the F4 gate → `reports/f4_primitives.json` |
 | Torque source (F2) | `armbench_bringup` nodes `energy_meter` (online Wh on `/armbench/energy`), `torque_probe` and `torque_compare` (Pinocchio inverse dynamics); `scripts/torque_source.py` runs critical gate 2 → `reports/f2_torque_source.json`, decision in ADR-004 |
 | Simulation (F1) | `ros_ws/src/armbench_description` (UR5e + parallel gripper xacro, tabletop world with fixed RGB-D camera), `ros_ws/src/armbench_bringup` (`sim.launch.py`, controllers, `sim_check` node) |
@@ -34,7 +35,7 @@ value or a measurement stored under `reports/` with the script that produced it.
 Roadmap (one PR per phase, see `docs/plan.es.md` and `docs/PROJECT_STATE.md`):
 ~~F1 arm simulation~~ · ~~F2 torque source and energy model~~ · ~~F3 perception~~ ·
 ~~F4 primitives~~ · ~~F5 tasks, baseline and runner~~ · ~~F6 LLM agent and sandbox~~ ·
-~~F7 skill library~~ · F8 energy-aware agent · F9 pre-registered evaluation ·
+~~F7 skill library~~ · ~~F8 energy-aware agent~~ · F9 pre-registered evaluation ·
 F10 publication.
 
 ## Quick start (host, no ROS)
@@ -495,6 +496,54 @@ arm; the sandbox run keeps the inner calls, so `trace.n_primitives` counts what 
 `trace.skills_used` the skills that completed. The report's `llm` block adds `skills_used` and
 `skill_episode_rate`. Retrieval is deterministic word overlap (no embeddings); `TemplateProvider`
 answers a B+S prompt with one skill call when an offered skill matches the task kind.
+
+## Energy-aware agents C and C+S (F8)
+
+C is agent B with an `# Energy` section prepended to the task message (the system prompt is
+identical for every configuration): the energy model as scored (`P_el = P_mech / eta + copper
++ P0`, configured eta and P0), the **reference budget** — baseline A's Wh for the *same task*
+(median, IQM, range over the dev seeds, simulated time and primitive calls) — and the two
+levers the API exposes (fewer/shorter moves and lower lifts first, `speed_scale` second).
+C+S is B+S plus the same block. Decision D8 (ADR-009): the budget is baseline A, read from a
+frozen artefact, never the agent's own previous attempt or episode.
+
+```bash
+# 1. the reference (once): per-task Wh of a finished baseline-A Gazebo run, variant A, nominal eta
+uv run armbench energy-ref build --run runs/f5_dev --out energy_ref     # refuses to overwrite
+uv run armbench energy-ref show                                         # provenance, hash, budgets (--json)
+
+# 2. C and C+S on the kinematic backend (no API key: provider template, a fixed recipe, not a model)
+uv run armbench run --task all --agent C   --backend fake --seeds dev --out runs/f8_fake_C
+uv run armbench run --task all --agent C+S --backend fake --seeds dev --out runs/f8_fake_CS
+
+# 3. Gazebo pilot B vs C and B+S vs C+S (the bundle runs/<out>/llm/energy_ref/ ships the reference
+#    into the --network none containers; a task missing from the reference is refused, exit 2)
+rm -rf cache/llm
+for a in B C B+S C+S; do
+  uv run armbench run --task all --agent $a --backend sim --seeds dev --out runs/f8_live_${a//+/}
+done
+uv run armbench report runs/f8_live_C      # llm block: energy block rate, reference Wh, Wh/reference,
+                                           # moves/episode, episodes with speed_scale < 1
+uv run python scripts/f8_gate.py --b runs/f8_live_B --c runs/f8_live_C \
+    --bs runs/f8_live_BS --cs runs/f8_live_CS          # → reports/f8_energy_aware.json
+```
+
+**Reference** (`energy_ref/reference.json`, `armbench.energy.EnergyReference`): one entry per
+task (`wh_median`, `wh_iqm`, `wh_min`, `wh_max`, `n`, `seeds`, `sim_s_median`,
+`n_primitives_median`), the variant and eta quoted, the source run (id, agent A, backend sim,
+seeds, split, git sha) and a timestamp. The SHA-256 covers everything but the timestamp, so a
+rebuild from the same run is the same hash; `run.json` of every C/C+S run records it
+(`energy_ref.sha256`, `reference_wh` per task) and so does every trace
+(`trace.energy_reference_sha256`, `trace.energy_reference_wh`). A reference from another agent
+or from the fake backend is refused.
+
+**Lever accounting**: the sandbox records the `speed_scale` of every `move_to` (and
+`SkillResult.speed_scales` those inside a skill body), so `trace.n_moves`, `trace.n_slow_moves`
+(`speed_scale < 1`) and `trace.speed_scale_min` are exact for all four LLM agents; the report's
+`llm` block adds `energy_prompt_rate`, `energy_reference_wh`, `wh_over_reference`,
+`moves_per_episode`, `slow_move_episode_rate` and `speed_scale_min`. The pilot comparison
+C vs B / C+S vs B+S is reported without an improvement threshold: that is hypothesis H2, to be
+evaluated in F9 with a real provider.
 
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 

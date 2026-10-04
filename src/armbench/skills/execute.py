@@ -129,6 +129,7 @@ class SkillRunner:
             skill=name,
             skill_sha256=skill.sha256(),
             calls=run.primitives,
+            speed_scales=run.move_speed_scales,
             postconditions_checked=tuple(c.condition for c in post if not c.deferred),
             postconditions_deferred=tuple(c.condition for c in post if c.deferred),
         )

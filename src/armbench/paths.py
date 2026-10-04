@@ -14,3 +14,6 @@ CONFIG_DIR: Final = Path(os.environ.get("ARMBENCH_CONFIG_DIR", REPO_ROOT / "conf
 SKILLS_DIR: Final = Path(os.environ.get("ARMBENCH_SKILLS_DIR", REPO_ROOT / "skills"))
 """The frozen skill library (``library.json`` + ``FROZEN.json``); runs copy it next to the LLM
 bundle and point the containers at that copy."""
+ENERGY_REF_DIR: Final = Path(os.environ.get("ARMBENCH_ENERGY_REF_DIR", REPO_ROOT / "energy_ref"))
+"""The energy reference of agents C and C+S (``reference.json``: baseline A's Wh per task, D8);
+runs copy it next to the LLM bundle and point the containers at that copy."""

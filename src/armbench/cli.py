@@ -15,7 +15,15 @@ from pydantic import BaseModel, ConfigDict
 
 from armbench import __version__
 from armbench.agents.base import Agent
-from armbench.energy import DEFAULT_ENERGY_FILE, Variant, episode_from_jsonl, load_energy_params
+from armbench.energy import (
+    DEFAULT_ENERGY_FILE,
+    REFERENCE_FILE,
+    EnergyReference,
+    EnergyReferenceError,
+    Variant,
+    episode_from_jsonl,
+    load_energy_params,
+)
 from armbench.kinematics import N_JOINTS, UR5eModel, rotation_vector
 from armbench.llm import (
     DEFAULT_LLM_FILE,
@@ -24,7 +32,7 @@ from armbench.llm import (
     load_llm_params,
     make_provider,
 )
-from armbench.paths import SKILLS_DIR
+from armbench.paths import ENERGY_REF_DIR, SKILLS_DIR
 from armbench.scene import (
     DEFAULT_SCENE_FILE,
     generate_scene,
@@ -182,7 +190,9 @@ class _RunSpec(BaseModel):
     provider: ProviderKind | None = None
     """Overrides the provider named in ``llm_config`` (e.g. ``replay`` to reproduce a run)."""
     skills_dir: Path = SKILLS_DIR
-    """Frozen skill library for agent B+S."""
+    """Frozen skill library for agents B+S and C+S."""
+    energy_ref_dir: Path = ENERGY_REF_DIR
+    """Energy reference (baseline A's Wh per task) for agents C and C+S."""
 
     @property
     def uses_llm(self) -> bool:
@@ -192,12 +202,20 @@ class _RunSpec(BaseModel):
 
     @property
     def uses_skills(self) -> bool:
-        return self.agent == "B+S"
+        from armbench.agents import SKILL_AGENT_IDS  # noqa: PLC0415
+
+        return self.agent in SKILL_AGENT_IDS
+
+    @property
+    def uses_energy(self) -> bool:
+        from armbench.agents import ENERGY_AGENT_IDS  # noqa: PLC0415
+
+        return self.agent in ENERGY_AGENT_IDS
 
 
 def _make_agent(spec: _RunSpec, out: Path) -> Agent:
     """A needs nothing; B gets a provider stack whose ledger and programs land in ``out``;
-    B+S additionally the frozen library."""
+    B+S/C+S additionally the frozen library, C/C+S the energy reference."""
     from armbench.agents import get_agent  # noqa: PLC0415 - heavy imports only for `run`
 
     if not spec.uses_llm:
@@ -205,8 +223,9 @@ def _make_agent(spec: _RunSpec, out: Path) -> Agent:
     llm = load_llm_params(spec.llm_config)
     provider = make_provider(llm, kind=spec.provider, ledger_path=out / "llm" / "ledger.json")
     return get_agent(
-        spec.agent, llm=llm, provider=provider, artifacts_dir=out, skills_dir=spec.skills_dir
-    )
+        spec.agent, llm=llm, provider=provider, artifacts_dir=out, skills_dir=spec.skills_dir,
+        energy_ref_dir=spec.energy_ref_dir,
+    )  # fmt: skip
 
 
 def _skill_runner(spec: _RunSpec) -> SkillRunner | None:
@@ -262,9 +281,17 @@ def _llm_bundle(spec: _RunSpec, out: Path) -> Path:
         (bundle / "skills").mkdir(exist_ok=True)
         for f in (LIBRARY_FILE, FROZEN_FILE):
             shutil.copyfile(spec.skills_dir / f, bundle / "skills" / f)
+    if spec.uses_energy:
+        (bundle / "energy_ref").mkdir(exist_ok=True)
+        shutil.copyfile(
+            spec.energy_ref_dir / REFERENCE_FILE, bundle / "energy_ref" / REFERENCE_FILE
+        )
     llm = load_llm_params(spec.llm_config)
     provider = make_provider(llm, kind=spec.provider, ledger_path=bundle / "ledger.json")
-    agent = get_agent(spec.agent, llm=llm, provider=provider, skills_dir=spec.skills_dir)
+    agent = get_agent(
+        spec.agent, llm=llm, provider=provider, skills_dir=spec.skills_dir,
+        energy_ref_dir=spec.energy_ref_dir,
+    )  # fmt: skip
     if not isinstance(agent, LLMAgent):  # pragma: no cover - guarded by uses_llm
         msg = f"agent {spec.agent} does not use an LLM"
         raise typer.BadParameter(msg)
@@ -284,6 +311,46 @@ def _llm_bundle(spec: _RunSpec, out: Path) -> Path:
     return bundle
 
 
+def _run_meta(spec: _RunSpec, *, backend: str, image: str) -> dict[str, object]:
+    """``run.json``: what the run was asked to do plus the hashes of what the agent could
+    see (LLM config, frozen library, energy reference). Refuses (exit 2) an unfrozen library
+    or a reference missing a task."""
+    llm_meta = None
+    if spec.uses_llm:
+        llm = load_llm_params(spec.llm_config)
+        llm_meta = {"config": str(spec.llm_config), "provider": spec.provider or llm.provider,
+                    "model": llm.model, "temperature": llm.temperature, "seed": llm.seed,
+                    "max_attempts": llm.max_attempts}  # fmt: skip
+    skills_meta = None
+    if spec.uses_skills:
+        from armbench.skills import SkillLibrary  # noqa: PLC0415
+
+        try:
+            frozen = SkillLibrary.load(spec.skills_dir, require_frozen=True)
+        except LibraryError as exc:
+            typer.echo(f"refused: {exc}", err=True)
+            raise typer.Exit(code=2) from exc
+        skills_meta = {"dir": str(spec.skills_dir), "sha256": frozen.sha256(),
+                       "n_skills": len(frozen), "names": list(frozen.names)}  # fmt: skip
+    energy_meta = None
+    if spec.uses_energy:
+        try:
+            ref = EnergyReference.load(spec.energy_ref_dir)
+            budgets = {t: ref.for_task(t).wh_median for t in spec.tasks}
+        except EnergyReferenceError as exc:
+            typer.echo(f"refused: {exc}", err=True)
+            raise typer.Exit(code=2) from exc
+        energy_meta = {"dir": str(spec.energy_ref_dir), "sha256": ref.sha256(),
+                       "variant": str(ref.variant), "eta": ref.eta,
+                       "source_run": ref.source.run_id, "source_agent": ref.source.agent,
+                       "reference_wh": budgets}  # fmt: skip
+    return {"run_id": spec.run_id, "tasks": spec.tasks, "agent": spec.agent, "seeds": spec.seeds,
+            "repeat": spec.repeat, "backend": backend,
+            "image": image if backend == "sim" else None, "git_sha": _git_sha(),
+            "armbench": __version__, "llm": llm_meta, "skills": skills_meta,
+            "energy_ref": energy_meta}  # fmt: skip
+
+
 @app.command()
 def run(  # noqa: PLR0913
     *,
@@ -299,13 +366,18 @@ def run(  # noqa: PLR0913
     chunk: Annotated[int, typer.Option(min=1, help="Seeds per fresh container.")] = 25,
     mcap: Annotated[bool, typer.Option("--mcap", help="Record an MCAP bag per episode.")] = False,
     seeds_file: Annotated[Path, typer.Option(help="Seed split YAML.")] = DEFAULT_SEEDS_FILE,
-    llm_config: Annotated[Path, typer.Option(help="LLM YAML for agent B.")] = DEFAULT_LLM_FILE,
+    llm_config: Annotated[
+        Path, typer.Option(help="LLM YAML for agents B, B+S, C and C+S.")
+    ] = DEFAULT_LLM_FILE,
     provider: Annotated[
         str | None, typer.Option(help="Override the provider: template, openai or replay.")
     ] = None,
     skills_dir: Annotated[
-        Path, typer.Option(help="Frozen skill library for agent B+S.")
+        Path, typer.Option(help="Frozen skill library for agents B+S and C+S.")
     ] = SKILLS_DIR,
+    energy_ref_dir: Annotated[
+        Path, typer.Option(help="Energy reference (baseline A Wh per task) for C and C+S.")
+    ] = ENERGY_REF_DIR,
 ) -> None:
     """Run episodes and append JSONL records to <out>/episodes.jsonl."""
     from armbench.runner import SimRunOptions, authorise_seeds, run_sim  # noqa: PLC0415
@@ -329,34 +401,11 @@ def run(  # noqa: PLR0913
     spec = _RunSpec(
         tasks=tasks, agent=agent, seeds=seed_list, repeat=repeat, run_id=run_id,
         llm_config=llm_config, provider=provider_kind, skills_dir=skills_dir,
+        energy_ref_dir=energy_ref_dir,
     )  # fmt: skip
-    llm_meta = None
-    if spec.uses_llm:
-        llm = load_llm_params(llm_config)
-        llm_meta = {"config": str(llm_config), "provider": provider_kind or llm.provider,
-                    "model": llm.model, "temperature": llm.temperature, "seed": llm.seed,
-                    "max_attempts": llm.max_attempts}  # fmt: skip
-    skills_meta = None
-    if spec.uses_skills:
-        from armbench.skills import SkillLibrary  # noqa: PLC0415
-
-        try:
-            frozen = SkillLibrary.load(skills_dir, require_frozen=True)
-        except LibraryError as exc:
-            typer.echo(f"refused: {exc}", err=True)
-            raise typer.Exit(code=2) from exc
-        skills_meta = {"dir": str(skills_dir), "sha256": frozen.sha256(), "n_skills": len(frozen),
-                       "names": list(frozen.names)}  # fmt: skip
     (out_dir / "run.json").write_text(
-        json.dumps(
-            {"run_id": run_id, "tasks": tasks, "agent": agent, "seeds": seed_list,
-             "repeat": repeat, "backend": backend, "image": image if backend == "sim" else None,
-             "git_sha": _git_sha(), "armbench": __version__, "llm": llm_meta,
-             "skills": skills_meta},
-            indent=1,
-        )
-        + "\n"
-    )  # fmt: skip
+        json.dumps(_run_meta(spec, backend=backend, image=image), indent=1) + "\n"
+    )
     if backend == "fake":
         n_ok = _run_fake(spec, out_dir)
         typer.echo(f"{n_ok}/{len(tasks) * len(seed_list) * repeat} ok -> {out_dir}")
@@ -406,6 +455,69 @@ def report(
         typer.echo(f"wrote {out}")
     if strict and not rep.passed:
         raise typer.Exit(code=1)
+
+
+energy_ref_app = typer.Typer(
+    no_args_is_help=True, help="Energy reference of agents C and C+S (phase F8, D8)."
+)
+app.add_typer(energy_ref_app, name="energy-ref")
+
+
+@energy_ref_app.command("build")
+def energy_ref_build(
+    run_dir: Annotated[Path, typer.Option("--run", help="Baseline A simulation run.")],
+    out: Annotated[Path, typer.Option(help="Directory for reference.json.")] = ENERGY_REF_DIR,
+    variant: Annotated[Variant, typer.Option(help="Energy variant to quote.")] = Variant.A,
+    eta: Annotated[
+        float | None, typer.Option(help="Efficiency row to quote (default: nominal eta).")
+    ] = None,
+    energy_file: Annotated[Path, typer.Option(help="Energy YAML.")] = DEFAULT_ENERGY_FILE,
+) -> None:
+    """Aggregate baseline A's Wh per task (median, IQM, range) into the reference C reads."""
+    from armbench.runner.reference import reference_from_run  # noqa: PLC0415
+
+    eta_val = load_energy_params(energy_file).eta if eta is None else eta
+    if (out / REFERENCE_FILE).exists():
+        typer.echo(f"refused: {out / REFERENCE_FILE} exists; a new reference is a new directory",
+                   err=True)  # fmt: skip
+        raise typer.Exit(code=2)
+    try:
+        ref = reference_from_run(run_dir, variant=variant, eta=eta_val)
+    except EnergyReferenceError as exc:
+        typer.echo(f"refused: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    path = ref.save(out)
+    typer.echo(f"{len(ref.tasks)} task(s) from run {ref.source.run_id} -> {path}")
+    typer.echo(f"sha256={ref.sha256()}")
+    for t in ref.tasks.values():
+        typer.echo(f"- {t.task:18s} {t.wh_median:.4f} Wh (n={t.n}, {t.wh_min:.4f}-{t.wh_max:.4f})")
+
+
+@energy_ref_app.command("show")
+def energy_ref_show(
+    directory: Annotated[Path, typer.Option("--dir", help="Reference directory.")] = ENERGY_REF_DIR,
+    as_json: Annotated[bool, typer.Option("--json", help="Machine-readable output.")] = False,
+) -> None:
+    """Print the energy reference: provenance, hash and per-task budgets."""
+    try:
+        ref = EnergyReference.load(directory)
+    except EnergyReferenceError as exc:
+        typer.echo(f"error: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    if as_json:
+        typer.echo(json.dumps({"sha256": ref.sha256(), **ref.model_dump(mode="json")}, indent=1))
+        return
+    src = ref.source
+    typer.echo(
+        f"variant {ref.variant} eta {ref.eta} from run {src.run_id} (agent {src.agent}, "
+        f"{src.backend}, seeds {list(src.seeds)}, split {src.split}); sha256={ref.sha256()}"
+    )
+    for t in ref.tasks.values():
+        typer.echo(
+            f"- {t.task:18s} median {t.wh_median:.4f} Wh  iqm {t.wh_iqm:.4f}  "
+            f"range {t.wh_min:.4f}-{t.wh_max:.4f}  n={t.n}  sim {t.sim_s_median:.1f} s  "
+            f"calls {t.n_primitives_median:.0f}"
+        )
 
 
 skills_app = typer.Typer(no_args_is_help=True, help="Skill library (phase F7).")

@@ -1,4 +1,5 @@
 """The prompt agent B sends: API reference, environment facts, rules, one example, the task.
+B+S appends a ``# Skills`` section and C/C+S an ``# Energy`` section to the task message.
 
 The prompt is a pure function of the task instance and the configuration — it never contains
 live perception, so it can be answered on the host (where the key is), cached, and replayed
@@ -10,6 +11,7 @@ from __future__ import annotations
 import textwrap
 from collections.abc import Sequence
 
+from armbench.energy import EnergyParams, EnergyReference, TaskReference
 from armbench.llm.types import Message
 from armbench.primitives.params import PrimitiveParams
 from armbench.sandbox import ALLOWED_BUILTINS, ProgramRun
@@ -143,22 +145,63 @@ def skills_section(skills: Sequence[Skill]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def task_message(instance: TaskInstance, skills: Sequence[Skill] = ()) -> str:
+ENERGY_HEADER = "# Energy"
+
+ENERGY_SECTION = """\
+# Energy
+Your program is also scored on the electrical energy (Wh) the arm draws over the whole episode,
+from the first primitive call to the last, observation moves included. Model:
+P_el = P_mech / eta + copper losses + P0, with eta = {eta:.2f} (drive-train efficiency),
+P0 = {p0:.0f} W (controller, brakes and electronics: drawn every second, moving or not) and
+copper losses = sum_i R_i * (tau_i / kt_i)^2 (grow with the square of the joint torques).
+Reference budget: a scripted baseline solved this task in a median of {wh:.3f} Wh
+(interquartile mean {iqm:.3f}, range {lo:.3f}-{hi:.3f} Wh over {n} development scenes), using
+{sim_s:.1f} s of simulated time and {calls:.0f} primitive calls per episode. Aim at or below
+{wh:.3f} Wh without failing the task: a failed episode saves nothing.
+Levers, in order of effect for this arm:
+- Time. P0 is paid every second, so every move and every second of motion costs energy:
+  use fewer moves, shorter paths and lower lift heights (keep clearance above neighbouring cubes
+  and obstacles), and move to an observation pose only when a needed cube is missing or partial
+  (detect() itself costs nothing).
+- speed_scale. A lower value cuts peak mechanical and copper power but lengthens the move, so
+  P0 is paid for longer; it pays off only when the motion term dominates (fast, heavy moves).
+  Use it where precision matters (final descent, release), not as a default.
+"""
+
+
+def energy_section(ref: EnergyReference, task: TaskReference, params: EnergyParams) -> str:
+    """The ``# Energy`` block of agents C and C+S: the model constants, baseline A's Wh for the
+    same task as a budget (D8) and the levers the program controls."""
+    return ENERGY_SECTION.format(
+        eta=params.eta, p0=params.p0_w, wh=task.wh_median, iqm=task.wh_iqm, lo=task.wh_min,
+        hi=task.wh_max, n=task.n, sim_s=task.sim_s_median, calls=task.n_primitives_median,
+    )  # fmt: skip
+
+
+def task_message(
+    instance: TaskInstance, skills: Sequence[Skill] = (), energy: str | None = None
+) -> str:
     n = len(instance.scene.cubes)
     head = skills_section(skills) + "\n" if skills else ""
+    if energy:
+        head += energy + "\n"
     return (
         f"{head}# Task\n{instance.prompt}\n\nThere are {n} cubes on the table. Write the program."
     )
 
 
 def build_messages(
-    instance: TaskInstance, system: str, skills: Sequence[Skill] = ()
+    instance: TaskInstance,
+    system: str,
+    skills: Sequence[Skill] = (),
+    energy: str | None = None,
 ) -> tuple[Message, ...]:
-    """Agent B's two messages; B+S appends the retrieved skills to the task message (the system
-    prompt is identical, so B and B+S differ only by that section)."""
+    """Agent B's two messages; B+S prepends the retrieved skills to the task message and C/C+S
+    the energy block (the system prompt is identical for all four, so the configurations differ
+    only by those sections)."""
     return (
         Message(role="system", content=system),
-        Message(role="user", content=task_message(instance, skills)),
+        Message(role="user", content=task_message(instance, skills, energy)),
     )
 
 

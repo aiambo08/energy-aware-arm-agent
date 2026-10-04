@@ -136,6 +136,16 @@ class LLMStats(BaseModel):
     """Episodes in which each library skill completed (agent B+S; empty for B)."""
     skill_episode_rate: float = 0.0
     """Share of episodes that completed at least one skill call."""
+    energy_prompt_rate: float = 0.0
+    """Share of episodes whose prompt carried the energy block (agents C/C+S; 0 for B/B+S)."""
+    energy_reference_wh: float | None = None
+    """Baseline A's median Wh the energy block quoted (one value per task)."""
+    wh_over_reference: Dist = Dist.of([])
+    """Measured Wh (variant A, nominal eta) divided by the quoted reference, per episode."""
+    moves_per_episode: Dist = Dist.of([])
+    slow_move_episode_rate: float = 0.0
+    """Share of episodes with at least one ``move_to`` at ``speed_scale < 1`` (F8 DoD row)."""
+    speed_scale_min: float | None = None
 
 
 class TaskSummary(BaseModel):
@@ -224,10 +234,18 @@ def _repeats(records: list[EpisodeRecord]) -> list[RepeatStats]:
 
 
 def _llm_stats(records: list[EpisodeRecord]) -> LLMStats | None:
-    traces = [r.trace for r in records if r.trace is not None and r.trace.llm_provider]
+    traced = [r for r in records if r.trace is not None and r.trace.llm_provider]
+    traces = [r.trace for r in traced if r.trace is not None]
     if not traces:
         return None
     n = len(traces)
+    refs = sorted({t.energy_reference_wh for t in traces if t.energy_reference_wh is not None})
+    ratios = [
+        r.energy.wh_a / r.trace.energy_reference_wh
+        for r in traced
+        if r.trace is not None and r.energy is not None and r.trace.energy_reference_wh
+    ]
+    mins = [t.speed_scale_min for t in traces if t.speed_scale_min is not None]
     cost = sum(t.cost_usd or 0.0 for t in traces)
     tokens = [float(t.prompt_tokens + t.completion_tokens) for t in traces]
     live = [t.llm_latency_s for t in traces if not t.llm_cached and t.llm_latency_s is not None]
@@ -248,6 +266,12 @@ def _llm_stats(records: list[EpisodeRecord]) -> LLMStats | None:
         isolation=dict(sorted(Counter(",".join(t.sandbox_isolation) for t in traces).items())),
         skills_used=dict(sorted(Counter(n for t in traces for n in t.skills_used).items())),
         skill_episode_rate=sum(1 for t in traces if t.skills_used) / n,
+        energy_prompt_rate=sum(1 for t in traces if t.energy_reference_wh is not None) / n,
+        energy_reference_wh=refs[0] if len(refs) == 1 else None,
+        wh_over_reference=Dist.of(ratios),
+        moves_per_episode=Dist.of([float(t.n_moves) for t in traces]),
+        slow_move_episode_rate=sum(1 for t in traces if t.n_slow_moves) / n,
+        speed_scale_min=min(mins) if mins else None,
     )
 
 
@@ -377,6 +401,17 @@ def table(report: Report) -> str:
                 lines.append(
                     f"{'':18s} skills: {used} ({t.llm.skill_episode_rate:.0%} of episodes); "
                     f"primitives/ep med {t.n_primitives.median:.0f}"
+                )
+            if t.llm.energy_prompt_rate:
+                ref = f"{t.llm.energy_reference_wh:.4f}" if t.llm.energy_reference_wh else "?"
+                ratio = (
+                    f"{t.llm.wh_over_reference.median:.3f}" if t.llm.wh_over_reference.n else "-"
+                )
+                lines.append(
+                    f"{'':18s} energy block in {t.llm.energy_prompt_rate:.0%} of prompts, "
+                    f"reference {ref} Wh, Wh/reference med {ratio}; moves/ep med "
+                    f"{t.llm.moves_per_episode.median:.0f}, speed_scale<1 in "
+                    f"{t.llm.slow_move_episode_rate:.0%} of episodes"
                 )
     lines.append("")
     for name, ok in report.checks.items():

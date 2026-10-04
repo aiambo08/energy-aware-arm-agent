@@ -24,7 +24,7 @@ import rclpy
 from sensor_msgs.msg import JointState
 
 from armbench import __version__
-from armbench.agents import LLM_AGENT_IDS, get_agent
+from armbench.agents import LLM_AGENT_IDS, SKILL_AGENT_IDS, get_agent
 from armbench.energy import EnergyParams, load_energy_params, sensitivity
 from armbench.llm import load_llm_params, make_provider
 from armbench.primitives import Robot, load_primitive_params
@@ -210,7 +210,8 @@ def parse_args() -> argparse.Namespace:
         "--llm-dir",
         type=Path,
         default=None,
-        help="agent B bundle: llm.yaml + cache/ pre-fetched on the host (replayed here)",
+        help="LLM bundle: llm.yaml + cache/ pre-fetched on the host (replayed here), plus "
+        "skills/ for B+S/C+S and energy_ref/ for C/C+S",
     )
     return parser.parse_args()
 
@@ -229,12 +230,13 @@ def make_agent(args: argparse.Namespace) -> object:
         provider=provider,
         artifacts_dir=args.out_dir,
         skills_dir=args.llm_dir / "skills",
+        energy_ref_dir=args.llm_dir / "energy_ref",
     )
 
 
 def make_skill_runner(args: argparse.Namespace) -> SkillRunner | None:
-    """B+S: the frozen library shipped in the LLM bundle (``skills/``)."""
-    if args.agent != "B+S":
+    """B+S and C+S: the frozen library shipped in the LLM bundle (``skills/``)."""
+    if args.agent not in SKILL_AGENT_IDS:
         return None
     return SkillRunner(SkillLibrary.load(args.llm_dir / "skills", require_frozen=True))
 

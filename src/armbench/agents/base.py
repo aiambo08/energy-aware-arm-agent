@@ -28,6 +28,7 @@ class AgentTrace(BaseModel):
     program_sha256: str | None = None
     """Hash of the code that ran (the baseline module for A, the generated program for B+)."""
     llm_provider: str | None = None
+    """Provider that produced the answer (the origin, also when it came back from the cache)."""
     llm_model: str | None = None
     """Exact model identifier the provider reported."""
     llm_cached: bool | None = None

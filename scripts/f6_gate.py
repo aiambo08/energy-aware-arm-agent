@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 from armbench import __version__
+from armbench.llm import Ledger
 from armbench.runner import EpisodeRecord, build_report
 from armbench.runner.report import Report
 
@@ -92,20 +93,52 @@ def attack_battery() -> dict[str, object]:
     }
 
 
-def judge(report: Report, replay: dict[str, object], battery: dict[str, object]) -> dict[str, bool]:
+def percentile(xs: list[float], q: float) -> float:
+    if not xs:
+        return 0.0
+    ys = sorted(xs)
+    return ys[min(len(ys) - 1, round(q * (len(ys) - 1)))]
+
+
+def host_llm(live_dir: Path, n_episodes: int) -> dict[str, object]:
+    """What the host-side prefetch cost: the containers only replay, so the ledger is the source."""
+    ledger = Ledger.load(live_dir / "llm" / "ledger.json")
+    per_episode = ledger.usd / n_episodes if n_episodes else 0.0
+    return {
+        "n_calls": ledger.n_calls,
+        "n_cached": ledger.n_cached,
+        "prompt_tokens": ledger.prompt_tokens,
+        "completion_tokens": ledger.completion_tokens,
+        "models": ledger.models,
+        "usd": ledger.usd,
+        "usd_per_episode": per_episode,
+        "usd_per_400_episodes": per_episode * 400,
+        "latency_s_p50": percentile(ledger.latencies_s, 0.5),
+        "latency_s_p95": percentile(ledger.latencies_s, 0.95),
+    }
+
+
+def judge(
+    report: Report,
+    replay: dict[str, object],
+    battery: dict[str, object],
+    host: dict[str, object],
+) -> dict[str, bool]:
     pick = [t for t in report.tasks if t.task.startswith("pick_place")]
     llm = [t.llm for t in report.tasks if t.llm is not None]
-    final_eval_usd = sum(s.cost_per_400_episodes_usd for s in llm) / len(llm) if llm else 0.0
+    final_eval_usd = float(str(host["usd_per_400_episodes"]))
     return {
         "attacks_ge_40_and_tests_green": int(str(battery["attack_cases"])) >= 40
         and not bool(battery["tests_failed"]),
         "replay_exact": replay["compared"] == replay["exact"]
         and int(str(replay["compared"])) > 0
         and replay["replay_cached"] == replay["replay_n"],
-        "cost_measured_and_under_budget": bool(llm) and final_eval_usd < MAX_FINAL_EVAL_USD,
+        "cost_measured_and_under_budget": bool(llm)
+        and (int(str(host["n_calls"])) + int(str(host["n_cached"]))) > 0
+        and final_eval_usd < MAX_FINAL_EVAL_USD,
         "pick_place_success_ge_50pct": bool(pick)
         and all(t.success >= MIN_PICK_PLACE_SUCCESS for t in pick),
-        "latency_reported": all(s.latency_s is not None for s in llm),
+        "latency_reported": int(str(host["n_calls"])) > 0,
         "no_infra_failures": all(t.n_infra == 0 for t in report.tasks),
         "energy_tables_complete": all(t.energy_complete == t.n for t in report.tasks),
     }
@@ -124,7 +157,8 @@ def main(argv: list[str] | None = None) -> int:
     replay_report = build_report([args.replay / "episodes.jsonl"], n_rows_expected=args.n_rows)
     rep_check = replay_check(live, replay)
     battery = attack_battery()
-    checks = judge(report, rep_check, battery)
+    host = host_llm(args.live, len(live))
+    checks = judge(report, rep_check, battery, host)
     run_meta = json.loads((args.live / "run.json").read_text())
     out = {
         "phase": "F6",
@@ -133,6 +167,7 @@ def main(argv: list[str] | None = None) -> int:
         "live_run": run_meta,
         "live": report.model_dump(mode="json"),
         "replay": replay_report.model_dump(mode="json"),
+        "host_llm": host,
         "replay_check": rep_check,
         "attack_battery": battery,
         "thresholds": {

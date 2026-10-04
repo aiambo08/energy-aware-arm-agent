@@ -88,6 +88,7 @@ class LLMAgent:
         cost = 0.0
         cached = True
         model: str | None = None
+        origin: str | None = None
         runs: list[ProgramRun] = []
         response_sha = program_sha = None
         for attempt in range(1, p.max_attempts + 1):
@@ -100,6 +101,7 @@ class LLMAgent:
             cost += resp.cost_usd
             cached = cached and resp.cached
             model = resp.model
+            origin = resp.provider
             response_sha = resp.response_sha256()
             if usage.total > p.max_tokens_per_episode:
                 msg = f"{usage.total} tokens over {p.max_attempts} attempt(s) exceed the cap"
@@ -130,7 +132,7 @@ class LLMAgent:
             prompt_sha256=prompt_sha,
             response_sha256=response_sha,
             program_sha256=program_sha,
-            llm_provider=self.provider.id,
+            llm_provider=origin or self.provider.id,
             llm_model=model,
             llm_cached=cached,
             cost_usd=cost,

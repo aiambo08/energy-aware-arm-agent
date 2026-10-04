@@ -29,3 +29,6 @@ runs/
 reports/_f2_*/
 reports/_f3_*/
 reports/_f4_*/
+
+# LLM response cache (runs carry their own bundle under <out>/llm)
+/cache/

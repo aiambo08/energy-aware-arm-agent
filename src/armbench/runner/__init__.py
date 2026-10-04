@@ -3,7 +3,7 @@
 from armbench.runner.docker import DEFAULT_IMAGE, SimRunOptions, run_sim
 from armbench.runner.episode import POST_SIM_S, SETTLE_TIMEOUT_S, World, run_episode
 from armbench.runner.fake import FakeWorld
-from armbench.runner.report import Report, Thresholds, build_report, table, write_report
+from armbench.runner.report import LLMStats, Report, Thresholds, build_report, table, write_report
 from armbench.runner.schema import (
     INFRA_CODES,
     SCHEMA_VERSION,
@@ -29,6 +29,7 @@ __all__ = [
     "EpisodeRecord",
     "Failure",
     "FakeWorld",
+    "LLMStats",
     "Report",
     "SimRunOptions",
     "Software",

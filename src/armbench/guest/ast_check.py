@@ -34,6 +34,7 @@ ALLOWED_BUILTINS: Final[tuple[str, ...]] = (
     "map",
     "max",
     "min",
+    "next",
     "pow",
     "print",
     "range",

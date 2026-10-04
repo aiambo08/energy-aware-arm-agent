@@ -86,6 +86,26 @@ def test_run_program_completes_prints_and_records_calls(robot: Robot) -> None:
     assert run.primitive_error() is None
 
 
+def test_next_over_a_generator_is_allowed(robot: Robot) -> None:
+    src = (
+        "dets = robot.detect()\n"
+        "first = next((d for d in dets if d.color == dets[0].color), None)\n"
+        "none = next((d for d in dets if d.color == 'none'), None)\n"
+        "print(first is not None, none)\n"
+        "try:\n"
+        "    next(iter([]))\n"
+        "except StopIteration:\n"
+        "    print('stop')\n"
+    )
+    chk = check_program(src)
+    assert not chk.ok and "iter" in chk.summary()
+    src = src.replace("next(iter([]))", "next(x for x in [])")
+    assert check_program(src).ok
+    run = run_program(src, robot, FAST)
+    assert run.outcome == "completed", run.describe()
+    assert run.stdout.splitlines() == ["True None", "stop"]
+
+
 def test_primitive_error_is_rebuilt_on_the_parent_side(robot: Robot) -> None:
     src = (
         "try:\n"

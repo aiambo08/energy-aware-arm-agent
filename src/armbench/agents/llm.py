@@ -114,6 +114,8 @@ class LLMAgent:
             temperature=self.params.temperature,
             max_tokens=self.params.max_tokens,
             seed=self.params.seed,
+            reasoning_effort=self.params.reasoning_effort,
+            endpoint=self.params.endpoint(),
         )
 
     def solve(self, robot: Robot, instance: TaskInstance) -> AgentTrace:

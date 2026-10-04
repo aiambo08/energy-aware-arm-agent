@@ -34,9 +34,18 @@ class LLMRequest(BaseModel):
     temperature: float = Field(ge=0.0, le=2.0, default=0.0)
     max_tokens: int = Field(gt=0, default=1500)
     seed: int | None = None
+    reasoning_effort: str | None = None
+    """Forwarded as ``reasoning_effort`` (thinking models, e.g. Gemini); None = provider default."""
+    endpoint: str | None = None
+    """Base URL of the provider that answers; two providers serving the same model name never
+    share a cache entry. ``None`` for the template provider."""
 
     def canonical(self) -> str:
-        return json.dumps(self.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
+        payload = self.model_dump(mode="json")
+        for optional in ("reasoning_effort", "endpoint"):
+            if payload[optional] is None:
+                del payload[optional]
+        return json.dumps(payload, sort_keys=True, separators=(",", ":"))
 
     def key(self) -> str:
         return sha256_text(self.canonical())

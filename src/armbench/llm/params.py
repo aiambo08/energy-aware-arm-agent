@@ -16,6 +16,7 @@ from armbench.sandbox import ProgramLimits, SandboxLimits
 DEFAULT_LLM_FILE: Final = CONFIG_DIR / "llm.yaml"
 
 ProviderKind = Literal["template", "openai", "replay"]
+SPEND_FILE: Final = "spend.json"
 
 
 class SandboxSpec(BaseModel):
@@ -56,10 +57,24 @@ class LLMParams(BaseModel):
     """Program generations per episode (D5: one in the main evaluation)."""
     max_tokens_per_episode: int = Field(gt=0, default=8000)
     max_usd_per_run: float = Field(ge=0, default=5.0)
+    max_usd_total: float | None = Field(ge=0, default=None)
+    """Cap over every run sharing ``cache_dir`` (ledger ``<cache_dir>/spend.json``); off if None."""
+    reasoning_effort: str | None = None
+    """Sent to thinking models (part of the cache key); ``None`` keeps the provider default."""
     prices_usd_per_1m: Prices = Prices()
     cache_dir: Path = Path("cache/llm")
     openai: OpenAICompatSpec = OpenAICompatSpec()
     sandbox: SandboxSpec = SandboxSpec()
+
+    def endpoint(self) -> str | None:
+        """Identity of the answering service in the cache key: the configured base URL for
+        ``openai`` (and ``replay``, which must find what ``openai`` stored); none for template."""
+        if self.provider == "template":
+            return None
+        return self.openai.base_url.rstrip("/")
+
+    def spend_ledger_path(self) -> Path:
+        return self.cache_dir / SPEND_FILE
 
 
 def load_llm_params(path: Path = DEFAULT_LLM_FILE) -> LLMParams:

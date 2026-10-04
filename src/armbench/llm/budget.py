@@ -71,9 +71,10 @@ class Ledger(BaseModel):
 
 
 class BudgetedProvider:
-    """Refuses a live call that could push the run past ``max_usd``; prices every answer."""
+    """Refuses a live call that could push the run past ``max_usd`` (or every run sharing
+    ``total_path`` past ``max_usd_total``); prices every answer."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913 - keyword-only caps and ledgers
         self,
         inner: Provider,
         prices: Prices,
@@ -81,7 +82,11 @@ class BudgetedProvider:
         max_usd: float,
         ledger: Ledger | None = None,
         ledger_path: Path | None = None,
+        max_usd_total: float | None = None,
+        total_path: Path | None = None,
     ) -> None:
+        self.max_usd_total = max_usd_total
+        self.total_path = total_path
         self.inner = inner
         self.prices = prices
         self.max_usd = max_usd
@@ -91,6 +96,10 @@ class BudgetedProvider:
         if ledger_path is not None:
             self.ledger.save(ledger_path)
 
+    def total(self) -> Ledger:
+        """Spend over every run sharing the ledger file (re-read so parallel runs add up)."""
+        return Ledger.load(self.total_path) if self.total_path is not None else Ledger()
+
     def complete(self, request: LLMRequest) -> LLMResponse:
         worst = self.prices.worst_case_usd(request)
         if self.ledger.usd + worst > self.max_usd:
@@ -99,6 +108,14 @@ class BudgetedProvider:
                 f"cap is {self.max_usd:.2f} USD"
             )
             raise BudgetExceeded(msg)
+        if self.max_usd_total is not None:
+            spent = self.total().usd
+            if spent + worst > self.max_usd_total:
+                msg = (
+                    f"all runs spent {spent:.4f} USD; this call could cost {worst:.4f} and the "
+                    f"total cap is {self.max_usd_total:.2f} USD"
+                )
+                raise BudgetExceeded(msg)
         try:
             response = self.inner.complete(request)
         except Exception:
@@ -112,6 +129,10 @@ class BudgetedProvider:
         priced = response.model_copy(update={"cost_usd": self.prices.cost_usd(response.usage)})
         self.ledger.record(priced)
         self._flush()
+        if self.total_path is not None:
+            total = self.total()
+            total.record(priced)
+            total.save(self.total_path)
         return priced
 
     def _flush(self) -> None:

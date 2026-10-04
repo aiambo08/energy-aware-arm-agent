@@ -52,10 +52,16 @@ def run(cmd: list[str], timeout: float = 600.0) -> subprocess.CompletedProcess[s
     return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, check=False)
 
 
-def capture(
-    image: str, seeds: str, dataset: Path, settle_s: float, timeout_s: float
-) -> dict[str, object]:
-    """Boot the sim, run scene_capture and copy the dataset out. Returns the capture summary."""
+@dataclass(frozen=True)
+class CaptureOpts:
+    image: str
+    settle_s: float
+    timeout_s: float
+    chunk: int
+
+
+def capture_chunk(opts: CaptureOpts, seeds: list[int], chunk_dir: Path) -> dict[str, object]:
+    """Boot a fresh sim, run scene_capture for ``seeds`` and copy its dataset into ``chunk_dir``."""
     run(["docker", "rm", "-f", CONTAINER], timeout=60)
     t0 = time.time()
     started = run(
@@ -67,7 +73,7 @@ def capture(
             "none",
             "--name",
             CONTAINER,
-            image,
+            opts.image,
             "bash",
             "-c",
             LAUNCH_CMD,
@@ -88,29 +94,66 @@ def capture(
                 "armbench_bringup",
                 "scene_capture",
                 "--seeds",
-                seeds,
+                ",".join(str(s) for s in seeds),
                 "--out",
                 IN_CONTAINER_DATASET,
                 "--settle-s",
-                str(settle_s),
+                str(opts.settle_s),
                 "--timeout",
-                str(timeout_s),
+                str(opts.timeout_s),
             ],
-            timeout=timeout_s * 4 * len(parse_seeds(seeds)) + 300,
+            timeout=opts.timeout_s * 4 * len(seeds) + 300,
         )
-        if dataset.exists():
-            shutil.rmtree(dataset)
-        dataset.parent.mkdir(parents=True, exist_ok=True)
-        copied = run(["docker", "cp", f"{CONTAINER}:{IN_CONTAINER_DATASET}", str(dataset)])
+        copied = run(["docker", "cp", f"{CONTAINER}:{IN_CONTAINER_DATASET}", str(chunk_dir)])
         if copied.returncode != 0:
             msg = f"docker cp failed: {copied.stderr.strip()} (capture rc={proc.returncode})"
             raise RuntimeError(msg)
     finally:
         run(["docker", "rm", "-f", CONTAINER], timeout=60)
-    summary = json.loads((dataset / "capture_summary.json").read_text())
+    summary = json.loads((chunk_dir / "capture_summary.json").read_text())
     summary["capture_rc"] = proc.returncode
+    summary["capture_stderr_tail"] = proc.stderr[-3000:]
     summary["wall_s_total"] = round(time.time() - t0, 1)
     return dict(summary)
+
+
+def capture(opts: CaptureOpts, seeds: str, dataset: Path) -> dict[str, object]:
+    """Capture all seeds, ``chunk`` per fresh container (long-lived worlds degrade: after a few
+    hundred spawn/remove cycles gz-transport service calls start timing out). Returns the merged
+    capture summary."""
+    if dataset.exists():
+        shutil.rmtree(dataset)
+    dataset.mkdir(parents=True)
+    all_seeds = parse_seeds(seeds)
+    chunks: list[dict[str, object]] = []
+    scenes: list[dict[str, object]] = []
+    chunk = opts.chunk
+    for i in range(0, len(all_seeds), chunk):
+        chunk_dir = dataset / f"_chunk_{i // chunk:03d}"
+        summary = capture_chunk(opts, all_seeds[i : i + chunk], chunk_dir)
+        for d in sorted(chunk_dir.glob("seed_*")):
+            shutil.move(str(d), dataset / d.name)
+        chunk_scenes = summary.pop("scenes")
+        if not isinstance(chunk_scenes, list):
+            msg = "capture_summary.json without scenes list"
+            raise RuntimeError(msg)
+        scenes.extend(chunk_scenes)
+        summary["seeds"] = all_seeds[i : i + chunk]
+        chunks.append(summary)
+        print(
+            f"chunk {i // chunk}: {summary['n_ok']}/{summary['n']} ok, "
+            f"rc={summary['capture_rc']}, {summary['wall_s_total']} s",
+            flush=True,
+        )
+    return {
+        "n": len(scenes),
+        "n_ok": sum(1 for s in scenes if s["ok"]),
+        "n_retried": sum(1 for s in scenes if s.get("retried")),
+        "chunk_size": chunk,
+        "wall_s_total": round(sum(float(str(c["wall_s_total"])) for c in chunks), 1),
+        "chunks": chunks,
+        "scenes": scenes,
+    }
 
 
 def parse_seeds(spec: str) -> list[int]:
@@ -335,6 +378,9 @@ def main() -> int:
         "--timeout", type=float, default=30.0, help="per wait inside the capture node"
     )
     parser.add_argument(
+        "--chunk", type=int, default=25, help="seeds per fresh simulation container"
+    )
+    parser.add_argument(
         "--skip-capture", action="store_true", help="evaluate an existing --dataset"
     )
     args = parser.parse_args()
@@ -350,7 +396,9 @@ def main() -> int:
     }
     if not args.skip_capture:
         report["capture"] = capture(
-            args.image, args.seeds, args.dataset, args.settle_s, args.timeout
+            CaptureOpts(args.image, args.settle_s, args.timeout, args.chunk),
+            args.seeds,
+            args.dataset,
         )
     report.update(evaluate(args.dataset, params))
     checks = report["checks"]

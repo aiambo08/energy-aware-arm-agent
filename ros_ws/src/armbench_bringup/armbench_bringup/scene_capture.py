@@ -1,9 +1,10 @@
 """``scene_capture`` node: RGB-D frames with ground truth for seeded scenes (F3 dataset).
 
 For every seed it generates the scene with ``armbench.scene``, spawns the cubes into the running
-world (``ros_gz_sim create``), waits until Gazebo reports every cube at rest at its requested pose
-plus ``--settle-s`` of simulated time, records one RGB + depth pair rendered *after* that instant
-(matching header stamps), then removes the cubes (``/world/<name>/remove``). Output per seed:
+world (gz ``EntityFactory`` service), waits until Gazebo reports every cube at rest at its
+requested pose plus ``--settle-s`` of simulated time, records one RGB + depth pair rendered
+*after* that instant (matching header stamps), then removes the cubes (``/world/<name>/remove``).
+Output per seed:
 ``seed_NNNN/{rgb.png, depth.npy, meta.json}`` where ``meta.json`` carries ``CameraInfo.K`` and the
 PosePublisher ground truth of each cube; ``capture_summary.json`` lists timings and failures.
 """
@@ -14,6 +15,7 @@ import argparse
 import json
 import math
 import subprocess
+import tempfile
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -33,6 +35,7 @@ from armbench.scene.generator import DEFAULT_SCENE_FILE, SceneConfig
 MAX_CUBES = 6  # /model/cube_{0..5}/pose are bridged in sim.launch.py
 POSE_TOL_M = 0.005
 GZ_TIMEOUT_MS = 5000
+CLI_TIMEOUT_S = 90.0  # ros2 / gz CLI start-up is slow when the host is loaded
 
 
 def stamp_s(sec: int, nanosec: int) -> float:
@@ -72,6 +75,8 @@ class SceneCaptureNode(Node):
     def __init__(self, world: str) -> None:
         super().__init__("armbench_scene_capture")
         self.world = world
+        self.sdf_dir = Path(tempfile.mkdtemp(prefix="armbench_sdf_"))
+        self.leftover: set[str] = set()  # cubes whose removal timed out; retried before next spawn
         self.s = State()
         self.create_subscription(Clock, "/clock", self._on_clock, qos_profile_sensor_data)
         self.create_subscription(
@@ -139,19 +144,23 @@ class SceneCaptureNode(Node):
             rclpy.spin_once(self, timeout_sec=0.02)
 
     def spawn(self, cube: Cube, config: SceneConfig) -> bool:
-        sdf = (
+        # gz-transport EntityFactory with the model written to a file: ``ros2 run ros_gz_sim
+        # create`` occasionally never returns (its ROS node blocks on discovery), which stalled
+        # whole capture runs; the gz CLI has a hard --timeout like ``remove``.
+        sdf_path = self.sdf_dir / f"{cube.name}.sdf"
+        sdf_path.write_text(
             '<?xml version="1.0"?><sdf version="1.8">' + cube_to_sdf_model(cube, config) + "</sdf>"
         )
         cmd = [
-            "ros2", "run", "ros_gz_sim", "create",
-            "-world", self.world, "-name", cube.name,
-            "-x", repr(cube.x), "-y", repr(cube.y), "-z", repr(cube.z), "-Y", repr(cube.yaw),
-            "-string", sdf,
+            "gz", "service", "-s", f"/world/{self.world}/create",
+            "--reqtype", "gz.msgs.EntityFactory", "--reptype", "gz.msgs.Boolean",
+            "--timeout", str(GZ_TIMEOUT_MS),
+            "--req", f'sdf_filename: "{sdf_path}" name: "{cube.name}"',
         ]  # fmt: skip
         proc = subprocess.run(  # noqa: S603 - fixed executables, scene-generated arguments
-            cmd, capture_output=True, text=True, timeout=30, check=False
+            cmd, capture_output=True, text=True, timeout=CLI_TIMEOUT_S, check=False
         )
-        ok = proc.returncode == 0 and "Entity creation successful" in proc.stdout + proc.stderr
+        ok = proc.returncode == 0 and "data: true" in proc.stdout
         if not ok:
             self.get_logger().error(
                 f"spawn {cube.name} failed: {proc.stdout[-300:]} {proc.stderr[-300:]}"
@@ -165,7 +174,7 @@ class SceneCaptureNode(Node):
             "--timeout", str(GZ_TIMEOUT_MS), "--req", f'name: "{name}" type: MODEL',
         ]  # fmt: skip
         proc = subprocess.run(  # noqa: S603 - fixed executables, model name from the scene
-            cmd, capture_output=True, text=True, timeout=30, check=False
+            cmd, capture_output=True, text=True, timeout=CLI_TIMEOUT_S, check=False
         )
         ok = proc.returncode == 0 and "data: true" in proc.stdout
         if not ok:
@@ -173,6 +182,15 @@ class SceneCaptureNode(Node):
                 f"remove {name} failed: {proc.stdout[-300:]} {proc.stderr[-300:]}"
             )
         return ok
+
+    def place(self, scene: Scene, config: SceneConfig) -> str | None:
+        """Clear cubes left over from a failed removal, then spawn the scene; error tag or None."""
+        self.leftover = {name for name in self.leftover if not self.remove(name)}
+        if self.leftover:
+            return f"leftover: {sorted(self.leftover)}"
+        if not all(self.spawn(c, config) for c in scene.cubes):
+            return "spawn"
+        return None
 
     def settled(self, scene: Scene, t_after: float) -> bool:
         for cube in scene.cubes:
@@ -195,8 +213,8 @@ class SceneCaptureNode(Node):
         scene = generate_scene(seed, config)
         rec: dict = {"seed": seed, "n_cubes": len(scene.cubes), "ok": False}
         try:
-            if not all(self.spawn(c, config) for c in scene.cubes):
-                rec["error"] = "spawn"
+            if (err := self.place(scene, config)) is not None:
+                rec["error"] = err
                 return rec
             t_spawned = self.s.clock
             if not self.wait_until(
@@ -245,8 +263,12 @@ class SceneCaptureNode(Node):
             }  # fmt: skip
             (d / "meta.json").write_text(json.dumps(meta, indent=1))
             rec["ok"] = True
+        except subprocess.TimeoutExpired as exc:
+            self.get_logger().error(f"seed {seed}: {exc}")
+            rec["error"] = f"cli_timeout: {exc.cmd[:4]}"
         finally:
             removed = [self.remove(c.name) for c in scene.cubes]
+            self.leftover |= {c.name for c, ok in zip(scene.cubes, removed, strict=True) if not ok}
             rec["removed_all"] = all(removed)
             self.spin_sim(0.2)
             for c in scene.cubes:
@@ -291,6 +313,9 @@ def main() -> None:
             raise SystemExit(2)
         for seed in parse_seeds(args.seeds):
             rec = node.capture(seed, config, args.out, args.settle_s, args.timeout)
+            if not rec["ok"]:  # one retry: transient CLI or settle timeouts under host load
+                rec = node.capture(seed, config, args.out, args.settle_s, args.timeout)
+                rec["retried"] = True
             records.append(rec)
             node.get_logger().info(json.dumps(rec))
     finally:

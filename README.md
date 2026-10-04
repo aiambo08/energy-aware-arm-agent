@@ -20,13 +20,14 @@ value or a measurement stored under `reports/` with the script that produced it.
 | Quality gates | `ruff`, `ruff format`, `mypy --strict`, `pytest` (+ `hypothesis`), `pre-commit` |
 | Simulation image | `docker/Dockerfile`: ROS 2 Jazzy + Gazebo Harmonic + UR5e/Robotiq/Pinocchio packages, `ros_ws` built in the image |
 | Energy model (F2) | `src/armbench/energy`: P_mech variants A/B, copper losses, P₀, η sensitivity, trapezoidal integration (batch and streaming `EnergyMeter`), JSONL episode logs, `armbench energy` CLI; `configs/energy.yaml` holds the electrical assumptions |
+| Perception (F3) | `src/armbench/perception`: pinhole + camera extrinsics (`Camera`), HSV + depth `detect()` → `Detection` (colour, position and yaw in `base_link`); `configs/perception.yaml`; `armbench_bringup` node `scene_capture` (RGB-D + Gazebo ground truth per seed); `scripts/perception_eval.py` runs the F3 gate → `reports/f3_perception.json` |
 | Torque source (F2) | `armbench_bringup` nodes `energy_meter` (online Wh on `/armbench/energy`), `torque_probe` and `torque_compare` (Pinocchio inverse dynamics); `scripts/torque_source.py` runs critical gate 2 → `reports/f2_torque_source.json`, decision in ADR-004 |
 | Simulation (F1) | `ros_ws/src/armbench_description` (UR5e + parallel gripper xacro, tabletop world with fixed RGB-D camera), `ros_ws/src/armbench_bringup` (`sim.launch.py`, controllers, `sim_check` node) |
 | CI | `verify` (lint, types, tests, no ROS) and `sim-image` (build image, F0 boot gate, F1 self-check gate) |
 | Docs | `docs/plan.es.md` (full phased plan, Spanish), ADRs in `docs/adr/`, `docs/PROJECT_STATE.md` |
 
 Roadmap (one PR per phase, see `docs/plan.es.md` and `docs/PROJECT_STATE.md`):
-~~F1 arm simulation~~ · ~~F2 torque source and energy model~~ · F3 perception ·
+~~F1 arm simulation~~ · ~~F2 torque source and energy model~~ · ~~F3 perception~~ ·
 F4 primitives · F5 tasks, baseline and runner · F6 LLM agent and sandbox ·
 F7 skill library · F8 energy-aware agent · F9 pre-registered evaluation ·
 F10 publication.
@@ -175,6 +176,56 @@ motion NRMSE median 0.06, Wh CV 1.1 % (Gazebo) / 0.07 % (inverse dynamics), mete
 one core = 2.3 % of the container's CPU time, 100 Hz decimation changes Wh by ≤ 2.6 %. Decision: **torque source = Gazebo effort**, inverse dynamics kept as
 cross-check (ADR-004).
 
+## Perception `detect()` (F3)
+
+`armbench.perception` turns one RGB-D frame of the simulated camera into cube poses in
+`base_link` (`configs/perception.yaml`): HSV thresholds per colour → depth-valid mask →
+morphological opening → connected components → **top face only** (pixels within
+`depth.top_face_band_m` of the nearest depth of the blob, so visible side faces do not bias
+the centre) → centroid + median depth → pinhole back-projection (`CameraInfo.K`, or
+`fx = fy = (W/2)/tan(hfov/2)` from the SDF) → camera extrinsics from the world file
+(`xyz`, `rpy`, Gazebo sensor frame x-forward → optical frame z-forward) → cube centre
+(`top − size/2` in z). Yaw comes from the minimum-area rectangle of the top face, folded to
+`[−π/4, π/4)` (a cube is symmetric every 90°).
+
+```python
+import numpy as np
+from armbench.perception import Camera, detect, load_perception_params
+
+params = load_perception_params()  # configs/perception.yaml
+camera = Camera.from_spec(params.camera)  # or Camera.from_spec(params.camera, k=CameraInfo.k)
+rgb: np.ndarray = ...  # (480, 640, 3) uint8, rgb8 from /camera/image
+depth: np.ndarray = ...  # (480, 640) float32 metres, 32FC1 from /camera/depth_image
+result = detect(rgb, depth, "red", params=params, camera=camera)  # or target="any"
+for d in result.detections:  # sorted by x, then y (deterministic)
+    print(d.color, d.position, d.yaw_rad, d.pixel, d.area_px)
+print(result.latency_ms)
+```
+
+Contract: an empty scene returns an empty tuple (no exception); an unknown colour raises
+`UnknownTargetError`; a frame with the wrong shape or dtype raises `ValueError`; depth
+pixels that are non-finite or outside `[depth.min_m, depth.max_m]` are ignored.
+
+F3 gate — recall, false positives, XY/Z error and latency on 200 seeded scenes with Gazebo
+ground truth — runs from the host:
+
+```bash
+uv run python scripts/perception_eval.py --seeds 200-399 --out reports/f3_perception.json
+# re-evaluate an already captured dataset (reports/_f3_dataset/ is not committed)
+uv run python scripts/perception_eval.py --skip-capture
+```
+
+It boots one isolated container, runs `ros2 run armbench_bringup scene_capture` (per seed:
+spawn the cubes of `armbench.scene.generate_scene`, wait until every `/model/cube_i/pose`
+is at rest at the requested pose + 1 s of simulation time, save the first RGB + depth pair
+rendered after that instant with `CameraInfo.K` and the PosePublisher poses as ground truth,
+remove the cubes), then runs `detect()` on the host and matches detections to cubes of the same
+colour within 3 cm. Thresholds (`THRESHOLDS` in the script, copied into the report): ≥ 200
+scenes, recall ≥ 99 %, false positives ≤ 1 % of cubes, XY median < 5 mm and p95 < 10 mm,
+|Z| p95 < 10 mm, latency p95 < 50 ms on the host CPU.
+
+**Measured (seeds 200–399, 200 scenes, 891 cubes, `reports/f3_perception.json`):** recall 100 % (891/891 visible cubes matched), 0 false positives, XY error median 1.39 mm / p95 2.34 mm / max 2.83 mm, Z error p95 < 0.001 mm (Gazebo depth is noise-free), yaw error (folded to the square's 90° symmetry) median 0.15° / p95 1.0°, `detect()` latency median 9.7 ms / p95 14.4 ms on CPU. Ground truth comes from Gazebo's `PosePublisher` (max 0.7 µm from the requested poses). The capture runs 25 seeds per fresh simulation container: a long-lived world degrades after a few hundred spawn/remove cycles (gz-transport service calls start timing out), which chunking avoids; one scene needed the built-in single retry.
+
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 
 ```bash
@@ -225,7 +276,7 @@ requires an ADR.
 docker/            Dockerfile, entrypoint
 ros_ws/src/        ROS 2 packages: armbench_description (xacro, worlds), armbench_bringup (launch, controllers, sim_check)
 src/armbench/      pure-Python package, testable without ROS
-configs/           seeds.yaml, ur5e_kinematics.yaml, scene.yaml (energy.yaml, tasks.yaml… later)
+configs/           seeds.yaml, ur5e_kinematics.yaml, scene.yaml, energy.yaml, perception.yaml (tasks.yaml… later)
 scripts/           check scripts that write reports/*.json
 tests/unit/        tests without ROS; tests marked `sim` need the image
 reports/           committed JSON metrics per phase (the DoD evidence)

@@ -1,0 +1,5989 @@
+{
+ "phase": "F7",
+ "armbench": "0.0.1",
+ "git_sha": "157e15e",
+ "runs": {
+  "B": {
+   "run_id": "109e1bc08494",
+   "tasks": [
+    "pick_place@1",
+    "stack2@1",
+    "sort3@1",
+    "place_obstacle@1"
+   ],
+   "agent": "B",
+   "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "repeat": 1,
+   "backend": "sim",
+   "image": "armbench-sim:dev",
+   "git_sha": "c6e8053",
+   "armbench": "0.0.1",
+   "llm": {
+    "config": "/home/ubuntu/repos/energy-aware-arm-agent/configs/llm.yaml",
+    "provider": "template",
+    "model": "template-v1",
+    "temperature": 0.0,
+    "seed": 0,
+    "max_attempts": 1
+   },
+   "skills": null
+  },
+  "B+S": {
+   "run_id": "22253552038d",
+   "tasks": [
+    "pick_place@1",
+    "stack2@1",
+    "sort3@1",
+    "place_obstacle@1"
+   ],
+   "agent": "B+S",
+   "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "repeat": 1,
+   "backend": "sim",
+   "image": "armbench-sim:dev",
+   "git_sha": "157e15e",
+   "armbench": "0.0.1",
+   "llm": {
+    "config": "/home/ubuntu/repos/energy-aware-arm-agent/configs/llm.yaml",
+    "provider": "template",
+    "model": "template-v1",
+    "temperature": 0.0,
+    "seed": 0,
+    "max_attempts": 1
+   },
+   "skills": {
+    "dir": "/home/ubuntu/repos/energy-aware-arm-agent/skills",
+    "sha256": "18ba25b859cee9b33cec8a43c44f4ddf1c2006c6dea17b8b391f430b4ab7c6a3",
+    "n_skills": 4,
+    "names": [
+     "pick_place_cube",
+     "stack_cube",
+     "sort_cubes",
+     "place_cube_over_wall"
+    ]
+   }
+  }
+ },
+ "library": {
+  "dir": "/home/ubuntu/repos/energy-aware-arm-agent/skills",
+  "frozen": true,
+  "sha256": "18ba25b859cee9b33cec8a43c44f4ddf1c2006c6dea17b8b391f430b4ab7c6a3",
+  "manifest_sha256": "18ba25b859cee9b33cec8a43c44f4ddf1c2006c6dea17b8b391f430b4ab7c6a3",
+  "frozen_at": "2026-10-04T12:07:21+00:00",
+  "n_skills": 4,
+  "hash_registered_in_run": true,
+  "all_validated": true,
+  "skills": [
+   {
+    "name": "pick_place_cube",
+    "signature": "pick_place_cube(color: color, x: float, y: float)",
+    "sha256": "2b21f43ce772a4055a5250b522a35feb367d1899129f31334365f56a9bdafa76",
+    "origin_task": "pick_place@1",
+    "origin_run": "9393ad2f7523",
+    "origin_seeds": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "validation": {
+     "split": "skill_validation",
+     "n_seeds": 20,
+     "n_ok": 20,
+     "accepted": true,
+     "failed": {},
+     "backend": "fake"
+    }
+   },
+   {
+    "name": "stack_cube",
+    "signature": "stack_cube(top: color, base: color)",
+    "sha256": "cef5ef4a24ed23131be2aa5b09331afe94776363e2bd062db3e113a55805aae2",
+    "origin_task": "stack2@1",
+    "origin_run": "9393ad2f7523",
+    "origin_seeds": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "validation": {
+     "split": "skill_validation",
+     "n_seeds": 20,
+     "n_ok": 20,
+     "accepted": true,
+     "failed": {},
+     "backend": "fake"
+    }
+   },
+   {
+    "name": "sort_cubes",
+    "signature": "sort_cubes(color_1: color, x_1: float, y_1: float, color_2: color, x_2: float, y_2: float, color_3: color, x_3: float, y_3: float)",
+    "sha256": "85e6f4f2dbd76a8f2c156775c7b8b97de11f68c0d7743c50571b7e85d515aef6",
+    "origin_task": "sort3@1",
+    "origin_run": "9393ad2f7523",
+    "origin_seeds": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "validation": {
+     "split": "skill_validation",
+     "n_seeds": 20,
+     "n_ok": 20,
+     "accepted": true,
+     "failed": {},
+     "backend": "fake"
+    }
+   },
+   {
+    "name": "place_cube_over_wall",
+    "signature": "place_cube_over_wall(color: color, x: float, y: float)",
+    "sha256": "8bdc2c0d473ebc55d2c244ea4f8bd74caf8eee32f5299715c3d5edbccacea074",
+    "origin_task": "place_obstacle@1",
+    "origin_run": "9393ad2f7523",
+    "origin_seeds": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "validation": {
+     "split": "skill_validation",
+     "n_seeds": 20,
+     "n_ok": 20,
+     "accepted": true,
+     "failed": {},
+     "backend": "fake"
+    }
+   }
+  ]
+ },
+ "validation": {
+  "seeds": [
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   39
+  ],
+  "min_pass_rate": 0.9,
+  "reports": [
+   {
+    "skill": "pick_place_cube",
+    "signature": "pick_place_cube(color: color, x: float, y: float)",
+    "sha256": "2b21f43ce772a4055a5250b522a35feb367d1899129f31334365f56a9bdafa76",
+    "task": "pick_place@1",
+    "split": "skill_validation",
+    "results": [
+     {
+      "seed": 20,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 21,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 22,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 23,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.497000303866258,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 24,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 25,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 26,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 27,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 28,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.005578448581465,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 29,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.005788877731941,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 30,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 31,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 32,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 33,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 34,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 35,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.364484012509933,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 36,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 37,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 38,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     },
+     {
+      "seed": 39,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal"
+     }
+    ],
+    "n_ok": 20,
+    "min_pass_rate": 0.9,
+    "accepted": true
+   },
+   {
+    "skill": "stack_cube",
+    "signature": "stack_cube(top: color, base: color)",
+    "sha256": "cef5ef4a24ed23131be2aa5b09331afe94776363e2bd062db3e113a55805aae2",
+    "task": "stack2@1",
+    "split": "skill_validation",
+    "results": [
+     {
+      "seed": 20,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.055914834618724,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 21,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 22,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.067609487867642,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 23,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.429914040055058,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 24,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 25,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.290572960868635,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 26,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 27,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 28,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.53001588067338,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 29,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 30,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 31,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.075124349610817,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 32,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.261098954628646,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 33,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 34,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.247487421035598,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 35,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.226083187572513,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 36,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 37,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.052184468925478,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 38,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     },
+     {
+      "seed": 39,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.330121424157828,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "stacked"
+     }
+    ],
+    "n_ok": 20,
+    "min_pass_rate": 0.9,
+    "accepted": true
+   },
+   {
+    "skill": "sort_cubes",
+    "signature": "sort_cubes(color_1: color, x_1: float, y_1: float, color_2: color, x_2: float, y_2: float, color_3: color, x_3: float, y_3: float)",
+    "sha256": "85e6f4f2dbd76a8f2c156775c7b8b97de11f68c0d7743c50571b7e85d515aef6",
+    "task": "sort3@1",
+    "split": "skill_validation",
+    "results": [
+     {
+      "seed": 20,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.264328532485855,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 21,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.226577355869004,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 22,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.371585511244874,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 23,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.499071203452274,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 24,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.079190018892746,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 25,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.09986447728458,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 26,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.001080697632794,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 27,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.04235574011605,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 28,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.081330858285103,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 29,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.113045930220068,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 30,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 31,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.937993633658692,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 32,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.251764410298478,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 33,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.11120283698531,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 34,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.24072974757621,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 35,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.848461219484648,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 36,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 37,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.071102953213646,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 38,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.0,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     },
+     {
+      "seed": 39,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 25,
+      "sim_s": 15.213343816455012,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color_1 within 2 cm of (x_1, y_1)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_2 within 2 cm of (x_2, y_2)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color_3 within 2 cm of (x_3, y_3)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "all cubes in their bins"
+     }
+    ],
+    "n_ok": 20,
+    "min_pass_rate": 0.9,
+    "accepted": true
+   },
+   {
+    "skill": "place_cube_over_wall",
+    "signature": "place_cube_over_wall(color: color, x: float, y: float)",
+    "sha256": "8bdc2c0d473ebc55d2c244ea4f8bd74caf8eee32f5299715c3d5edbccacea074",
+    "task": "place_obstacle@1",
+    "split": "skill_validation",
+    "results": [
+     {
+      "seed": 20,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.213372657211034,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 21,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.52138482796687,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 22,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.278356739354921,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 23,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.573062022245576,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 24,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.156858992817922,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 25,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.412955816236494,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 26,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.111343095769652,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 27,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.314916506362809,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 28,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.398500737938174,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 29,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.473285077539294,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 30,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.451557424172251,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 31,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.366448826859439,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 32,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.238941036395068,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 33,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.507160148282903,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 34,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.366860427889706,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 35,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 6.1464667772242265,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 36,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.137926937612408,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 37,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.540294774936721,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 38,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.392298926435697,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     },
+     {
+      "seed": 39,
+      "ok": true,
+      "reason": "",
+      "outcome": "completed",
+      "n_calls": 9,
+      "sim_s": 5.283080005553204,
+      "checks": [
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "not holding",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": true
+       },
+       {
+        "condition": "cube color within 2 cm of (x, y)",
+        "ok": true,
+        "reason": "",
+        "deferred": false
+       }
+      ],
+      "verdict": "target at goal, wall untouched"
+     }
+    ],
+    "n_ok": 20,
+    "min_pass_rate": 0.9,
+    "accepted": true
+   }
+  ]
+ },
+ "fault_injection_tests": {
+  "tests_passed": 7,
+  "tests_failed": false,
+  "summary": "7 passed, 21 deselected in 0.95s"
+ },
+ "skill_usage": {
+  "n_episodes": 40,
+  "n_with_skill": 40,
+  "per_task": {
+   "pick_place@1": {
+    "pick_place_cube": 10
+   },
+   "stack2@1": {
+    "stack_cube": 10
+   },
+   "sort3@1": {
+    "sort_cubes": 10
+   },
+   "place_obstacle@1": {
+    "place_cube_over_wall": 10
+   }
+  },
+  "inner_calls_counted": true
+ },
+ "pilot": [
+  {
+   "task": "pick_place@1",
+   "B": {
+    "n": 10,
+    "success": 1.0,
+    "ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "tokens_per_episode_median": 1753.0,
+    "primitives_median": 9.0,
+    "wh_A_eta_median": 0.21230712001014873,
+    "sim_s_median": 6.7555,
+    "latency_s_p95_host": 6.428989945561625e-05
+   },
+   "B+S": {
+    "n": 10,
+    "success": 1.0,
+    "ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "tokens_per_episode_median": 1653.0,
+    "primitives_median": 9.0,
+    "skills_used": {
+     "pick_place_cube": 10
+    },
+    "wh_A_eta_median": 0.21719879904764858,
+    "sim_s_median": 6.883500000000001,
+    "latency_s_p95_host": 0.0036951840997062396
+   },
+   "wh_ratio_BS_over_B": 1.0230405793139015
+  },
+  {
+   "task": "place_obstacle@1",
+   "B": {
+    "n": 10,
+    "success": 1.0,
+    "ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "tokens_per_episode_median": 1788.5,
+    "primitives_median": 9.0,
+    "wh_A_eta_median": 0.23300916758052004,
+    "sim_s_median": 7.3549999999999995,
+    "latency_s_p95_host": 5.454664978969959e-05
+   },
+   "B+S": {
+    "n": 10,
+    "success": 1.0,
+    "ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "tokens_per_episode_median": 1691.0,
+    "primitives_median": 9.0,
+    "skills_used": {
+     "place_cube_over_wall": 10
+    },
+    "wh_A_eta_median": 0.23261635906195893,
+    "sim_s_median": 7.339499999999999,
+    "latency_s_p95_host": 8.852489945638808e-05
+   },
+   "wh_ratio_BS_over_B": 0.9983141928592772
+  },
+  {
+   "task": "sort3@1",
+   "B": {
+    "n": 10,
+    "success": 1.0,
+    "ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "tokens_per_episode_median": 1920.0,
+    "primitives_median": 27.0,
+    "wh_A_eta_median": 0.585923971153323,
+    "sim_s_median": 18.3245,
+    "latency_s_p95_host": 0.0001313742013735464
+   },
+   "B+S": {
+    "n": 10,
+    "success": 1.0,
+    "ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "tokens_per_episode_median": 1731.0,
+    "primitives_median": 27.0,
+    "skills_used": {
+     "sort_cubes": 10
+    },
+    "wh_A_eta_median": 0.5886512319307128,
+    "sim_s_median": 18.448500000000003,
+    "latency_s_p95_host": 0.00011625649976849673
+   },
+   "wh_ratio_BS_over_B": 1.0046546325319674
+  },
+  {
+   "task": "stack2@1",
+   "B": {
+    "n": 10,
+    "success": 1.0,
+    "ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "tokens_per_episode_median": 1774.5,
+    "primitives_median": 11.0,
+    "wh_A_eta_median": 0.22843226679041148,
+    "sim_s_median": 7.287999999999997,
+    "latency_s_p95_host": 7.7533699459309e-05
+   },
+   "B+S": {
+    "n": 10,
+    "success": 1.0,
+    "ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "tokens_per_episode_median": 1651.5,
+    "primitives_median": 11.0,
+    "skills_used": {
+     "stack_cube": 10
+    },
+    "wh_A_eta_median": 0.2317164883928591,
+    "sim_s_median": 7.3459999999999965,
+    "latency_s_p95_host": 0.0020849115497185277
+   },
+   "wh_ratio_BS_over_B": 1.0143772228354277
+  }
+ ],
+ "B": {
+  "schema_version": 1,
+  "sources": [
+   "runs/f7_live_B/episodes.jsonl"
+  ],
+  "n_records": 40,
+  "tasks": [
+   {
+    "task": "pick_place@1",
+    "agent": "B",
+    "backend": "sim",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 10,
+    "energy_complete_rate": 1.0,
+    "n_energy_rows_expected": 6,
+    "energy": [
+     {
+      "variant": "A",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.21230712001014873,
+       "iqm": 0.21452241364449176,
+       "p05": 0.20366485890137992,
+       "p95": 0.2374402719743288,
+       "min": 0.20364127027821957,
+       "max": 0.23760772765516683
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.21428120173607246,
+       "iqm": 0.21635896336355642,
+       "p05": 0.20513945923729654,
+       "p95": 0.24046815645857647,
+       "min": 0.2049683282289832,
+       "max": 0.2409433051582604
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.2108265587157059,
+       "iqm": 0.21314500135519324,
+       "p05": 0.20253038681472357,
+       "p95": 0.23518342840743112,
+       "min": 0.20236075846795798,
+       "max": 0.23524674249072752
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.22705408818032724,
+       "iqm": 0.22847270382942808,
+       "p05": 0.21521159441834709,
+       "p95": 0.25850742548773437,
+       "min": 0.2142977697044499,
+       "max": 0.2596632918246947
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.23148599793461408,
+       "iqm": 0.232668835934385,
+       "p05": 0.21851129324610302,
+       "p95": 0.26504650222421633,
+       "min": 0.21733975520324356,
+       "max": 0.2666747966893763
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.22373015586461215,
+       "iqm": 0.2253256047507104,
+       "p05": 0.21273682029753016,
+       "p95": 0.2536031179353729,
+       "min": 0.21201628058035463,
+       "max": 0.25440466317618354
+      }
+     }
+    ],
+    "sim_s": {
+     "n": 10,
+     "median": 6.7555,
+     "iqm": 6.8779999999999974,
+     "p05": 6.5888,
+     "p95": 7.431550000000007,
+     "min": 6.578000000000003,
+     "max": 7.459000000000003
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 12.988532543182373,
+     "iqm": 12.890672286351522,
+     "p05": 12.195253765583038,
+     "p95": 13.439909660816193,
+     "min": 12.013728618621826,
+     "max": 13.516119480133057
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 9.0,
+     "iqm": 9.666666666666666,
+     "p05": 9.0,
+     "p95": 11.0,
+     "min": 9.0,
+     "max": 11.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 12671,
+     "completion_tokens": 4857,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1753.0,
+      "iqm": 1752.8333333333333,
+      "p05": 1751.45,
+      "p95": 1754.0,
+      "min": 1751.0,
+      "max": 1754.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 1.0,
+     "latency_s": {
+      "n": 0,
+      "median": NaN,
+      "iqm": NaN,
+      "p05": NaN,
+      "p95": NaN,
+      "min": NaN,
+      "max": NaN
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,container,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {},
+     "skill_episode_rate": 0.0
+    }
+   },
+   {
+    "task": "place_obstacle@1",
+    "agent": "B",
+    "backend": "sim",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 10,
+    "energy_complete_rate": 1.0,
+    "n_energy_rows_expected": 6,
+    "energy": [
+     {
+      "variant": "A",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.23300916758052004,
+       "iqm": 0.23603478859603622,
+       "p05": 0.21889734523983276,
+       "p95": 0.2534453354050065,
+       "min": 0.21842279450034788,
+       "max": 0.25354358993176057
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.23553733003342703,
+       "iqm": 0.23873924639226343,
+       "p05": 0.22088699911326906,
+       "p95": 0.25668463998403496,
+       "min": 0.22047358795002825,
+       "max": 0.25692178744603905
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.23111304574083982,
+       "iqm": 0.23400644524886582,
+       "p05": 0.21740510483475553,
+       "p95": 0.2510171714539982,
+       "min": 0.2168846994130876,
+       "max": 0.25102308662868167
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.2510208941892219,
+       "iqm": 0.25502081323598863,
+       "p05": 0.2336234022387412,
+       "p95": 0.27636251434272835,
+       "min": 0.2328931105761443,
+       "max": 0.277005912044089
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.2565510110769126,
+       "iqm": 0.26088960847220793,
+       "p05": 0.2380673989453289,
+       "p95": 0.2834213487447104,
+       "min": 0.23735562337179075,
+       "max": 0.28429449657708883
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.24687330652345396,
+       "iqm": 0.25061921680882415,
+       "p05": 0.2302904047088004,
+       "p95": 0.2710683885412418,
+       "min": 0.2295462259794095,
+       "max": 0.27153947364433906
+      }
+     }
+    ],
+    "sim_s": {
+     "n": 10,
+     "median": 7.3549999999999995,
+     "iqm": 7.412166666666665,
+     "p05": 6.773750000000003,
+     "p95": 7.918650000000001,
+     "min": 6.767000000000003,
+     "max": 7.947000000000003
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 13.099191427230835,
+     "iqm": 12.970019737879435,
+     "p05": 12.232881033420563,
+     "p95": 13.536026048660279,
+     "min": 12.179810523986816,
+     "max": 13.63702130317688
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 9.0,
+     "iqm": 9.666666666666666,
+     "p05": 9.0,
+     "p95": 11.0,
+     "min": 9.0,
+     "max": 11.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 13038,
+     "completion_tokens": 4846,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1788.5,
+      "iqm": 1788.5,
+      "p05": 1787.0,
+      "p95": 1789.55,
+      "min": 1787.0,
+      "max": 1790.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 1.0,
+     "latency_s": {
+      "n": 0,
+      "median": NaN,
+      "iqm": NaN,
+      "p05": NaN,
+      "p95": NaN,
+      "min": NaN,
+      "max": NaN
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,container,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {},
+     "skill_episode_rate": 0.0
+    }
+   },
+   {
+    "task": "sort3@1",
+    "agent": "B",
+    "backend": "sim",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 10,
+    "energy_complete_rate": 1.0,
+    "n_energy_rows_expected": 6,
+    "energy": [
+     {
+      "variant": "A",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.585923971153323,
+       "iqm": 0.5862867339066512,
+       "p05": 0.5576295755655065,
+       "p95": 0.6098493822615473,
+       "min": 0.5545180588257349,
+       "max": 0.6148779189239728
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.5917065167486139,
+       "iqm": 0.5928176794549408,
+       "p05": 0.5630701329149347,
+       "p95": 0.617547904851134,
+       "min": 0.5596837795461046,
+       "max": 0.6229787896770165
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.5813634767234368,
+       "iqm": 0.581388524745434,
+       "p05": 0.5535491575534356,
+       "p95": 0.6040754903193571,
+       "min": 0.5506437682854577,
+       "max": 0.6088022658591901
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.6244789250615143,
+       "iqm": 0.6286813011618179,
+       "p05": 0.5933357480076149,
+       "p95": 0.658886339569339,
+       "min": 0.5886268511798421,
+       "max": 0.666970302918541
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.637517491738853,
+       "iqm": 0.642056040722672,
+       "p05": 0.6047273340973944,
+       "p95": 0.6753569998077918,
+       "min": 0.5994773706258963,
+       "max": 0.6837532376706794
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.6147339674956391,
+       "iqm": 0.6184837710937049,
+       "p05": 0.5847920584402804,
+       "p95": 0.6469828279636749,
+       "min": 0.5804889615953015,
+       "max": 0.6543831018544373
+      }
+     }
+    ],
+    "sim_s": {
+     "n": 10,
+     "median": 18.3245,
+     "iqm": 18.394000000000002,
+     "p05": 17.507849999999994,
+     "p95": 18.96105,
+     "min": 17.465999999999994,
+     "max": 19.010999999999996
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 25.320346474647522,
+     "iqm": 25.218130707740784,
+     "p05": 23.56231529712677,
+     "p95": 26.25281537771225,
+     "min": 22.969103574752808,
+     "max": 26.372703790664673
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 27.0,
+     "iqm": 26.666666666666668,
+     "p05": 25.0,
+     "p95": 27.0,
+     "min": 25.0,
+     "max": 27.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 12853,
+     "completion_tokens": 6352,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1920.0,
+      "iqm": 1920.5,
+      "p05": 1918.9,
+      "p95": 1922.0,
+      "min": 1918.0,
+      "max": 1922.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 1.0,
+     "latency_s": {
+      "n": 0,
+      "median": NaN,
+      "iqm": NaN,
+      "p05": NaN,
+      "p95": NaN,
+      "min": NaN,
+      "max": NaN
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,container,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {},
+     "skill_episode_rate": 0.0
+    }
+   },
+   {
+    "task": "stack2@1",
+    "agent": "B",
+    "backend": "sim",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 10,
+    "energy_complete_rate": 1.0,
+    "n_energy_rows_expected": 6,
+    "energy": [
+     {
+      "variant": "A",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.22843226679041148,
+       "iqm": 0.2256220874205023,
+       "p05": 0.2054046955980001,
+       "p95": 0.24912177177874067,
+       "min": 0.20429234863403167,
+       "max": 0.25417497377691806
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.2307310638422324,
+       "iqm": 0.22810356446022628,
+       "p05": 0.20722991133082302,
+       "p95": 0.2524720119390861,
+       "min": 0.20604699657470243,
+       "max": 0.257749119074057
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.22670816900154578,
+       "iqm": 0.22376097964070937,
+       "p05": 0.2040357837983829,
+       "p95": 0.2466090916584816,
+       "min": 0.20297636267852862,
+       "max": 0.2514943648040638
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.24410906374412286,
+       "iqm": 0.24194073939708746,
+       "p05": 0.21724130890478838,
+       "p95": 0.2718574369548298,
+       "min": 0.2149646232095099,
+       "max": 0.27859053150068674
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.24902066028822906,
+       "iqm": 0.24714199176624227,
+       "p05": 0.22103929352207602,
+       "p95": 0.2789969546445234,
+       "min": 0.21849798357942704,
+       "max": 0.28623393641845385
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.24042536633604325,
+       "iqm": 0.23803980012022133,
+       "p05": 0.21439282044182265,
+       "p95": 0.2665027986875596,
+       "min": 0.21231460293207205,
+       "max": 0.27285797781236143
+      }
+     }
+    ],
+    "sim_s": {
+     "n": 10,
+     "median": 7.287999999999997,
+     "iqm": 7.118000000000001,
+     "p05": 6.614349999999997,
+     "p95": 7.7014,
+     "min": 6.576999999999998,
+     "max": 7.8759999999999994
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 13.521067500114441,
+     "iqm": 13.661294182141622,
+     "p05": 12.314346921443938,
+     "p95": 14.427146697044373,
+     "min": 12.029640197753906,
+     "max": 14.464624881744385
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 11.0,
+     "iqm": 10.333333333333334,
+     "p05": 9.0,
+     "p95": 11.0,
+     "min": 9.0,
+     "max": 11.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 12684,
+     "completion_tokens": 5062,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1774.5,
+      "iqm": 1774.6666666666667,
+      "p05": 1772.9,
+      "p95": 1776.0,
+      "min": 1772.0,
+      "max": 1776.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 1.0,
+     "latency_s": {
+      "n": 0,
+      "median": NaN,
+      "iqm": NaN,
+      "p05": NaN,
+      "p95": NaN,
+      "min": NaN,
+      "max": NaN
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,container,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {},
+     "skill_episode_rate": 0.0
+    }
+   }
+  ],
+  "thresholds": {
+   "success_min": 0.95,
+   "energy_complete_min": 1.0,
+   "repeat_cv_max": 0.03,
+   "infra_rate_max": 0.01,
+   "wall_s_max": 120.0
+  },
+  "checks": {
+   "pick_place@1/B [dev]: success >= 95%": true,
+   "pick_place@1/B [dev]: infra failures < 1%": true,
+   "pick_place@1/B [dev]: wall per episode < 120 s": true,
+   "pick_place@1/B [dev]: energy table complete in 100%": true,
+   "place_obstacle@1/B [dev]: success >= 95%": true,
+   "place_obstacle@1/B [dev]: infra failures < 1%": true,
+   "place_obstacle@1/B [dev]: wall per episode < 120 s": true,
+   "place_obstacle@1/B [dev]: energy table complete in 100%": true,
+   "sort3@1/B [dev]: success >= 95%": true,
+   "sort3@1/B [dev]: infra failures < 1%": true,
+   "sort3@1/B [dev]: wall per episode < 120 s": true,
+   "sort3@1/B [dev]: energy table complete in 100%": true,
+   "stack2@1/B [dev]: success >= 95%": true,
+   "stack2@1/B [dev]: infra failures < 1%": true,
+   "stack2@1/B [dev]: wall per episode < 120 s": true,
+   "stack2@1/B [dev]: energy table complete in 100%": true
+  },
+  "passed": true
+ },
+ "B+S": {
+  "schema_version": 1,
+  "sources": [
+   "runs/f7_live_BS/episodes.jsonl"
+  ],
+  "n_records": 40,
+  "tasks": [
+   {
+    "task": "pick_place@1",
+    "agent": "B+S",
+    "backend": "sim",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 10,
+    "energy_complete_rate": 1.0,
+    "n_energy_rows_expected": 6,
+    "energy": [
+     {
+      "variant": "A",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.21719879904764858,
+       "iqm": 0.21868918854168637,
+       "p05": 0.20738128625529162,
+       "p95": 0.2414645343302983,
+       "min": 0.20624720180152817,
+       "max": 0.24254671479302473
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.2192265784623585,
+       "iqm": 0.2205908007293275,
+       "p05": 0.20884090629361113,
+       "p95": 0.24451026953348956,
+       "min": 0.20780792490291122,
+       "max": 0.24539988576245222
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.2156779644866161,
+       "iqm": 0.2172629794009555,
+       "p05": 0.20628657122655203,
+       "p95": 0.23918023292790483,
+       "min": 0.20507665947549095,
+       "max": 0.24040683656595407
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.23194212133560038,
+       "iqm": 0.2326735455724821,
+       "p05": 0.218875541416522,
+       "p95": 0.2640434433010446,
+       "min": 0.21848238351874924,
+       "max": 0.26415796840958533
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.2364271211316356,
+       "iqm": 0.23690588393192255,
+       "p05": 0.22225087064837987,
+       "p95": 0.27093520280918654,
+       "min": 0.2220823035730024,
+       "max": 0.27144174308003555
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.22857837148857396,
+       "iqm": 0.22949929180290174,
+       "p05": 0.21634404449262856,
+       "p95": 0.2589145095062027,
+       "min": 0.2157824434780593,
+       "max": 0.25909399576939324
+      }
+     }
+    ],
+    "sim_s": {
+     "n": 10,
+     "median": 6.883500000000001,
+     "iqm": 7.009000000000001,
+     "p05": 6.723200000000002,
+     "p95": 7.496699999999998,
+     "min": 6.716000000000005,
+     "max": 7.5120000000000005
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 13.808167099952698,
+     "iqm": 13.869198481241861,
+     "p05": 12.694281697273254,
+     "p95": 15.50707323551178,
+     "min": 12.200288534164429,
+     "max": 16.175750732421875
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 9.0,
+     "iqm": 9.666666666666666,
+     "p05": 9.0,
+     "p95": 11.0,
+     "min": 9.0,
+     "max": 11.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 16311,
+     "completion_tokens": 219,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1653.0,
+      "iqm": 1653.0,
+      "p05": 1651.9,
+      "p95": 1654.0,
+      "min": 1651.0,
+      "max": 1654.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 1.0,
+     "latency_s": {
+      "n": 0,
+      "median": NaN,
+      "iqm": NaN,
+      "p05": NaN,
+      "p95": NaN,
+      "min": NaN,
+      "max": NaN
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,container,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {
+      "pick_place_cube": 10
+     },
+     "skill_episode_rate": 1.0
+    }
+   },
+   {
+    "task": "place_obstacle@1",
+    "agent": "B+S",
+    "backend": "sim",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 10,
+    "energy_complete_rate": 1.0,
+    "n_energy_rows_expected": 6,
+    "energy": [
+     {
+      "variant": "A",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.23261635906195893,
+       "iqm": 0.23541627051580724,
+       "p05": 0.22052004736350003,
+       "p95": 0.2524587113996168,
+       "min": 0.21970448502690626,
+       "max": 0.25471341326439745
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.2352970332733853,
+       "iqm": 0.23808176475505605,
+       "p05": 0.22239347031245732,
+       "p95": 0.2557487854875711,
+       "min": 0.22157689635346114,
+       "max": 0.258084681721713
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.23060585340338913,
+       "iqm": 0.2334171498363706,
+       "p05": 0.21911498015178207,
+       "p95": 0.2499911558336511,
+       "min": 0.21830017653199008,
+       "max": 0.2521849619214109
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.25197108454662165,
+       "iqm": 0.25452601157032095,
+       "p05": 0.23520011724704248,
+       "p95": 0.2757139831130808,
+       "min": 0.2344684934913177,
+       "max": 0.27799152897346496
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.25787754633882515,
+       "iqm": 0.2603764626519887,
+       "p05": 0.23952021850992355,
+       "p95": 0.28287993581994575,
+       "min": 0.23880157289527454,
+       "max": 0.28524248338229174
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.24754123820246904,
+       "iqm": 0.2501381732590701,
+       "p05": 0.2319600412998817,
+       "p95": 0.2703395185829321,
+       "min": 0.2312186839383501,
+       "max": 0.2725533131668449
+      }
+     }
+    ],
+    "sim_s": {
+     "n": 10,
+     "median": 7.339499999999999,
+     "iqm": 7.362833333333334,
+     "p05": 6.8664499999999995,
+     "p95": 7.967449999999997,
+     "min": 6.856999999999999,
+     "max": 8.003
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 12.768233299255371,
+     "iqm": 12.849154353141785,
+     "p05": 12.13917534351349,
+     "p95": 13.531430685520172,
+     "min": 12.067461013793945,
+     "max": 13.540014505386353
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 9.0,
+     "iqm": 9.666666666666666,
+     "p05": 9.0,
+     "p95": 11.0,
+     "min": 9.0,
+     "max": 11.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 16678,
+     "completion_tokens": 229,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1691.0,
+      "iqm": 1691.0,
+      "p05": 1689.0,
+      "p95": 1691.55,
+      "min": 1689.0,
+      "max": 1692.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 1.0,
+     "latency_s": {
+      "n": 0,
+      "median": NaN,
+      "iqm": NaN,
+      "p05": NaN,
+      "p95": NaN,
+      "min": NaN,
+      "max": NaN
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,container,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {
+      "place_cube_over_wall": 10
+     },
+     "skill_episode_rate": 1.0
+    }
+   },
+   {
+    "task": "sort3@1",
+    "agent": "B+S",
+    "backend": "sim",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 10,
+    "energy_complete_rate": 1.0,
+    "n_energy_rows_expected": 6,
+    "energy": [
+     {
+      "variant": "A",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.5886512319307128,
+       "iqm": 0.5901157391090881,
+       "p05": 0.5621131052636084,
+       "p95": 0.6109480339055049,
+       "min": 0.5614639613239608,
+       "max": 0.6144032373333017
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.5947785989014223,
+       "iqm": 0.5966827453853311,
+       "p05": 0.5677048685406223,
+       "p95": 0.6185019875525664,
+       "min": 0.5667937191293263,
+       "max": 0.6224161649408262
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.583893845213797,
+       "iqm": 0.5851904844019059,
+       "p05": 0.557919282805848,
+       "p95": 0.6052825686702088,
+       "min": 0.5574666429699368,
+       "max": 0.6083935416276584
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.6297515205949457,
+       "iqm": 0.6322926962294477,
+       "p05": 0.5982023313112009,
+       "p95": 0.6596193031331818,
+       "min": 0.596045451015924,
+       "max": 0.6659053493282026
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.6429447509948724,
+       "iqm": 0.6455468608179048,
+       "p05": 0.6098089655961468,
+       "p95": 0.6762094382460396,
+       "min": 0.6071387904366166,
+       "max": 0.6825019622682104
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.6198565977950008,
+       "iqm": 0.6221523469305748,
+       "p05": 0.5894973555974915,
+       "p95": 0.6477159616138698,
+       "min": 0.5877254464504045,
+       "max": 0.6534578896231966
+      }
+     }
+    ],
+    "sim_s": {
+     "n": 10,
+     "median": 18.448500000000003,
+     "iqm": 18.503833333333333,
+     "p05": 17.602,
+     "p95": 19.1066,
+     "min": 17.575000000000003,
+     "max": 19.183999999999997
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 24.93635666370392,
+     "iqm": 25.001851717631023,
+     "p05": 24.56417864561081,
+     "p95": 27.901687932014468,
+     "min": 24.543017625808716,
+     "max": 29.870436429977417
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 27.0,
+     "iqm": 26.666666666666668,
+     "p05": 25.0,
+     "p95": 27.0,
+     "min": 25.0,
+     "max": 27.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 16893,
+     "completion_tokens": 420,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1731.0,
+      "iqm": 1731.3333333333333,
+      "p05": 1730.45,
+      "p95": 1732.0,
+      "min": 1730.0,
+      "max": 1732.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 1.0,
+     "latency_s": {
+      "n": 0,
+      "median": NaN,
+      "iqm": NaN,
+      "p05": NaN,
+      "p95": NaN,
+      "min": NaN,
+      "max": NaN
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,container,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {
+      "sort_cubes": 10
+     },
+     "skill_episode_rate": 1.0
+    }
+   },
+   {
+    "task": "stack2@1",
+    "agent": "B+S",
+    "backend": "sim",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 10,
+    "energy_complete_rate": 1.0,
+    "n_energy_rows_expected": 6,
+    "energy": [
+     {
+      "variant": "A",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.2317164883928591,
+       "iqm": 0.22670780020302717,
+       "p05": 0.20700239668939682,
+       "p95": 0.24990014579664563,
+       "min": 0.20467490417132397,
+       "max": 0.2546831052302985
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.23401609954566674,
+       "iqm": 0.2291049750019798,
+       "p05": 0.20871059019800323,
+       "p95": 0.25325626708918175,
+       "min": 0.2062326750347831,
+       "max": 0.2582374715715812
+      }
+     },
+     {
+      "variant": "A",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.22999178002825338,
+       "iqm": 0.22490991910381267,
+       "p05": 0.20572125155794205,
+       "p95": 0.24738305482724346,
+       "min": 0.20350657602372965,
+       "max": 0.25201733047433644
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.7,
+      "wh": {
+       "n": 10,
+       "median": 0.24738728037990454,
+       "iqm": 0.2432017855154914,
+       "p05": 0.21888965644442065,
+       "p95": 0.2726336504901819,
+       "min": 0.21543082299548408,
+       "max": 0.2786983784409546
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.6,
+      "wh": {
+       "n": 10,
+       "median": 0.25229869019721973,
+       "iqm": 0.24834795786652142,
+       "p05": 0.22257905991219765,
+       "p95": 0.27977868923164084,
+       "min": 0.2187812469963032,
+       "max": 0.2862552903173467
+      }
+     },
+     {
+      "variant": "B",
+      "eta": 0.8,
+      "wh": {
+       "n": 10,
+       "median": 0.24370372301691812,
+       "iqm": 0.23934215625221889,
+       "p05": 0.2161226038435879,
+       "p95": 0.2672748714340878,
+       "min": 0.21291800499486974,
+       "max": 0.2730306945336606
+      }
+     }
+    ],
+    "sim_s": {
+     "n": 10,
+     "median": 7.3459999999999965,
+     "iqm": 7.186333333333333,
+     "p05": 6.681249999999996,
+     "p95": 7.742050000000001,
+     "min": 6.678999999999995,
+     "max": 7.918
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 13.667203545570374,
+     "iqm": 13.580253839492798,
+     "p05": 12.746606934070588,
+     "p95": 14.744035828113557,
+     "min": 12.668644666671753,
+     "max": 14.981252431869507
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 11.0,
+     "iqm": 10.333333333333334,
+     "p05": 9.0,
+     "p95": 11.0,
+     "min": 9.0,
+     "max": 11.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 16324,
+     "completion_tokens": 186,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1651.5,
+      "iqm": 1651.1666666666667,
+      "p05": 1649.45,
+      "p95": 1652.0,
+      "min": 1649.0,
+      "max": 1652.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 1.0,
+     "latency_s": {
+      "n": 0,
+      "median": NaN,
+      "iqm": NaN,
+      "p05": NaN,
+      "p95": NaN,
+      "min": NaN,
+      "max": NaN
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,container,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {
+      "stack_cube": 10
+     },
+     "skill_episode_rate": 1.0
+    }
+   }
+  ],
+  "thresholds": {
+   "success_min": 0.95,
+   "energy_complete_min": 1.0,
+   "repeat_cv_max": 0.03,
+   "infra_rate_max": 0.01,
+   "wall_s_max": 120.0
+  },
+  "checks": {
+   "pick_place@1/B+S [dev]: success >= 95%": true,
+   "pick_place@1/B+S [dev]: infra failures < 1%": true,
+   "pick_place@1/B+S [dev]: wall per episode < 120 s": true,
+   "pick_place@1/B+S [dev]: energy table complete in 100%": true,
+   "place_obstacle@1/B+S [dev]: success >= 95%": true,
+   "place_obstacle@1/B+S [dev]: infra failures < 1%": true,
+   "place_obstacle@1/B+S [dev]: wall per episode < 120 s": true,
+   "place_obstacle@1/B+S [dev]: energy table complete in 100%": true,
+   "sort3@1/B+S [dev]: success >= 95%": true,
+   "sort3@1/B+S [dev]: infra failures < 1%": true,
+   "sort3@1/B+S [dev]: wall per episode < 120 s": true,
+   "sort3@1/B+S [dev]: energy table complete in 100%": true,
+   "stack2@1/B+S [dev]: success >= 95%": true,
+   "stack2@1/B+S [dev]: infra failures < 1%": true,
+   "stack2@1/B+S [dev]: wall per episode < 120 s": true,
+   "stack2@1/B+S [dev]: energy table complete in 100%": true
+  },
+  "passed": true
+ },
+ "fake_B": {
+  "schema_version": 1,
+  "sources": [
+   "runs/f7_fake_B/episodes.jsonl"
+  ],
+  "n_records": 40,
+  "tasks": [
+   {
+    "task": "pick_place@1",
+    "agent": "B",
+    "backend": "fake",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 0,
+    "energy_complete_rate": 0.0,
+    "n_energy_rows_expected": 0,
+    "energy": [],
+    "sim_s": {
+     "n": 10,
+     "median": 6.013650113931465,
+     "iqm": 6.032427027202085,
+     "p05": 6.0,
+     "p95": 6.194020458881589,
+     "min": 6.0,
+     "max": 6.226044597618882
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 0.22742164134979248,
+     "iqm": 0.22653627395629883,
+     "p05": 0.18057438135147094,
+     "p95": 0.3942492604255677,
+     "min": 0.17531156539916992,
+     "max": 0.4360804557800293
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 9.0,
+     "iqm": 9.0,
+     "p05": 9.0,
+     "p95": 9.0,
+     "min": 9.0,
+     "max": 9.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 12671,
+     "completion_tokens": 4857,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1753.0,
+      "iqm": 1752.8333333333333,
+      "p05": 1751.45,
+      "p95": 1754.0,
+      "min": 1751.0,
+      "max": 1754.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 0.0,
+     "latency_s": {
+      "n": 10,
+      "median": 5.04395002280944e-05,
+      "iqm": 5.0869833103206474e-05,
+      "p05": 4.632710106307058e-05,
+      "p95": 6.428989945561625e-05,
+      "min": 4.5824001063010655e-05,
+      "max": 6.465799924626481e-05
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,unshare_net,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {},
+     "skill_episode_rate": 0.0
+    }
+   },
+   {
+    "task": "place_obstacle@1",
+    "agent": "B",
+    "backend": "fake",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 0,
+    "energy_complete_rate": 0.0,
+    "n_energy_rows_expected": 0,
+    "energy": [],
+    "sim_s": {
+     "n": 10,
+     "median": 6.389366598251058,
+     "iqm": 6.428883277862487,
+     "p05": 6.1573137984737,
+     "p95": 6.668737888148442,
+     "min": 6.1272526860909124,
+     "max": 6.6743790891046615
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 0.1834641695022583,
+     "iqm": 0.186456561088562,
+     "p05": 0.16164712905883788,
+     "p95": 0.3207463145256044,
+     "min": 0.15260100364685059,
+     "max": 0.4144928455352783
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 9.0,
+     "iqm": 9.0,
+     "p05": 9.0,
+     "p95": 9.0,
+     "min": 9.0,
+     "max": 9.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 13038,
+     "completion_tokens": 4846,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1788.5,
+      "iqm": 1788.5,
+      "p05": 1787.0,
+      "p95": 1789.55,
+      "min": 1787.0,
+      "max": 1790.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 0.0,
+     "latency_s": {
+      "n": 10,
+      "median": 4.6938999730627984e-05,
+      "iqm": 4.682133324725631e-05,
+      "p05": 4.534360004981863e-05,
+      "p95": 5.454664978969959e-05,
+      "min": 4.515100044955034e-05,
+      "max": 5.551100002776366e-05
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,unshare_net,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {},
+     "skill_episode_rate": 0.0
+    }
+   },
+   {
+    "task": "sort3@1",
+    "agent": "B",
+    "backend": "fake",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 0,
+    "energy_complete_rate": 0.0,
+    "n_energy_rows_expected": 0,
+    "energy": [],
+    "sim_s": {
+     "n": 10,
+     "median": 16.10636816643246,
+     "iqm": 16.16612481703262,
+     "p05": 16.0,
+     "p95": 16.57025422188225,
+     "min": 16.0,
+     "max": 16.586723251598045
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 0.25195813179016113,
+     "iqm": 0.2539706230163574,
+     "p05": 0.20800793170928955,
+     "p95": 0.2998232841491699,
+     "min": 0.2050628662109375,
+     "max": 0.30255699157714844
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 25.0,
+     "iqm": 25.0,
+     "p05": 25.0,
+     "p95": 25.0,
+     "min": 25.0,
+     "max": 25.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 12853,
+     "completion_tokens": 6352,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1920.0,
+      "iqm": 1920.5,
+      "p05": 1918.9,
+      "p95": 1922.0,
+      "min": 1918.0,
+      "max": 1922.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 0.0,
+     "latency_s": {
+      "n": 10,
+      "median": 7.354150056926301e-05,
+      "iqm": 8.121750003435106e-05,
+      "p05": 6.819340042056865e-05,
+      "p95": 0.0001313742013735464,
+      "min": 6.81609999446664e-05,
+      "max": 0.00015271500160451978
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,unshare_net,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {},
+     "skill_episode_rate": 0.0
+    }
+   },
+   {
+    "task": "stack2@1",
+    "agent": "B",
+    "backend": "fake",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 0,
+    "energy_complete_rate": 0.0,
+    "n_energy_rows_expected": 0,
+    "energy": [],
+    "sim_s": {
+     "n": 10,
+     "median": 6.02663608161248,
+     "iqm": 6.040616791369165,
+     "p05": 6.0,
+     "p95": 6.43954089765192,
+     "min": 6.0,
+     "max": 6.682895228376651
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 0.21920621395111084,
+     "iqm": 0.21894272168477377,
+     "p05": 0.19619051218032837,
+     "p95": 0.2995692372322083,
+     "min": 0.19370388984680176,
+     "max": 0.33089303970336914
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 9.0,
+     "iqm": 9.0,
+     "p05": 9.0,
+     "p95": 9.0,
+     "min": 9.0,
+     "max": 9.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 12684,
+     "completion_tokens": 5062,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1774.5,
+      "iqm": 1774.6666666666667,
+      "p05": 1772.9,
+      "p95": 1776.0,
+      "min": 1772.0,
+      "max": 1776.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 0.2,
+     "latency_s": {
+      "n": 8,
+      "median": 4.814200019609416e-05,
+      "iqm": 5.023750009058858e-05,
+      "p05": 4.376605011202628e-05,
+      "p95": 7.7533699459309e-05,
+      "min": 4.287599949748255e-05,
+      "max": 8.728399916435592e-05
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,unshare_net,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {},
+     "skill_episode_rate": 0.0
+    }
+   }
+  ],
+  "thresholds": {
+   "success_min": 0.95,
+   "energy_complete_min": 1.0,
+   "repeat_cv_max": 0.03,
+   "infra_rate_max": 0.01,
+   "wall_s_max": 120.0
+  },
+  "checks": {
+   "pick_place@1/B [dev]: success >= 95%": true,
+   "pick_place@1/B [dev]: infra failures < 1%": true,
+   "pick_place@1/B [dev]: wall per episode < 120 s": true,
+   "place_obstacle@1/B [dev]: success >= 95%": true,
+   "place_obstacle@1/B [dev]: infra failures < 1%": true,
+   "place_obstacle@1/B [dev]: wall per episode < 120 s": true,
+   "sort3@1/B [dev]: success >= 95%": true,
+   "sort3@1/B [dev]: infra failures < 1%": true,
+   "sort3@1/B [dev]: wall per episode < 120 s": true,
+   "stack2@1/B [dev]: success >= 95%": true,
+   "stack2@1/B [dev]: infra failures < 1%": true,
+   "stack2@1/B [dev]: wall per episode < 120 s": true
+  },
+  "passed": true
+ },
+ "fake_B+S": {
+  "schema_version": 1,
+  "sources": [
+   "runs/f7_fake_BS/episodes.jsonl"
+  ],
+  "n_records": 40,
+  "tasks": [
+   {
+    "task": "pick_place@1",
+    "agent": "B+S",
+    "backend": "fake",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 0,
+    "energy_complete_rate": 0.0,
+    "n_energy_rows_expected": 0,
+    "energy": [],
+    "sim_s": {
+     "n": 10,
+     "median": 6.013650113931465,
+     "iqm": 6.032427027202085,
+     "p05": 6.0,
+     "p95": 6.194020458881589,
+     "min": 6.0,
+     "max": 6.226044597618882
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 0.5205039978027344,
+     "iqm": 0.5244404474894205,
+     "p05": 0.4047953724861145,
+     "p95": 0.598963463306427,
+     "min": 0.34522533416748047,
+     "max": 0.6125833988189697
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 9.0,
+     "iqm": 9.0,
+     "p05": 9.0,
+     "p95": 9.0,
+     "min": 9.0,
+     "max": 9.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 16311,
+     "completion_tokens": 219,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1653.0,
+      "iqm": 1653.0,
+      "p05": 1651.9,
+      "p95": 1654.0,
+      "min": 1651.0,
+      "max": 1654.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 0.0,
+     "latency_s": {
+      "n": 10,
+      "median": 8.82399999682093e-05,
+      "iqm": 9.511516691418365e-05,
+      "p05": 7.97821508058405e-05,
+      "p95": 0.0036951840997062396,
+      "min": 7.922100121504627e-05,
+      "max": 0.0041456079998170026
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,unshare_net,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {
+      "pick_place_cube": 10
+     },
+     "skill_episode_rate": 1.0
+    }
+   },
+   {
+    "task": "place_obstacle@1",
+    "agent": "B+S",
+    "backend": "fake",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 0,
+    "energy_complete_rate": 0.0,
+    "n_energy_rows_expected": 0,
+    "energy": [],
+    "sim_s": {
+     "n": 10,
+     "median": 6.389366598251058,
+     "iqm": 6.428883277862487,
+     "p05": 6.1573137984737,
+     "p95": 6.668737888148442,
+     "min": 6.1272526860909124,
+     "max": 6.6743790891046615
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 0.39619529247283936,
+     "iqm": 0.3989574909210205,
+     "p05": 0.33545870780944825,
+     "p95": 0.4790994644165039,
+     "min": 0.33472657203674316,
+     "max": 0.4940807819366455
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 9.0,
+     "iqm": 9.0,
+     "p05": 9.0,
+     "p95": 9.0,
+     "min": 9.0,
+     "max": 9.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 16678,
+     "completion_tokens": 229,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1691.0,
+      "iqm": 1691.0,
+      "p05": 1689.0,
+      "p95": 1691.55,
+      "min": 1689.0,
+      "max": 1692.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 0.0,
+     "latency_s": {
+      "n": 10,
+      "median": 7.429499964928254e-05,
+      "iqm": 7.494650011115785e-05,
+      "p05": 6.978685023568687e-05,
+      "p95": 8.852489945638808e-05,
+      "min": 6.851200123492163e-05,
+      "max": 8.868599979905412e-05
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,unshare_net,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {
+      "place_cube_over_wall": 10
+     },
+     "skill_episode_rate": 1.0
+    }
+   },
+   {
+    "task": "sort3@1",
+    "agent": "B+S",
+    "backend": "fake",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 0,
+    "energy_complete_rate": 0.0,
+    "n_energy_rows_expected": 0,
+    "energy": [],
+    "sim_s": {
+     "n": 10,
+     "median": 16.10636816643246,
+     "iqm": 16.16612481703262,
+     "p05": 16.0,
+     "p95": 16.57025422188225,
+     "min": 16.0,
+     "max": 16.586723251598045
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 0.38415050506591797,
+     "iqm": 0.4068700472513835,
+     "p05": 0.34159504175186156,
+     "p95": 0.5414702415466308,
+     "min": 0.3343958854675293,
+     "max": 0.5446648597717285
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 25.0,
+     "iqm": 25.0,
+     "p05": 25.0,
+     "p95": 25.0,
+     "min": 25.0,
+     "max": 25.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 16893,
+     "completion_tokens": 420,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1731.0,
+      "iqm": 1731.3333333333333,
+      "p05": 1730.45,
+      "p95": 1732.0,
+      "min": 1730.0,
+      "max": 1732.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 0.0,
+     "latency_s": {
+      "n": 10,
+      "median": 9.456149928155355e-05,
+      "iqm": 9.590916639960294e-05,
+      "p05": 9.055489954334917e-05,
+      "p95": 0.00011625649976849673,
+      "min": 8.9797998953145e-05,
+      "max": 0.00012163400060671847
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,unshare_net,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {
+      "sort_cubes": 10
+     },
+     "skill_episode_rate": 1.0
+    }
+   },
+   {
+    "task": "stack2@1",
+    "agent": "B+S",
+    "backend": "fake",
+    "split": "dev",
+    "n": 10,
+    "n_ok": 10,
+    "success": 1.0,
+    "success_ci95": [
+     0.7224671969739421,
+     0.9999999999999999
+    ],
+    "n_infra": 0,
+    "infra_rate": 0.0,
+    "failures": {},
+    "failed_seeds": [],
+    "energy_complete": 0,
+    "energy_complete_rate": 0.0,
+    "n_energy_rows_expected": 0,
+    "energy": [],
+    "sim_s": {
+     "n": 10,
+     "median": 6.02663608161248,
+     "iqm": 6.040616791369165,
+     "p05": 6.0,
+     "p95": 6.43954089765192,
+     "min": 6.0,
+     "max": 6.682895228376651
+    },
+    "wall_s": {
+     "n": 10,
+     "median": 0.5051988363265991,
+     "iqm": 0.5009798208872477,
+     "p05": 0.31726900339126585,
+     "p95": 0.6827252745628357,
+     "min": 0.3108212947845459,
+     "max": 0.6860036849975586
+    },
+    "n_primitives": {
+     "n": 10,
+     "median": 9.0,
+     "iqm": 9.0,
+     "p05": 9.0,
+     "p95": 9.0,
+     "min": 9.0,
+     "max": 9.0
+    },
+    "observe_moves": {
+     "n": 10,
+     "median": 0.0,
+     "iqm": 0.0,
+     "p05": 0.0,
+     "p95": 0.0,
+     "min": 0.0,
+     "max": 0.0
+    },
+    "repeats": [],
+    "repeat_cv_max": null,
+    "llm": {
+     "provider": "template",
+     "models": {
+      "template-v1": 10
+     },
+     "n_traced": 10,
+     "prompt_tokens": 16324,
+     "completion_tokens": 186,
+     "tokens_per_episode": {
+      "n": 10,
+      "median": 1651.5,
+      "iqm": 1651.1666666666667,
+      "p05": 1649.45,
+      "p95": 1652.0,
+      "min": 1649.0,
+      "max": 1652.0
+     },
+     "cost_usd": 0.0,
+     "cost_per_episode_usd": 0.0,
+     "cost_per_400_episodes_usd": 0.0,
+     "cached_rate": 0.2,
+     "latency_s": {
+      "n": 8,
+      "median": 7.492999975511339e-05,
+      "iqm": 7.472199968105997e-05,
+      "p05": 6.938204905964085e-05,
+      "p95": 0.0020849115497185277,
+      "min": 6.932499854883645e-05,
+      "max": 0.003165104999425239
+     },
+     "attempts": {
+      "n": 10,
+      "median": 1.0,
+      "iqm": 1.0,
+      "p05": 1.0,
+      "p95": 1.0,
+      "min": 1.0,
+      "max": 1.0
+     },
+     "program_outcomes": {
+      "completed": 10
+     },
+     "isolation": {
+      "ast,builtins,unshare_net,rlimits:as,cpu,fsize,nproc,core": 10
+     },
+     "skills_used": {
+      "stack_cube": 10
+     },
+     "skill_episode_rate": 1.0
+    }
+   }
+  ],
+  "thresholds": {
+   "success_min": 0.95,
+   "energy_complete_min": 1.0,
+   "repeat_cv_max": 0.03,
+   "infra_rate_max": 0.01,
+   "wall_s_max": 120.0
+  },
+  "checks": {
+   "pick_place@1/B+S [dev]: success >= 95%": true,
+   "pick_place@1/B+S [dev]: infra failures < 1%": true,
+   "pick_place@1/B+S [dev]: wall per episode < 120 s": true,
+   "place_obstacle@1/B+S [dev]: success >= 95%": true,
+   "place_obstacle@1/B+S [dev]: infra failures < 1%": true,
+   "place_obstacle@1/B+S [dev]: wall per episode < 120 s": true,
+   "sort3@1/B+S [dev]: success >= 95%": true,
+   "sort3@1/B+S [dev]: infra failures < 1%": true,
+   "sort3@1/B+S [dev]: wall per episode < 120 s": true,
+   "stack2@1/B+S [dev]: success >= 95%": true,
+   "stack2@1/B+S [dev]: infra failures < 1%": true,
+   "stack2@1/B+S [dev]: wall per episode < 120 s": true
+  },
+  "passed": true
+ },
+ "thresholds": {
+  "skill_min_pass_rate": 0.9,
+  "validation_split": "skill_validation",
+  "pilot_improvement": null
+ },
+ "checks": {
+  "postconditions_catch_injected_failures": true,
+  "library_frozen_hash_registered": true,
+  "every_skill_validated_on_split_20_39": true,
+  "bs_exercised_library_in_gazebo": true,
+  "pilot_reported_for_b_and_bs": true,
+  "no_infra_failures": true,
+  "energy_tables_complete": true
+ },
+ "passed": true
+}

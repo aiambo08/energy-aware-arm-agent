@@ -88,6 +88,11 @@ class CallRecord(BaseModel):
     error_code: str | None = None
     sim_s: float = 0.0
     wall_s: float = Field(ge=0, default=0.0)
+    skill: str | None = None
+    """Skill name when ``primitive == "execute_skill"``."""
+    inner_calls: tuple[str, ...] = ()
+    """Primitives the skill body ran (a skill call is one call to the program, several to the
+    robot; ``ProgramRun.n_primitive_calls`` counts the latter)."""
 
 
 class ProgramRun(BaseModel):
@@ -120,6 +125,15 @@ class ProgramRun(BaseModel):
     @property
     def primitives(self) -> tuple[str, ...]:
         return tuple(c.primitive for c in self.calls)
+
+    @property
+    def n_primitive_calls(self) -> int:
+        """Robot primitives actually run: top-level calls plus those inside skills."""
+        return sum(len(c.inner_calls) if c.inner_calls else 1 for c in self.calls)
+
+    @property
+    def skills_used(self) -> tuple[str, ...]:
+        return tuple(c.skill for c in self.calls if c.skill is not None and c.ok)
 
     def primitive_error(self) -> PrimitiveError | None:
         """The unhandled primitive error, rebuilt as the parent-side class (``None`` otherwise)."""
@@ -226,9 +240,14 @@ class _Dispatcher:
         t_wall = time.time()
         t_sim0 = self.robot.backend.sim_time()
         ok, code = True, None
+        skill: str | None = None
+        inner: tuple[str, ...] = ()
         try:
             result = self._invoke(name, args, kwargs)
             reply: dict[str, object] = {"ok": True, "result": result}
+            if name == "execute_skill" and isinstance(result, dict):
+                skill = str(result.get("skill"))
+                inner = tuple(str(c) for c in result.get("calls", ()))
         except PrimitiveError as exc:
             ok, code = False, exc.code
             self.last_error = exc
@@ -245,6 +264,8 @@ class _Dispatcher:
                 error_code=code,
                 sim_s=_finite(t_sim1 - t_sim0),
                 wall_s=time.time() - t_wall,
+                skill=skill,
+                inner_calls=inner,
             )
         )
         return reply

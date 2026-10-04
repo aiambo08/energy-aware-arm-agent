@@ -24,7 +24,7 @@ import rclpy
 from sensor_msgs.msg import JointState
 
 from armbench import __version__
-from armbench.agents import get_agent
+from armbench.agents import LLM_AGENT_IDS, get_agent
 from armbench.energy import EnergyParams, load_energy_params, sensitivity
 from armbench.llm import load_llm_params, make_provider
 from armbench.primitives import Robot, load_primitive_params
@@ -39,6 +39,7 @@ from armbench.runner import (
 from armbench.scene import load_scene_config
 from armbench.scene.generator import DEFAULT_SCENE_FILE
 from armbench.seeds import load_seed_split
+from armbench.skills import SkillLibrary, SkillRunner
 from armbench.tasks import FinalState, ModelPose, TaskInstance, get_task
 from armbench_bringup.ros_backend import GzScene, RosBackend
 
@@ -215,14 +216,27 @@ def parse_args() -> argparse.Namespace:
 
 
 def make_agent(args: argparse.Namespace) -> object:
-    if args.agent != "B":
+    if args.agent not in LLM_AGENT_IDS:
         return get_agent(args.agent)
     if args.llm_dir is None:
-        msg = "agent B needs --llm-dir (the container has no network; programs are replayed)"
+        msg = f"agent {args.agent} needs --llm-dir (no network here; programs are replayed)"
         raise SystemExit(msg)
     llm = load_llm_params(args.llm_dir / "llm.yaml")
     provider = make_provider(llm, kind="replay", cache_dir=args.llm_dir / "cache")
-    return get_agent("B", llm=llm, provider=provider, artifacts_dir=args.out_dir)
+    return get_agent(
+        args.agent,
+        llm=llm,
+        provider=provider,
+        artifacts_dir=args.out_dir,
+        skills_dir=args.llm_dir / "skills",
+    )
+
+
+def make_skill_runner(args: argparse.Namespace) -> SkillRunner | None:
+    """B+S: the frozen library shipped in the LLM bundle (``skills/``)."""
+    if args.agent != "B+S":
+        return None
+    return SkillRunner(SkillLibrary.load(args.llm_dir / "skills", require_frozen=True))
 
 
 def main() -> None:
@@ -249,7 +263,7 @@ def main() -> None:
             status["error"] = "sim_not_ready"
             return
         status["ready"] = True
-        robot = Robot(backend, params=params)
+        robot = Robot(backend, params=params, skills=make_skill_runner(args))
         robot.reset()
         gz = GzScene(backend, args.world, scene_cfg)
         world = GazeboWorld(backend, gz, energy, args.out_dir, mcap=args.mcap)

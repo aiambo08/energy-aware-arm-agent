@@ -8,10 +8,12 @@ inside the network-less simulation container with the same hash.
 from __future__ import annotations
 
 import textwrap
+from collections.abc import Sequence
 
 from armbench.llm.types import Message
 from armbench.primitives.params import PrimitiveParams
 from armbench.sandbox import ALLOWED_BUILTINS, ProgramRun
+from armbench.skills.spec import Skill
 from armbench.tasks import TaskInstance
 
 OBSERVE_POSES_HINT = "Pose(-0.30, 0.0, 0.15), Pose(-0.30, 0.25, 0.15), Pose(-0.30, -0.25, 0.15)"
@@ -119,15 +121,44 @@ def system_prompt(
     )
 
 
-def task_message(instance: TaskInstance) -> str:
+SKILLS_HEADER = """\
+# Skills
+Validated skills (agent B+S). Each is a whole validated program with the goal as parameters;
+calling one is a single call for you, several robot moves for the arm, and it ends with the
+gripper open. robot.execute_skill("name", param=value, ...) runs it and returns a record with
+.skill, .calls (primitives it ran), .t_start_sim, .t_end_sim; it raises SkillPreconditionFailed
+(nothing moved), SkillPostconditionFailed (ran, but the stated outcome does not hold), SkillFailed
+(stopped early) or the primitive error that stopped it. Prefer a skill whose contract matches the
+task; otherwise write the steps yourself. <color> is a colour name string, <float> metres.
+"""
+
+
+def skills_section(skills: Sequence[Skill]) -> str:
+    lines = [SKILLS_HEADER]
+    for s in skills:
+        pre = ", ".join(c.describe() for c in s.preconditions) or "nothing"
+        post = ", ".join(c.describe() for c in s.postconditions) or "nothing stated"
+        contract = f"requires: {pre}; ensures: {post}"
+        lines.append(f"- {s.call_syntax()}\n  {s.description}\n  {contract}")
+    return "\n".join(lines) + "\n"
+
+
+def task_message(instance: TaskInstance, skills: Sequence[Skill] = ()) -> str:
     n = len(instance.scene.cubes)
-    return f"# Task\n{instance.prompt}\n\nThere are {n} cubes on the table. Write the program."
+    head = skills_section(skills) + "\n" if skills else ""
+    return (
+        f"{head}# Task\n{instance.prompt}\n\nThere are {n} cubes on the table. Write the program."
+    )
 
 
-def build_messages(instance: TaskInstance, system: str) -> tuple[Message, ...]:
+def build_messages(
+    instance: TaskInstance, system: str, skills: Sequence[Skill] = ()
+) -> tuple[Message, ...]:
+    """Agent B's two messages; B+S appends the retrieved skills to the task message (the system
+    prompt is identical, so B and B+S differ only by that section)."""
     return (
         Message(role="system", content=system),
-        Message(role="user", content=task_message(instance)),
+        Message(role="user", content=task_message(instance, skills)),
     )
 
 

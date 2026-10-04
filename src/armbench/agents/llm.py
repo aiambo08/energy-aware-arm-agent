@@ -29,7 +29,10 @@ from armbench.llm import (
 from armbench.primitives import PrimitiveParams, Robot
 from armbench.sandbox import ProgramRun, SandboxLimits, run_program
 from armbench.scene import load_scene_config
+from armbench.skills import Skill, SkillLibrary
 from armbench.tasks import TaskInstance
+
+SKILLS_PER_PROMPT: Final = 3
 
 FENCE_RE: Final = re.compile(r"```(?:python|py)?[ \t]*\n(.*?)```", re.DOTALL)
 
@@ -51,10 +54,13 @@ class LLMAgent:
         limits: SandboxLimits | None = None,
         artifacts_dir: Path | None = None,
         cube_size_m: float | None = None,
+        library: SkillLibrary | None = None,
     ) -> None:
         self.id = agent_id
         self.provider = provider
         self.params = params
+        self.library = library
+        """B+S: the frozen library whose skills are offered in the prompt (B has none)."""
         self.limits = limits or params.sandbox.limits()
         self.artifacts_dir = artifacts_dir
         self.cube_size_m = (
@@ -69,11 +75,18 @@ class LLMAgent:
             )
         return self._system
 
+    def skills_for(self, instance: TaskInstance) -> tuple[Skill, ...]:
+        """Skills retrieved by the task wording (deterministic word overlap, top-k)."""
+        if self.library is None:
+            return ()
+        hits = self.library.retrieve(instance.prompt, k=SKILLS_PER_PROMPT)
+        return tuple(h.skill for h in hits)
+
     def request(self, params: PrimitiveParams, instance: TaskInstance) -> LLMRequest:
         """The first-turn request for an instance (what the host pre-fetches and caches)."""
         return LLMRequest(
             model=self.params.model,
-            messages=build_messages(instance, self.system(params)),
+            messages=build_messages(instance, self.system(params), self.skills_for(instance)),
             temperature=self.params.temperature,
             max_tokens=self.params.max_tokens,
             seed=self.params.seed,
@@ -123,9 +136,11 @@ class LLMAgent:
                 }
             )
         last = runs[-1]
+        skills_used = tuple(dict.fromkeys(n for r in runs for n in r.skills_used))
         trace = AgentTrace(
             attempts=len(runs),
-            n_primitives=sum(r.n_calls for r in runs),
+            n_primitives=sum(r.n_primitive_calls for r in runs),
+            skills_used=skills_used,
             prompt_tokens=usage.prompt_tokens,
             completion_tokens=usage.completion_tokens,
             llm_latency_s=latency,

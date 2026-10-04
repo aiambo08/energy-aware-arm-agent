@@ -21,7 +21,8 @@ from __future__ import annotations
 
 import math
 import time
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
+from typing import Protocol
 
 import numpy as np
 
@@ -55,6 +56,7 @@ from armbench.primitives.types import (
     Pose,
     Primitive,
     Result,
+    SkillResult,
     Vec6,
 )
 
@@ -71,10 +73,21 @@ def _wrap_angle(a: float) -> float:
     return (a + math.pi) % _TWO_PI - math.pi
 
 
+class SkillExecutor(Protocol):
+    """What ``execute_skill`` delegates to (implemented by :mod:`armbench.skills`)."""
+
+    def execute(self, robot: Robot, name: str, kwargs: Mapping[str, object]) -> SkillResult: ...
+
+
+def _jsonable_kwargs(kwargs: Mapping[str, object]) -> dict[str, object]:
+    plain = str | int | float | bool | None
+    return {k: v if isinstance(v, plain) else repr(v) for k, v in kwargs.items()}
+
+
 class Robot:
     """Primitives over a :class:`Backend`; one instance per episode."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913 - every collaborator is optional and keyword-only
         self,
         backend: Backend,
         *,
@@ -82,8 +95,10 @@ class Robot:
         perception: PerceptionParams | None = None,
         camera: Camera | None = None,
         kinematics: UR5eModel | None = None,
+        skills: SkillExecutor | None = None,
     ) -> None:
         self.backend = backend
+        self.skills = skills
         self.params = params if params is not None else load_primitive_params()
         self.perception = perception if perception is not None else load_perception_params()
         self.camera = camera if camera is not None else Camera.from_spec(self.perception.camera)
@@ -359,7 +374,10 @@ class Robot:
 
     def observe(self) -> Observation:
         """Joint state, TCP pose, gripper state and every detected cube."""
-        detections = self.detect()
+        return self.state(tuple(self.detect()))
+
+    def state(self, detections: tuple[Detection, ...] = ()) -> Observation:
+        """Joint and gripper state without touching the camera (skill conditions use it)."""
         snap = self._snapshot()
         opening = self.opening_m(snap)
         return Observation(
@@ -373,9 +391,15 @@ class Robot:
             detections=tuple(detections),
         )
 
-    def execute_skill(self, name: str, **kwargs: object) -> Result:
-        """Run a validated skill from the library (F7); until then always raises."""
-        raise SkillNotAvailable(f"skill {name!r} is not available", name=name, kwargs=kwargs)
+    def execute_skill(self, name: str, **kwargs: object) -> SkillResult:
+        """Run a validated skill from the library the robot was built with (F7); a robot
+        without a library (agents A and B) always raises ``SkillNotAvailable``."""
+        if self.skills is None:
+            raise SkillNotAvailable(
+                f"skill {name!r} is not available: this robot has no skill library",
+                name=name, kwargs=_jsonable_kwargs(kwargs),
+            )  # fmt: skip
+        return self.skills.execute(self, name, kwargs)
 
     def home(self, speed_scale: float = 1.0) -> MoveResult:
         """Return to ``ready_pose`` (joint-space, no IK: the configured ``ready_q``)."""

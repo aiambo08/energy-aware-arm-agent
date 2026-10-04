@@ -11,3 +11,6 @@ from typing import Final
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[2]
 CONFIG_DIR: Final = Path(os.environ.get("ARMBENCH_CONFIG_DIR", REPO_ROOT / "configs"))
+SKILLS_DIR: Final = Path(os.environ.get("ARMBENCH_SKILLS_DIR", REPO_ROOT / "skills"))
+"""The frozen skill library (``library.json`` + ``FROZEN.json``); runs copy it next to the LLM
+bundle and point the containers at that copy."""

@@ -174,6 +174,24 @@ class SkillNotAvailable(PrimitiveError):
     code = "skill_not_available"
 
 
+class SkillPreconditionFailed(PrimitiveError):
+    """A skill precondition did not hold; the skill did not move the arm."""
+
+    code = "skill_precondition_failed"
+
+
+class SkillPostconditionFailed(PrimitiveError):
+    """The skill body completed but a postcondition does not hold."""
+
+    code = "skill_postcondition_failed"
+
+
+class SkillFailed(PrimitiveError):
+    """The skill body stopped before completing."""
+
+    code = "skill_failed"
+
+
 ERRORS: Final[tuple[type[PrimitiveError], ...]] = (
     OutOfReach,
     Singularity,
@@ -182,6 +200,9 @@ ERRORS: Final[tuple[type[PrimitiveError], ...]] = (
     NoObjectGrasped,
     CameraTimeout,
     SkillNotAvailable,
+    SkillPreconditionFailed,
+    SkillPostconditionFailed,
+    SkillFailed,
 )
 ERRORS_BY_CODE: Final[dict[str, type[PrimitiveError]]] = {e.code: e for e in ERRORS}
 

@@ -421,10 +421,57 @@ print(run.outcome, run.describe())"
 from the task text — the only one used so far), `openai_compat` (any `/v1/chat/completions`,
 key in `ARMBENCH_LLM_API_KEY`, `openai.base_url`/`openai.model`), `replay` (cache only).
 Every provider is wrapped in a disk cache keyed by the SHA-256 of the canonical request
-(model, messages, temperature, max_tokens, seed) and in a budget guard (`max_usd_per_run`,
-`max_tokens_per_episode`, prices per million tokens) that writes `<out>/llm/ledger.json`.
+(model, messages, temperature, max_tokens, seed, plus `reasoning_effort` and the endpoint
+base URL when set, so Gemini and Nebius answers never mix) and in a budget guard
+(`max_usd_per_run`, optional `max_usd_total` over all runs, `max_tokens_per_episode`, prices
+per million tokens) that writes `<out>/llm/ledger.json` and `<cache_dir>/spend.json`.
 Switching to a real model is configuration only; no code path changes, and CI never makes a
 live call.
+
+### Real providers: Gemini (AI Studio) and Nebius Token Factory
+
+Two ready profiles, each with its own key variable (never in a file, never on the command line):
+
+| Profile | Endpoint | Key variable | Role in the plan | Cost control |
+|---|---|---|---|---|
+| `configs/llm.gemini.yaml` | `https://generativelanguage.googleapis.com/v1beta/openai/` | `ARMBENCH_GEMINI_API_KEY` ([AI Studio](https://aistudio.google.com/apikey)) | development and pilots on `dev` seeds (free tier) | free tier is not billed; requests spaced by `openai.min_interval_s` (6 s) and `Retry-After` honoured on 429 |
+| `configs/llm.nebius.yaml` | `https://api.tokenfactory.nebius.com/v1/` | `ARMBENCH_NEBIUS_API_KEY` ([Token Factory](https://tokenfactory.nebius.com/) → API keys) | the pre-registered F9 evaluation, one fixed model | `max_usd_per_run: 2.0`, `max_usd_total: 3.0` over every run sharing `cache/llm` |
+
+Providers are split **by phase, never within an evaluation**: every configuration (B, B+S, C,
+C+S) of the final evaluation uses the same model, otherwise a Wh difference could come from the
+model instead of the agent. Steps, in order:
+
+```bash
+# 1. key for this shell only (paste it after the =; nothing is written to disk)
+export ARMBENCH_NEBIUS_API_KEY=...            # or ARMBENCH_GEMINI_API_KEY=...
+
+# 2. Nebius only: list model ids with their real prices (USD per token), then put the chosen id
+#    in `model:` and the prices (x 1e6) in `prices_usd_per_1m:` of configs/llm.nebius.yaml
+uv run armbench llm models --llm-config configs/llm.nebius.yaml
+
+# 3. one tiny live call: proves key, endpoint, model id and sampling parameters are accepted
+uv run armbench llm check --llm-config configs/llm.nebius.yaml
+#    expected: ok: model <id>, <n>+<m> tokens, <s> s, ~0.0000xx USD, finish stop: 'ok'
+
+# 4. price a run before making it (no provider call; cache hits are free; exit 1 if over a cap)
+uv run armbench run --task all --agent C+S --seeds dev --llm-config configs/llm.nebius.yaml --dry-run
+#    model ... @ https://api.tokenfactory.nebius.com/v1
+#    requests 40: 0 cached, 40 live (x1 attempts max)
+#    tokens: ~103227 prompt + <= 60000 completion
+#    worst case 0.1416 USD; run cap 2.00; spent so far 0.0000 of total cap 3.00
+#    fits the caps
+uv run armbench llm estimate --task all --agent B --llm-config configs/llm.gemini.yaml --json
+
+# 5. the run itself; if it stops (cap, quota, network) just run the same command again:
+#    every answer already received is in cache/llm and is served free, only the rest is called
+uv run armbench run --task all --agent B --backend sim --seeds dev \
+  --llm-config configs/llm.gemini.yaml --out runs/pilot_gemini_B
+```
+
+The estimate is a worst case: prompt tokens are counted high (3 characters per token) and every
+answer is assumed to use all of `max_tokens`. Do **not** empty `cache/llm` with a real provider:
+it is what makes reruns free and is published with the dataset (it was emptied in the F6–F8
+gates only because the template provider's answers change with the code).
 
 **Sandbox** (`armbench.sandbox` on the host side, `armbench.guest` inside the child): AST
 whitelist (no imports, classes, `try`, `with`, decorators, dunder/underscore names, `eval`/

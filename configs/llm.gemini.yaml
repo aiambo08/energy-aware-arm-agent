@@ -1,0 +1,36 @@
+# Google AI Studio (Gemini API) over its OpenAI-compatible endpoint
+# (https://ai.google.dev/gemini-api/docs/openai). Free tier: no charge, but a requests-per-minute
+# and per-day quota per project (see AI Studio > Rate limits), and prompts may be used by Google
+# to improve its products. Use: development and pilots on dev seeds (hybrid plan, F9).
+#   export ARMBENCH_GEMINI_API_KEY=...        # https://aistudio.google.com/apikey
+#   uv run armbench llm check --llm-config configs/llm.gemini.yaml
+schema_version: 1
+provider: openai
+model: gemini-3.8-flash          # pin an exact id; it is part of the cache key
+temperature: 0.0
+max_tokens: 4096                 # thinking tokens count as output on Gemini 3 models
+reasoning_effort: low            # Gemini 3 cannot disable thinking; low keeps it short
+seed: null                       # not documented for the compatibility layer; leave unset
+max_attempts: 1
+max_tokens_per_episode: 16000
+max_usd_per_run: 5.0
+max_usd_total: null              # free tier is not billed; enable billing => set real prices + a cap
+prices_usd_per_1m: {input: 0.0, output: 0.0}   # free tier; paid tier is 0.75 / 3.75 (2026)
+cache_dir: cache/llm
+openai:
+  base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+  api_key_env: ARMBENCH_GEMINI_API_KEY
+  timeout_s: 120.0
+  max_retries: 4
+  backoff_s: 5.0
+  min_interval_s: 6.0            # <= 10 requests/minute; raise if AI Studio shows a lower quota
+  max_retry_after_s: 120.0
+sandbox:
+  cpu_s: 10.0
+  memory_mb: 512
+  wall_s: 300.0
+  sim_s: 60.0
+  max_calls: 200
+  stdout_kb: 16
+  max_source_chars: 20000
+  max_nodes: 5000

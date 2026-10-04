@@ -6,10 +6,12 @@ from pathlib import Path
 
 from armbench.llm.budget import BudgetedProvider, Ledger, Prices
 from armbench.llm.cache import CachedProvider, CacheEntry, ReplayProvider, ResponseCache
+from armbench.llm.estimate import Estimate, estimate
 from armbench.llm.fake import StaticProvider, TemplateProvider, template_program
 from armbench.llm.openai_compat import OpenAICompatProvider, OpenAICompatSpec
 from armbench.llm.params import (
     DEFAULT_LLM_FILE,
+    SPEND_FILE,
     LLMParams,
     ProviderKind,
     SandboxSpec,
@@ -30,7 +32,8 @@ def make_provider(
     ``BudgetedProvider(CachedProvider(base))`` so the ledger sees every answer (hits are
     counted, cost nothing and are never re-priced) and misses are priced and capped."""
     which = kind or params.provider
-    cache = ResponseCache(cache_dir or params.cache_dir)
+    root = cache_dir or params.cache_dir
+    cache = ResponseCache(root)
     if which == "replay":
         return ReplayProvider(cache)
     base: Provider = (
@@ -41,16 +44,20 @@ def make_provider(
         params.prices_usd_per_1m,
         max_usd=params.max_usd_per_run,
         ledger_path=ledger_path,
+        max_usd_total=params.max_usd_total,
+        total_path=root / SPEND_FILE,
     )
 
 
 __all__ = [
     "DEFAULT_LLM_FILE",
+    "SPEND_FILE",
     "BudgetExceeded",
     "BudgetedProvider",
     "CacheEntry",
     "CacheMiss",
     "CachedProvider",
+    "Estimate",
     "LLMParams",
     "LLMRequest",
     "LLMResponse",
@@ -69,6 +76,7 @@ __all__ = [
     "StaticProvider",
     "TemplateProvider",
     "Usage",
+    "estimate",
     "load_llm_params",
     "make_provider",
     "sha256_text",

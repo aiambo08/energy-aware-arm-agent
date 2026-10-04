@@ -27,8 +27,13 @@ from armbench.energy import (
 from armbench.kinematics import N_JOINTS, UR5eModel, rotation_vector
 from armbench.llm import (
     DEFAULT_LLM_FILE,
+    Estimate,
+    OpenAICompatProvider,
+    ProviderError,
     ProviderKind,
+    ReplayProvider,
     ResponseCache,
+    estimate,
     load_llm_params,
     make_provider,
 )
@@ -311,6 +316,44 @@ def _llm_bundle(spec: _RunSpec, out: Path) -> Path:
     return bundle
 
 
+def _llm_estimate(spec: _RunSpec) -> Estimate:
+    """Build every first-turn request of the run without calling any provider and price the
+    ones ``cache_dir`` cannot answer."""
+    from armbench.agents import LLMAgent, get_agent  # noqa: PLC0415
+    from armbench.primitives import load_primitive_params  # noqa: PLC0415
+
+    llm = load_llm_params(spec.llm_config)
+    if spec.provider is not None:
+        llm = llm.model_copy(update={"provider": spec.provider})
+    cache = ResponseCache(llm.cache_dir)
+    agent = get_agent(
+        spec.agent, llm=llm, provider=ReplayProvider(cache), skills_dir=spec.skills_dir,
+        energy_ref_dir=spec.energy_ref_dir,
+    )  # fmt: skip
+    if not isinstance(agent, LLMAgent):
+        msg = f"agent {spec.agent} does not use an LLM"
+        raise typer.BadParameter(msg)
+    cfg = load_scene_config()
+    params = load_primitive_params()
+    requests = [
+        agent.request(params, get_task(t).instance(s, cfg)) for t in spec.tasks for s in spec.seeds
+    ]
+    return estimate(requests, llm, cache)
+
+
+def _print_estimate(est: Estimate) -> None:
+    total = "off" if est.max_usd_total is None else f"{est.max_usd_total:.2f}"
+    typer.echo(
+        f"model {est.model} @ {est.endpoint or 'local template'}\n"
+        f"requests {est.n_requests}: {est.n_cached} cached, {est.n_live} live "
+        f"(x{est.max_attempts} attempts max)\n"
+        f"tokens: ~{est.prompt_tokens_est} prompt + <= {est.completion_tokens_max} completion\n"
+        f"worst case {est.usd_worst:.4f} USD; run cap {est.max_usd_per_run:.2f}; "
+        f"spent so far {est.spent_usd_total:.4f} of total cap {total}\n"
+        f"{'fits the caps' if est.fits else 'EXCEEDS a cap: the run would stop early'}"
+    )
+
+
 def _run_meta(spec: _RunSpec, *, backend: str, image: str) -> dict[str, object]:
     """``run.json``: what the run was asked to do plus the hashes of what the agent could
     see (LLM config, frozen library, energy reference). Refuses (exit 2) an unfrozen library
@@ -378,6 +421,10 @@ def run(  # noqa: PLR0913
     energy_ref_dir: Annotated[
         Path, typer.Option(help="Energy reference (baseline A Wh per task) for C and C+S.")
     ] = ENERGY_REF_DIR,
+    dry_run: Annotated[
+        bool,
+        typer.Option("--dry-run", help="Price the LLM calls (cache hits are free) and stop."),
+    ] = False,
 ) -> None:
     """Run episodes and append JSONL records to <out>/episodes.jsonl."""
     from armbench.runner import SimRunOptions, authorise_seeds, run_sim  # noqa: PLC0415
@@ -396,13 +443,16 @@ def run(  # noqa: PLR0913
         raise typer.Exit(code=2) from exc
     tasks = _expand_tasks(task)
     run_id = uuid.uuid4().hex[:12]
-    out_dir = out or Path("runs") / run_id
-    out_dir.mkdir(parents=True, exist_ok=True)
     spec = _RunSpec(
         tasks=tasks, agent=agent, seeds=seed_list, repeat=repeat, run_id=run_id,
         llm_config=llm_config, provider=provider_kind, skills_dir=skills_dir,
         energy_ref_dir=energy_ref_dir,
     )  # fmt: skip
+    if dry_run:
+        _dry_run(spec)
+        return
+    out_dir = out or Path("runs") / run_id
+    out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "run.json").write_text(
         json.dumps(_run_meta(spec, backend=backend, image=image), indent=1) + "\n"
     )
@@ -427,6 +477,16 @@ def run(  # noqa: PLR0913
         typer.echo("some chunks failed; see chunks.json", err=True)
         raise typer.Exit(code=1)
     typer.echo(f"done -> {out_dir}")
+
+
+def _dry_run(spec: _RunSpec) -> None:
+    if not spec.uses_llm:
+        typer.echo(f"agent {spec.agent} makes no LLM calls; nothing to price")
+        return
+    est = _llm_estimate(spec)
+    _print_estimate(est)
+    if not est.fits:
+        raise typer.Exit(code=1)
 
 
 @app.command()
@@ -633,3 +693,105 @@ def skills_show(
         typer.echo(
             f"    origin: {s.origin.task} run {s.origin.run_id} seeds {list(s.origin.seeds)}"
         )
+
+
+llm_app = typer.Typer(no_args_is_help=True, help="LLM providers, cache and spending (F6/F9).")
+app.add_typer(llm_app, name="llm")
+
+
+def _openai(llm_config: Path) -> OpenAICompatProvider:
+    return OpenAICompatProvider(load_llm_params(llm_config).openai)
+
+
+@llm_app.command("estimate")
+def llm_estimate(  # noqa: PLR0913
+    *,
+    task: Annotated[list[str], typer.Option(help="Task id or 'all'; repeatable.")],
+    agent: Annotated[str, typer.Option(help="LLM agent: B, B+S, C or C+S.")] = "B",
+    seeds: Annotated[str, typer.Option(help="Split name, range or list.")] = "dev",
+    final_eval: Annotated[bool, typer.Option("--final-eval", help="Unlock locked seeds.")] = False,
+    protocol_hash: Annotated[str | None, typer.Option(help="Pre-registered protocol hash.")] = None,
+    seeds_file: Annotated[Path, typer.Option(help="Seed split YAML.")] = DEFAULT_SEEDS_FILE,
+    llm_config: Annotated[Path, typer.Option(help="LLM YAML.")] = DEFAULT_LLM_FILE,
+    skills_dir: Annotated[Path, typer.Option(help="Frozen skill library.")] = SKILLS_DIR,
+    energy_ref_dir: Annotated[Path, typer.Option(help="Energy reference.")] = ENERGY_REF_DIR,
+    as_json: Annotated[bool, typer.Option("--json", help="Machine-readable output.")] = False,
+) -> None:
+    """Price a run before making it: cache hits, live calls, worst-case USD vs the caps.
+    Exit 1 when the worst case does not fit a cap. Never calls a provider."""
+    from armbench.runner import authorise_seeds  # noqa: PLC0415
+
+    try:
+        seed_list = authorise_seeds(
+            seeds, load_seed_split(seeds_file), final_eval=final_eval, protocol_hash=protocol_hash
+        )
+    except LockedSeedError as exc:
+        typer.echo(f"refused: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    spec = _RunSpec(
+        tasks=_expand_tasks(task), agent=agent, seeds=seed_list, repeat=1, run_id="estimate",
+        llm_config=llm_config, skills_dir=skills_dir, energy_ref_dir=energy_ref_dir,
+    )  # fmt: skip
+    if not spec.uses_llm:
+        raise typer.BadParameter(f"agent {agent} does not use an LLM")
+    est = _llm_estimate(spec)
+    if as_json:
+        typer.echo(est.model_dump_json(indent=1))
+    else:
+        _print_estimate(est)
+    if not est.fits:
+        raise typer.Exit(code=1)
+
+
+@llm_app.command("models")
+def llm_models(
+    llm_config: Annotated[Path, typer.Option(help="LLM YAML (its openai: endpoint and key).")],
+) -> None:
+    """List the endpoint's models (``GET /models?verbose=true``, with prices where the
+    provider reports them). Needs the key; costs nothing."""
+    try:
+        raw = _openai(llm_config).list_models()
+    except ProviderError as exc:
+        typer.echo(f"failed: {exc.message}", err=True)
+        raise typer.Exit(code=1) from exc
+    try:
+        data = json.loads(raw)
+    except ValueError as exc:
+        typer.echo("failed: the endpoint did not return JSON", err=True)
+        raise typer.Exit(code=1) from exc
+    rows = data.get("data", []) if isinstance(data, dict) else []
+    for m in rows:
+        if not isinstance(m, dict):
+            continue
+        price = m.get("pricing")
+        extra = ""
+        if isinstance(price, dict):
+            extra = f"  in {price.get('prompt')} out {price.get('completion')} USD/token"
+        typer.echo(f"{m.get('id')}{extra}")
+
+
+@llm_app.command("check")
+def llm_check(
+    llm_config: Annotated[Path, typer.Option(help="LLM YAML to test.")],
+) -> None:
+    """One tiny live call with the profile's model and sampling parameters (a few tokens,
+    not cached): proves the key, endpoint, model name and parameters are accepted."""
+    from armbench.llm import LLMRequest, Message  # noqa: PLC0415
+
+    llm = load_llm_params(llm_config)
+    req = LLMRequest(
+        model=llm.model, messages=(Message(role="user", content="Reply with the word: ok"),),
+        temperature=llm.temperature, max_tokens=llm.max_tokens, seed=llm.seed,
+        reasoning_effort=llm.reasoning_effort, endpoint=llm.endpoint(),
+    )  # fmt: skip
+    try:
+        resp = _openai(llm_config).complete(req)
+    except ProviderError as exc:
+        typer.echo(f"failed ({exc.code}): {exc.message}", err=True)
+        raise typer.Exit(code=1) from exc
+    cost = llm.prices_usd_per_1m.cost_usd(resp.usage)
+    typer.echo(
+        f"ok: model {resp.model}, {resp.usage.prompt_tokens}+{resp.usage.completion_tokens} "
+        f"tokens, {resp.latency_s:.2f} s, ~{cost:.6f} USD, finish {resp.finish_reason}: "
+        f"{resp.text.strip()[:60]!r}"
+    )

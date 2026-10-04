@@ -5,9 +5,9 @@ phase PR.
 
 | Field | Value |
 |---|---|
-| Current phase | F2 merged (critical gate 2 passed); F3 awaits go |
-| Last green commit | `main` after PR #5 (F2) — see `git log -1 main` |
-| Next phase | F3 — perception `detect()` (HSV + depth) on 200 seeded scenes |
+| Current phase | F3 merged (perception gate passed); F4 next |
+| Last green commit | `main` after PR #6 (F3) — see `git log -1 main` |
+| Next phase | F4 — primitives with Pydantic contracts (`observe`, `detect`, `move_to`, `grasp`, `release`), IK, typed errors, simulation tests |
 | Blockers | none |
 
 ## Phase status
@@ -17,7 +17,7 @@ phase PR.
 | F0 skeleton, Docker, quality | merged (PR #1) | `reports/f0_quality.json` (ruff, format, mypy strict, 13 tests, 1.2 s), `reports/f0_sim.json` (boot 2.5 s, image 4.46 GB) |
 | F1 arm simulation | done (PR #3) | `reports/f1_sim.json` (3 runs) and `reports/f1_sim_50runs.json` (50 runs: boots 50/50, ready ≤ 18.7 s, RTF ≥ 0.77, camera ≥ 10.6 FPS, grasp 50/50, slip ≤ 0.25 mm); kinematics + scene generator unit tests |
 | F2 torque source and energy model | done (PR #5) | `reports/f2_torque_source.json` (static effort vs gravity ≤ 1.6 %, motion NRMSE median 0.06, Wh CV 1.1 %, meter 2.3 % of container CPU); energy model unit + hypothesis tests; ADR-004 |
-| F3 perception `detect()` | not started | — |
+| F3 perception `detect()` | done (PR #6) | `reports/f3_perception.json` — 200 scenes / 891 cubes: recall 100 %, 0 FP, XY median 1.39 mm, p95 2.34 mm, Z p95 < 0.001 mm, latency p95 14.4 ms; perception unit + hypothesis tests on synthetic renders |
 | F4 primitives with contracts | not started | — |
 | F5 tasks, baseline A, runner | not started | — |
 | F6 LLM agent, sandbox, cost control | not started | — |

@@ -1,0 +1,26 @@
+# Perception parameters for `armbench.perception.detect` (HSV segmentation + depth).
+# The camera pose is the `<model name="rgbd_camera">` pose of worlds/tabletop.sdf.in: the robot is
+# spawned at the world origin, so world == base_link and detections are reported in base_link.
+schema_version: 1
+frame: base_link
+camera:
+  width: 640
+  height: 480
+  horizontal_fov_rad: 1.0472
+  xyz: [-0.5, 0.0, 1.0]          # sensor origin in base_link
+  rpy: [0.0, 1.5707963, 0.0]     # Gazebo sensor frame (x forward, y left, z up); optical = x right, y down, z forward
+depth:
+  min_m: 0.1                     # camera clip (worlds/tabletop.sdf.in)
+  max_m: 3.0
+  top_face_band_m: 0.012         # pixels within this band of a blob's nearest depth are its top face
+segmentation:
+  min_saturation: 80             # the table (grey-white) and the arm (dark grey) have S ~ 0
+  min_value: 60
+  min_area_px: 100               # a 45 mm top face at 1 m is ~680 px
+  open_kernel_px: 3
+  hue_ranges:                    # OpenCV hue in [0, 180); measured on rendered cubes: red 0, yellow 29, green 64, blue 110
+    red: [[0, 8], [172, 179]]
+    yellow: [[20, 40]]
+    green: [[50, 85]]
+    blue: [[95, 125]]
+cube_size_m: 0.045               # must match configs/scene.yaml (centre = top face - size / 2)

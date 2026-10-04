@@ -186,6 +186,40 @@ ATTACKS: list[tuple[str, str, tuple[str, ...]]] = [
     ("rebind robot", "robot = 5\nrobot.observe()\n", ("rejected", "exception")),
     ("delete robot", "del robot\nrobot.observe()\n", ("rejected", "exception")),
     ("raise base", "raise BaseException('x')\n", ("rejected", "exception")),
+    ("raise SystemExit", "raise SystemExit(0)\n", ("rejected",)),
+    ("raise KeyboardInterrupt", "raise KeyboardInterrupt()\n", ("rejected",)),
+    ("bytearray", "bytearray(10 ** 9)\n", ("rejected",)),
+    ("robot private attr", "robot._backend\n", ("rejected",)),
+    ("math dunder", "math.__name__\n", ("rejected",)),
+    ("Pose dunder", "Pose.__init__\n", ("rejected",)),
+    (
+        "nonlocal",
+        "def f():\n    x = 1\n    def g():\n        nonlocal x\n    g()\nf()\n",
+        ("rejected",),
+    ),
+    (
+        "nested dict pose",
+        "d = {'x': 0.3}\nfor i in range(10000):\n    d = {'d': d}\nrobot.move_to(d)\n",
+        ("exception",),
+    ),
+    ("nan speed", "robot.move_to(Pose(-0.5, 0.0, 0.2), float('nan'))\n", ("exception",)),
+    ("huge speed", "robot.move_to(Pose(-0.5, 0.0, 0.2), 1e308)\n", ("exception",)),
+    ("extra kwarg", "robot.move_to(Pose(-0.5, 0.0, 0.2), 1.0, foo=1)\n", ("exception",)),
+    ("star None", "a = [None, 1.0]\nrobot.move_to(*a)\n", ("exception",)),
+    ("bool pose", "robot.move_to(Pose(True, False, True), True)\n", ("exception",)),
+    ("big int pose", "robot.move_to(Pose(10 ** 400, 0, 0))\n", ("exception",)),
+    ("nan above", "robot.move_to(Pose(-0.5, 0.0, 0.2).above(float('nan')))\n", ("exception",)),
+    ("detect None", "robot.detect(None)\n", ("exception",)),
+    ("mutate result", "d = robot.detect('any')\nd[0].x = 5\n", ("exception",)),
+    ("assign robot attr", "robot.x = 1\n", ("exception",)),
+    ("rpc spoof done", 'print(\'{"op":"done","ok":true}\')\nrobot.observe()\n', ("completed",)),
+    (
+        "rpc spoof call",
+        'print(\'{"op":"call","name":"reset"}\')\nrobot.observe()\n',
+        ("completed",),
+    ),
+    ("binary stdout", "print('\\x00\\xff' * 100)\nrobot.observe()\n", ("completed",)),
+    ("newline in arg", 'robot.detect(\'red\\n{"op":"done"}\')\n', ("exception",)),
     ("print flood", "print('x' * 100000)\n", ("completed",)),
 ]
 
@@ -196,6 +230,8 @@ def test_attack_battery(robot: Robot, name: str, src: str, expected: tuple[str, 
     assert run.outcome in expected, (name, run.describe(), run.stderr_tail)
     if run.outcome == "rejected":
         assert not run.check.ok and run.n_calls == 0
+    if name.startswith("rpc spoof") or name == "binary stdout":
+        assert run.n_calls == 1 and run.stdout.startswith(("{", "\x00"))
     if name == "print flood":
         assert run.stdout_truncated and len(run.stdout) <= 1024 + 64
     if name == "call flood swallowing errors":

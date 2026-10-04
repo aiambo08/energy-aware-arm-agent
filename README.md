@@ -23,6 +23,7 @@ value or a measurement stored under `reports/` with the script that produced it.
 | Perception (F3) | `src/armbench/perception`: pinhole + camera extrinsics (`Camera`), HSV + depth `detect()` → `Detection` (colour, position and yaw in `base_link`); `configs/perception.yaml`; `armbench_bringup` node `scene_capture` (RGB-D + Gazebo ground truth per seed); `scripts/perception_eval.py` runs the F3 gate → `reports/f3_perception.json` |
 | Tasks and baseline A (F5) | `src/armbench/tasks`: four versioned tasks (`pick_place@1`, `stack2@1`, `sort3@1`, `place_obstacle@1`) as pure functions of `(task, seed)` with ground-truth success checkers; `src/armbench/agents`: `Agent` protocol, `AgentTrace`, `ScriptedAgent` (baseline A, primitives only, observes from extra poses when the forearm occludes a cube); ADR-006 |
 | Episode runner and reports (F5) | `src/armbench/runner`: `EpisodeRecord` JSONL schema v1 (verdict, typed failure stage, sim/wall time, Wh A/B × η, agent trace, instance hash), `run_episode` over a `World` protocol (`FakeWorld` without ROS, Gazebo in `armbench_bringup` `episode_runner`), Docker chunk orchestration (`--network none`, fresh container per 25 seeds), `armbench run` / `armbench report` (Wilson CI, Wh median/IQM/p95, repeat CV, infra rate, thresholds) → `reports/f5_baseline.json` |
+| LLM agent B, sandbox, cache/replay (F6) | `src/armbench/llm`: `Provider` protocol with `TemplateProvider` (deterministic, no key), `OpenAICompatProvider` (`urllib`, key from `ARMBENCH_LLM_API_KEY`, unused until a key exists), `CachedProvider`/`ReplayProvider` (content-addressed disk cache), `BudgetedProvider` (token/USD ledger); `src/armbench/agents`: reproducible prompt, `LLMAgent` (B) with tokens/cost/latency/hash trace; `src/armbench/sandbox` + `src/armbench/guest`: AST whitelist, rlimited child interpreter, typed RPC to `robot`, call/sim/wall caps; host prefetch → replay inside the network-less containers; `scripts/f6_gate.py` → `reports/f6_agent_b.json`; ADR-007 |
 | Primitives (F4) | `src/armbench/primitives`: `Robot` with `observe()`, `detect()`, `move_to()`, `grasp()`, `release()`, `reset()`, `execute_skill()` (stub until F7); Pydantic `Pose`/`Observation`/`Detection`/`Result`; typed errors (`OutOfReach`, `Singularity`, `Collision`, `Timeout`, `NoObjectGrasped`, `CameraTimeout`); pre-flight IK/branch/singularity/table-clearance checks (ADR-005); `KinematicBackend` (no ROS) and `RosBackend` (`armbench_bringup`); `configs/primitives.yaml`; `scripts/primitives_eval.py` runs the F4 gate → `reports/f4_primitives.json` |
 | Torque source (F2) | `armbench_bringup` nodes `energy_meter` (online Wh on `/armbench/energy`), `torque_probe` and `torque_compare` (Pinocchio inverse dynamics); `scripts/torque_source.py` runs critical gate 2 → `reports/f2_torque_source.json`, decision in ADR-004 |
 | Simulation (F1) | `ros_ws/src/armbench_description` (UR5e + parallel gripper xacro, tabletop world with fixed RGB-D camera), `ros_ws/src/armbench_bringup` (`sim.launch.py`, controllers, `sim_check` node) |
@@ -31,7 +32,7 @@ value or a measurement stored under `reports/` with the script that produced it.
 
 Roadmap (one PR per phase, see `docs/plan.es.md` and `docs/PROJECT_STATE.md`):
 ~~F1 arm simulation~~ · ~~F2 torque source and energy model~~ · ~~F3 perception~~ ·
-~~F4 primitives~~ · ~~F5 tasks, baseline and runner~~ · F6 LLM agent and sandbox ·
+~~F4 primitives~~ · ~~F5 tasks, baseline and runner~~ · ~~F6 LLM agent and sandbox~~ ·
 F7 skill library · F8 energy-aware agent · F9 pre-registered evaluation ·
 F10 publication.
 
@@ -376,6 +377,66 @@ episodes lost `sort3@1` and `place_obstacle@1` on seed 443, where the open gripp
 neighbouring cube on the way down; baseline A now picks the equivalent grasp yaw that keeps the
 fingers clear (ADR-006) and that run is not the one reported here.
 
+## Agent B: LLM-written programs, sandbox, cache and replay (F6)
+
+Configuration B is the first LLM agent of the protocol: per episode it receives the task prompt
+plus a fixed system prompt (the primitive API, typed errors, workspace limits, the energy
+levers and one worked example — `armbench.agents.prompt`) and must answer with a Python
+program that drives `robot` through the F4 primitives. The program runs in a sandbox and the
+F5 checker judges the result exactly as for baseline A (ADR-007).
+
+```bash
+# agent B on the kinematic backend with the bundled deterministic provider (no key, no network)
+uv run armbench run --task all --agent B --backend fake --seeds dev --out runs/b_fake
+uv run armbench report runs/b_fake            # adds an `llm` block per task: tokens, cost, latency, outcomes
+
+# the same answers again, from the cache only (exit 1 on a cache miss)
+uv run armbench run --task all --agent B --backend fake --seeds dev --out runs/b_replay --provider replay
+
+# Gazebo: programs are fetched on the host, the bundle runs/b_sim/llm/ is copied into each
+# --network none container and replayed there; replay the whole run later without any provider
+uv run armbench run --task all --agent B --backend sim --seeds dev --out runs/b_sim
+uv run armbench run --task all --agent B --backend sim --seeds dev --out runs/b_sim_replay --provider replay
+uv run python scripts/f6_gate.py --live runs/b_sim --replay runs/b_sim_replay --n-rows 10   # → reports/f6_agent_b.json
+
+# try a program against the sandbox by hand
+uv run python -c "
+from armbench.perception import Camera, load_perception_params
+from armbench.primitives import KinematicBackend, Robot, load_primitive_params
+from armbench.sandbox import SandboxLimits, run_program
+from armbench.scene import load_scene_config
+from armbench.tasks import get_task
+p = load_primitive_params(); inst = get_task('pick_place@1').instance(0, load_scene_config())
+robot = Robot(KinematicBackend(p, Camera.from_spec(load_perception_params().camera), cubes=list(inst.scene.cubes)), params=p); robot.reset()
+run = run_program('import os\n', robot, SandboxLimits(cpu_s=2, memory_mb=256, wall_s=20, sim_s=30, max_calls=12, stdout_kb=1))
+print(run.outcome, run.describe())"
+```
+
+**Providers** (`configs/llm.yaml`, `armbench.llm`): `template` (deterministic programs derived
+from the task text — the only one used so far), `openai_compat` (any `/v1/chat/completions`,
+key in `ARMBENCH_LLM_API_KEY`, `openai.base_url`/`openai.model`), `replay` (cache only).
+Every provider is wrapped in a disk cache keyed by the SHA-256 of the canonical request
+(model, messages, temperature, max_tokens, seed) and in a budget guard (`max_usd_per_run`,
+`max_tokens_per_episode`, prices per million tokens) that writes `<out>/llm/ledger.json`.
+Switching to a real model is configuration only; no code path changes, and CI never makes a
+live call.
+
+**Sandbox** (`armbench.sandbox` on the host side, `armbench.guest` inside the child): AST
+whitelist (no imports, classes, `try`, `with`, decorators, dunder/underscore names, `eval`/
+`exec`/`open`/`getattr`/`type`…; 20 k chars, 5 k nodes), a `python -I` child with
+`RLIMIT_AS/CPU/FSIZE/NPROC/CORE`, empty env, read-only cwd and `unshare -rn` where the kernel
+allows it, parent-side caps (`max_calls`, wall, simulated seconds, stdout) and a typed
+JSON-lines RPC so the program only ever talks to a `RobotProxy`. Outcomes are data
+(`completed | rejected | primitive_error | exception | call_limit | sim_limit | timeout |
+killed | protocol_error`) and land in the episode trace with the prompt/response/program
+hashes, tokens, latency, cost and the isolation layers that were active. Inside the Docker
+image `unshare` is refused, so there the layers are `--network none` + rlimits + AST + RPC:
+a process-level sandbox, not a VM boundary (ADR-007). `tests/unit/test_sandbox.py` holds the
+attack battery (imports, files, sockets, introspection, frame walks, CPU/memory bombs,
+call floods, malformed code, random mutations).
+
+> `TemplateProvider` exercises the pipeline, not a model: its success rate and Wh say nothing
+> about what an LLM would achieve. The numbers below are an infrastructure gate.
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 
 ```bash

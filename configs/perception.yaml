@@ -17,6 +17,7 @@ segmentation:
   min_saturation: 80             # the table (grey-white) and the arm (dark grey) have S ~ 0
   min_value: 60
   min_area_px: 100               # a 45 mm top face at 1 m is ~680 px
+  min_top_face_fraction: 0.7     # top face smaller than this share of the expected area -> partial (occluded / cut)
   open_kernel_px: 3
   hue_ranges:                    # OpenCV hue in [0, 180); measured on rendered cubes: red 0, yellow 29, green 64, blue 110
     red: [[0, 8], [172, 179]]

@@ -50,18 +50,22 @@ def free_spot(
     return None
 
 
-def pick_and_place(robot: Robot, pick: Pose, place: Pose) -> list[Result]:
+def pick_and_place(
+    robot: Robot, pick: Pose, place: Pose, *, carry_dz_m: float = APPROACH_DZ_M
+) -> list[Result]:
     """Approach from above, descend, grasp, lift, carry, lower, release, retreat.
 
-    Raises the primitive error of the step that failed; the arm is then wherever that step
-    left it (callers recover with ``robot.reset()``).
+    ``carry_dz_m`` is the height above ``pick``/``place`` of the lift and the carry (the
+    approach and retreat stay at ``APPROACH_DZ_M``). Raises the primitive error of the step
+    that failed; the arm is then wherever that step left it (callers recover with
+    ``robot.reset()``).
     """
     log: list[Result] = []
     log.append(robot.move_to(pick.above(APPROACH_DZ_M)))
     log.append(robot.move_to(pick, DESCENT_SPEED))
     log.append(robot.grasp())
-    log.append(robot.move_to(pick.above(APPROACH_DZ_M), DESCENT_SPEED))
-    log.append(robot.move_to(place.above(APPROACH_DZ_M)))
+    log.append(robot.move_to(pick.above(carry_dz_m), DESCENT_SPEED))
+    log.append(robot.move_to(place.above(carry_dz_m)))
     log.append(robot.move_to(place.above(PLACE_DROP_M), DESCENT_SPEED))
     log.append(robot.release())
     log.append(robot.move_to(place.above(APPROACH_DZ_M)))

@@ -21,6 +21,8 @@ value or a measurement stored under `reports/` with the script that produced it.
 | Simulation image | `docker/Dockerfile`: ROS 2 Jazzy + Gazebo Harmonic + UR5e/Robotiq/Pinocchio packages, `ros_ws` built in the image |
 | Energy model (F2) | `src/armbench/energy`: P_mech variants A/B, copper losses, P₀, η sensitivity, trapezoidal integration (batch and streaming `EnergyMeter`), JSONL episode logs, `armbench energy` CLI; `configs/energy.yaml` holds the electrical assumptions |
 | Perception (F3) | `src/armbench/perception`: pinhole + camera extrinsics (`Camera`), HSV + depth `detect()` → `Detection` (colour, position and yaw in `base_link`); `configs/perception.yaml`; `armbench_bringup` node `scene_capture` (RGB-D + Gazebo ground truth per seed); `scripts/perception_eval.py` runs the F3 gate → `reports/f3_perception.json` |
+| Tasks and baseline A (F5) | `src/armbench/tasks`: four versioned tasks (`pick_place@1`, `stack2@1`, `sort3@1`, `place_obstacle@1`) as pure functions of `(task, seed)` with ground-truth success checkers; `src/armbench/agents`: `Agent` protocol, `AgentTrace`, `ScriptedAgent` (baseline A, primitives only, observes from extra poses when the forearm occludes a cube); ADR-006 |
+| Episode runner and reports (F5) | `src/armbench/runner`: `EpisodeRecord` JSONL schema v1 (verdict, typed failure stage, sim/wall time, Wh A/B × η, agent trace, instance hash), `run_episode` over a `World` protocol (`FakeWorld` without ROS, Gazebo in `armbench_bringup` `episode_runner`), Docker chunk orchestration (`--network none`, fresh container per 25 seeds), `armbench run` / `armbench report` (Wilson CI, Wh median/IQM/p95, repeat CV, infra rate, thresholds) → `reports/f5_baseline.json` |
 | Primitives (F4) | `src/armbench/primitives`: `Robot` with `observe()`, `detect()`, `move_to()`, `grasp()`, `release()`, `reset()`, `execute_skill()` (stub until F7); Pydantic `Pose`/`Observation`/`Detection`/`Result`; typed errors (`OutOfReach`, `Singularity`, `Collision`, `Timeout`, `NoObjectGrasped`, `CameraTimeout`); pre-flight IK/branch/singularity/table-clearance checks (ADR-005); `KinematicBackend` (no ROS) and `RosBackend` (`armbench_bringup`); `configs/primitives.yaml`; `scripts/primitives_eval.py` runs the F4 gate → `reports/f4_primitives.json` |
 | Torque source (F2) | `armbench_bringup` nodes `energy_meter` (online Wh on `/armbench/energy`), `torque_probe` and `torque_compare` (Pinocchio inverse dynamics); `scripts/torque_source.py` runs critical gate 2 → `reports/f2_torque_source.json`, decision in ADR-004 |
 | Simulation (F1) | `ros_ws/src/armbench_description` (UR5e + parallel gripper xacro, tabletop world with fixed RGB-D camera), `ros_ws/src/armbench_bringup` (`sim.launch.py`, controllers, `sim_check` node) |
@@ -29,7 +31,7 @@ value or a measurement stored under `reports/` with the script that produced it.
 
 Roadmap (one PR per phase, see `docs/plan.es.md` and `docs/PROJECT_STATE.md`):
 ~~F1 arm simulation~~ · ~~F2 torque source and energy model~~ · ~~F3 perception~~ ·
-~~F4 primitives~~ · F5 tasks, baseline and runner · F6 LLM agent and sandbox ·
+~~F4 primitives~~ · ~~F5 tasks, baseline and runner~~ · F6 LLM agent and sandbox ·
 F7 skill library · F8 energy-aware agent · F9 pre-registered evaluation ·
 F10 publication.
 
@@ -306,6 +308,74 @@ errors). `detect()` from the ready pose saw every cube in only 42/100 episodes b
 forearm and wrist sit under the camera (ADR-005); the scripted pick is unaffected, but F5
 tasks that need every cube must look from elsewhere.
 
+## Tasks, baseline A and the episode runner (F5)
+
+Four tasks, each a pure function of `(task_id, seed)` on top of the seeded scenes, with a
+success checker that judges Gazebo ground truth (ADR-006). The same checker runs on the
+kinematic fake in the unit tests.
+
+| Task | Goal | Success (plus: ≤ 60 s sim, no other cube moved > 2 cm, tips above the table) |
+|---|---|---|
+| `pick_place@1` | cube of a colour → free point | XY ≤ 2 cm |
+| `stack2@1` | top cube on base cube | XY ≤ 2 cm, Z = base + cube ± 1 cm |
+| `sort3@1` | three cubes → bin per colour | every cube within 2 cm of its bin |
+| `place_obstacle@1` | cube → point behind a 10 cm grey wall | XY ≤ 2 cm, wall moved < 5 mm |
+
+```bash
+# task instance for a seed (goals, colours, obstacle) and the prompt the LLM agents will see
+uv run python -c "from armbench.tasks import get_task; t = get_task('place_obstacle@1'); i = t.instance(7); print(i.model_dump_json(indent=1)); print(t.prompt(i))"
+
+# baseline A on the kinematic backend, no ROS: 4 tasks × dev seeds, JSONL log + report
+uv run armbench run --task all --agent A --backend fake --seeds dev --repeat 2 --out runs/fake
+uv run armbench report runs/fake
+
+# the same in Gazebo (fresh --network none container per chunk of 25 seeds, energy from the
+# 100 Hz effort tap; add --mcap to also record a bag per episode)
+uv run armbench run --task all --agent A --backend sim --seeds dev --out runs/f5_dev
+uv run armbench run --task pick_place@1 --seeds 0 --repeat 10 --out runs/f5_repeat   # Wh CV
+uv run armbench report runs/f5_dev runs/f5_repeat --out reports/f5_baseline.json --strict
+
+# locked seeds are refused (exit 2) without --final-eval --protocol-hash <sha>
+uv run armbench run --task pick_place@1 --backend fake --seeds final_eval
+```
+
+Each episode is one line of `episodes.jsonl` (`schema_version: 1`): task and version, agent,
+seed, repeat, backend, `instance_sha256`, `ok`/`reason`/checker metrics, a typed `failure`
+with its stage (`infra` | `agent` | `robot` | `judge`), `sim_s`, `wall_s`, the energy table
+(variants A/B × η 0.70/0.60/0.80, J and Wh, sample count and rate) with the raw
+`{t, q, qd, tau}` samples in `samples/<episode>.jsonl.gz` for offline recomputation, the
+agent trace (attempts, primitives, observation moves, tokens, latency, skills,
+prompt/response/program hashes — empty for A) and software versions. `armbench report`
+recomputes everything from the lines: success with Wilson 95 % CI, Wh median/IQM/p05/p95 per
+variant and η, Wh CV across repeats of the same seed, infra rate, sim/wall distributions
+(one row per task × agent × backend × seed split, so dev and extended seeds never mix), and
+the F5 thresholds (success ≥ 95 %, infra < 1 %, wall < 120 s, energy table complete, repeat
+CV < 3 %).
+
+Measured (`reports/f5_baseline.json`, 250 Gazebo episodes, image `armbench-sim:dev`, 8 vCPU host,
+one fresh container per 25 episodes, `--network none`):
+
+| task / split | n | success (Wilson 95 %) | Wh A η=0.70 median | Wh B η=0.70 | Wh A η=0.60 / 0.80 | sim s median | wall s p95 |
+|---|---:|---|---:|---:|---|---:|---:|
+| `pick_place@1` dev (+10 repeats of seed 0) | 20 | 100 % [83.9, 100] | 0.214 | 0.228 | 0.216 / 0.213 | 6.76 | 13.4 |
+| `pick_place@1` dev_extended 400–449 | 50 | 100 % [92.9, 100] | 0.210 | 0.225 | 0.212 / 0.209 | 6.59 | 15.2 |
+| `stack2@1` dev | 10 | 100 % [72.2, 100] | 0.226 | 0.241 | 0.228 / 0.224 | 7.18 | 14.3 |
+| `stack2@1` dev_extended | 50 | 100 % [92.9, 100] | 0.216 | 0.234 | 0.218 / 0.214 | 6.73 | 16.0 |
+| `sort3@1` dev | 10 | 100 % [72.2, 100] | 0.584 | 0.625 | 0.590 / 0.580 | 18.3 | 24.3 |
+| `sort3@1` dev_extended | 50 | 100 % [92.9, 100] | 0.581 | 0.624 | 0.588 / 0.577 | 18.2 | 26.6 |
+| `place_obstacle@1` dev | 10 | 100 % [72.2, 100] | 0.228 | 0.247 | 0.231 / 0.226 | 7.17 | 12.9 |
+| `place_obstacle@1` dev_extended | 50 | 100 % [92.9, 100] | 0.224 | 0.241 | 0.226 / 0.222 | 7.02 | 15.3 |
+
+Energy table complete in 250/250 episodes, 0 infra failures, 0 duplicates, Wh CV across the 10
+repeats of `pick_place@1` seed 0: 0.36 % (A) — the simulation is effectively deterministic once
+the gripper controller is up (ADR-006). Baseline A needed one extra observation move in 102/250
+episodes (the forearm shadows ~30 % of the table from the ready pose). The ranking of the
+variants is the same everywhere: B > A by 6–9 % and η=0.60 / 0.80 shift Wh by about ±1 % only,
+because the base power `P0·T` dominates these short episodes. An earlier run of the same 250
+episodes lost `sort3@1` and `place_obstacle@1` on seed 443, where the open gripper swept a
+neighbouring cube on the way down; baseline A now picks the equivalent grasp yaw that keeps the
+fingers clear (ADR-006) and that run is not the one reported here.
+
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 
 ```bash
@@ -344,7 +414,7 @@ after settling, camera at 12.7 FPS.
 |---|---|---|
 | `dev` | 0–9 | free |
 | `skill_validation` | 20–39 | only to accept/reject skills |
-| `dev_extended` | 400–499 | free; F4 primitives gate and scripted-baseline tuning |
+| `dev_extended` | 400–499 | free; F4 primitives gate, F5 baseline check (400–449) |
 | `final_eval` | 100–119 | **locked**: `check_seeds_allowed` raises unless `final_eval=True` and a protocol hash are given |
 
 The split is data (`configs/seeds.yaml`), validated for disjointness, and
@@ -356,8 +426,8 @@ requires an ADR.
 ```
 docker/            Dockerfile, entrypoint
 ros_ws/src/        ROS 2 packages: armbench_description (xacro, worlds), armbench_bringup (launch, controllers, sim_check)
-src/armbench/      pure-Python package, testable without ROS
-configs/           seeds.yaml, ur5e_kinematics.yaml, scene.yaml, energy.yaml, perception.yaml, primitives.yaml (tasks.yaml… later)
+src/armbench/      pure-Python package (energy, perception, primitives, tasks, agents, runner), testable without ROS
+configs/           seeds.yaml, ur5e_kinematics.yaml, scene.yaml, energy.yaml, perception.yaml, primitives.yaml
 scripts/           check scripts that write reports/*.json
 tests/unit/        tests without ROS; tests marked `sim` need the image
 reports/           committed JSON metrics per phase (the DoD evidence)

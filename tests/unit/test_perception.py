@@ -281,3 +281,24 @@ def test_detect_every_seeded_scene(seed: int, noise: float) -> None:
         assert math.hypot(d.position[0] - cube.x, d.position[1] - cube.y) < 0.004
         assert abs(d.position[2] - cube.z) < 0.002
         assert abs(yaw_difference(d.yaw_rad, cube.yaw)) < math.radians(5.0)  # ~28 px masks
+
+
+def test_detect_flags_top_face_occluded_by_the_arm_as_partial(
+    params: PerceptionParams, camera: Camera
+) -> None:
+    cube = make_cube("cube_0", "green", -0.34, -0.12, yaw=-0.32)
+    rgb, depth = render([cube], camera)
+    (full,) = detect(rgb, depth, params=params, camera=camera).detections
+    assert full.complete
+    assert 0.85 <= full.top_face_fraction <= 1.15
+
+    px, _ = camera.project_base(np.array([[cube.x, cube.y, cube.size]]))
+    ui, vi = round(float(px[0, 0])), round(float(px[0, 1]))
+    rgb[vi - 40 : vi + 40, ui - 8 : ui + 40] = ARM_RGB  # forearm over ~70 % of the face
+    depth[vi - 40 : vi + 40, ui - 8 : ui + 40] = 0.6
+    (part,) = detect(rgb, depth, params=params, camera=camera).detections
+    assert not part.complete
+    assert part.top_face_fraction < params.segmentation.min_top_face_fraction
+    # the visible sliver's centroid is pulled towards it: this is the bias a caller must not trust
+    assert math.hypot(part.position[0] - cube.x, part.position[1] - cube.y) > 0.01
+    assert math.hypot(full.position[0] - cube.x, full.position[1] - cube.y) < 0.003

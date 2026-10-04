@@ -32,6 +32,8 @@ class OpenAICompatSpec(BaseModel):
     backoff_s: float = Field(ge=0, default=2.0)
     min_interval_s: float = Field(ge=0, default=0.0)
     """Minimum spacing between requests (free tiers with a requests-per-minute quota)."""
+    models_query: str = ""
+    """Query for ``GET /models`` (Nebius: ``verbose=true`` adds prices; Gemini rejects it)."""
     max_retry_after_s: float = Field(ge=0, default=120.0)
     """Longest ``Retry-After`` honoured on a 429/503; longer waits fail the call instead."""
 
@@ -57,8 +59,9 @@ class OpenAICompatProvider:
         }
 
     def list_models(self) -> bytes:
-        """Raw ``GET /models?verbose=true`` (Nebius adds per-model pricing with ``verbose``)."""
-        url = self.spec.base_url.rstrip("/") + "/models?verbose=true"
+        """Raw ``GET /models`` with the profile's ``models_query``."""
+        query = f"?{self.spec.models_query}" if self.spec.models_query else ""
+        url = self.spec.base_url.rstrip("/") + "/models" + query
         req = urllib.request.Request(url, method="GET", headers=self._headers())  # noqa: S310
         try:
             with urllib.request.urlopen(req, timeout=self.spec.timeout_s) as resp:  # noqa: S310

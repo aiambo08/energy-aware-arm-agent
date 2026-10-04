@@ -747,7 +747,7 @@ def llm_estimate(  # noqa: PLR0913
 def llm_models(
     llm_config: Annotated[Path, typer.Option(help="LLM YAML (its openai: endpoint and key).")],
 ) -> None:
-    """List the endpoint's models (``GET /models?verbose=true``, with prices where the
+    """List the endpoint's models (``GET /models``, with prices where the
     provider reports them). Needs the key; costs nothing."""
     try:
         raw = _openai(llm_config).list_models()

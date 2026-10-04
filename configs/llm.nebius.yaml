@@ -24,6 +24,7 @@ openai:
   max_retries: 3
   backoff_s: 2.0
   min_interval_s: 0.0
+  models_query: verbose=true     # adds per-model pricing to `armbench llm models`
   max_retry_after_s: 120.0
 sandbox:
   cpu_s: 10.0

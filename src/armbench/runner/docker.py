@@ -19,6 +19,7 @@ from pydantic import BaseModel, ConfigDict, Field
 DEFAULT_IMAGE = "armbench-sim:dev"
 ENTRYPOINT = "/usr/local/bin/entrypoint.sh"
 CONTAINER_OUT = "/work/armbench_run"
+CONTAINER_LLM = "/work/armbench_llm"
 LAUNCH = "ros2 launch armbench_bringup sim.launch.py headless:=true"
 DOCKER = shutil.which("docker") or "docker"
 
@@ -38,6 +39,9 @@ class SimRunOptions(BaseModel):
     git_sha: str | None = None
     timeout_s: float = Field(gt=0, default=3600.0)
     """Wall limit for one chunk (readiness + all its episodes)."""
+    llm_dir: Path | None = None
+    """Agent B bundle (``llm.yaml`` + pre-fetched ``cache/``) copied into the container, which
+    has no network and therefore runs the provider in replay mode."""
 
 
 def chunks(seeds: Sequence[int], size: int) -> list[list[int]]:
@@ -69,6 +73,8 @@ def runner_args(opts: SimRunOptions, seeds: Sequence[int], run_id: str) -> list[
         args += ["--protocol-hash", opts.protocol_hash]
     if opts.git_sha:
         args += ["--git-sha", opts.git_sha]
+    if opts.llm_dir is not None:
+        args += ["--llm-dir", CONTAINER_LLM]
     return args
 
 
@@ -100,6 +106,11 @@ def run_chunk(
         info["error"] = f"docker run failed: {started.stderr.strip()}"
         return info
     try:
+        if opts.llm_dir is not None:
+            copied = _run([DOCKER, "cp", str(opts.llm_dir), f"{name}:{CONTAINER_LLM}"], 600)
+            if copied.returncode != 0:
+                info["error"] = f"docker cp of the LLM bundle failed: {copied.stderr.strip()}"
+                return info
         proc = _run(
             [DOCKER, "exec", name, ENTRYPOINT, *runner_args(opts, seeds, run_id)], opts.timeout_s
         )
@@ -116,7 +127,7 @@ def run_chunk(
         if had_log:
             with (out_dir / "episodes.jsonl").open("a") as dst, log.open() as src:
                 shutil.copyfileobj(src, dst)
-            for sub in ("samples", "mcap"):
+            for sub in ("samples", "mcap", "programs"):
                 src_dir = chunk_dir / sub
                 if src_dir.exists():
                     dst_dir = out_dir / sub

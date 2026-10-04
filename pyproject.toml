@@ -54,9 +54,11 @@ select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "ANN", "N", "PL", "PT", "
 ignore = ["PLR2004", "ANN401"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "PLR0913", "ANN"]
+"tests/**" = ["S101", "PLR0913", "ANN", "PT018", "S311", "S603"]
 "scripts/**" = ["T201", "S603", "S607"]
 "src/armbench/primitives/errors.py" = ["N818"]  # error names are the plan's public contract
+"src/armbench/guest/api.py" = ["N818"]  # same names, as the sandboxed program sees them
+"src/armbench/llm/provider.py" = ["N818"]
 
 [tool.mypy]
 python_version = "3.12"

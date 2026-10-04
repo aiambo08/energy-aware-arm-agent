@@ -26,6 +26,7 @@ from sensor_msgs.msg import JointState
 from armbench import __version__
 from armbench.agents import get_agent
 from armbench.energy import EnergyParams, load_energy_params, sensitivity
+from armbench.llm import load_llm_params, make_provider
 from armbench.primitives import Robot, load_primitive_params
 from armbench.runner import (
     EnergyRecord,
@@ -204,7 +205,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--image", default=None, help="container image tag, for the log")
     parser.add_argument("--git-sha", default=None)
     parser.add_argument("--out-dir", type=Path, required=True)
+    parser.add_argument(
+        "--llm-dir",
+        type=Path,
+        default=None,
+        help="agent B bundle: llm.yaml + cache/ pre-fetched on the host (replayed here)",
+    )
     return parser.parse_args()
+
+
+def make_agent(args: argparse.Namespace) -> object:
+    if args.agent != "B":
+        return get_agent(args.agent)
+    if args.llm_dir is None:
+        msg = "agent B needs --llm-dir (the container has no network; programs are replayed)"
+        raise SystemExit(msg)
+    llm = load_llm_params(args.llm_dir / "llm.yaml")
+    provider = make_provider(llm, kind="replay", cache_dir=args.llm_dir / "cache")
+    return get_agent("B", llm=llm, provider=provider, artifacts_dir=args.out_dir)
 
 
 def main() -> None:
@@ -214,7 +232,7 @@ def main() -> None:
         args.seeds, split, final_eval=args.final_eval, protocol_hash=args.protocol_hash
     )
     task = get_task(args.task)
-    agent = get_agent(args.agent)
+    agent = make_agent(args)
     params = load_primitive_params()
     scene_cfg = load_scene_config(args.scene_config)
     energy = load_energy_params()

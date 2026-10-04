@@ -12,7 +12,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Protocol
 
-from armbench.agents import Agent, AgentTrace
+from armbench.agents import Agent, AgentError, AgentTrace
 from armbench.primitives import CameraTimeout, PrimitiveError, Robot
 from armbench.runner.schema import (
     INFRA_CODES,
@@ -62,6 +62,8 @@ def _act(
         return None, Failure(stage="infra", code=exc.code, message=exc.message)
     except PrimitiveError as exc:
         return None, Failure(stage="robot", code=exc.code, message=exc.message, details=exc.details)
+    except AgentError as exc:
+        return exc.trace, Failure(stage="agent", code=exc.code, message=exc.message)
     except LookupError as exc:
         return None, Failure(stage="agent", code="lookup", message=str(exc))
 

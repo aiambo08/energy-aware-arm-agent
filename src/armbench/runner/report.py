@@ -108,6 +108,32 @@ class RepeatStats(BaseModel):
     all_ok: bool
 
 
+class LLMStats(BaseModel):
+    """Cost and behaviour of an LLM agent over a task's episodes (from the agent traces)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    provider: str | None
+    models: dict[str, int]
+    n_traced: int
+    prompt_tokens: int
+    completion_tokens: int
+    tokens_per_episode: Dist
+    cost_usd: float
+    cost_per_episode_usd: float
+    cost_per_400_episodes_usd: float
+    """What a full pre-registered evaluation (5 configs x 4 tasks x 20 seeds) would cost at
+    this rate, if nothing were cached."""
+    cached_rate: float
+    """Share of episodes answered entirely from the cache (replay)."""
+    latency_s: Dist
+    """Provider latency of live (non-cached) episodes."""
+    attempts: Dist
+    program_outcomes: dict[str, int]
+    isolation: dict[str, int]
+    """How many episodes ran under each sandbox layer set (e.g. without ``unshare_net``)."""
+
+
 class TaskSummary(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -135,6 +161,7 @@ class TaskSummary(BaseModel):
     observe_moves: Dist
     repeats: list[RepeatStats]
     repeat_cv_max: float | None
+    llm: LLMStats | None = None
 
 
 class Thresholds(BaseModel):
@@ -192,6 +219,32 @@ def _repeats(records: list[EpisodeRecord]) -> list[RepeatStats]:
     return out
 
 
+def _llm_stats(records: list[EpisodeRecord]) -> LLMStats | None:
+    traces = [r.trace for r in records if r.trace is not None and r.trace.llm_provider]
+    if not traces:
+        return None
+    n = len(traces)
+    cost = sum(t.cost_usd or 0.0 for t in traces)
+    tokens = [float(t.prompt_tokens + t.completion_tokens) for t in traces]
+    live = [t.llm_latency_s for t in traces if not t.llm_cached and t.llm_latency_s is not None]
+    return LLMStats(
+        provider=traces[0].llm_provider,
+        models=dict(sorted(Counter(t.llm_model or "?" for t in traces).items())),
+        n_traced=n,
+        prompt_tokens=sum(t.prompt_tokens for t in traces),
+        completion_tokens=sum(t.completion_tokens for t in traces),
+        tokens_per_episode=Dist.of(tokens),
+        cost_usd=cost,
+        cost_per_episode_usd=cost / n,
+        cost_per_400_episodes_usd=400 * cost / n,
+        cached_rate=sum(1 for t in traces if t.llm_cached) / n,
+        latency_s=Dist.of(live),
+        attempts=Dist.of([float(t.attempts) for t in traces]),
+        program_outcomes=dict(sorted(Counter(t.program_outcome or "?" for t in traces).items())),
+        isolation=dict(sorted(Counter(",".join(t.sandbox_isolation) for t in traces).items())),
+    )
+
+
 def summarise(records: list[EpisodeRecord], n_rows_expected: int, split: str) -> TaskSummary:
     first = records[0]
     n, n_ok = len(records), sum(r.ok for r in records)
@@ -234,6 +287,7 @@ def summarise(records: list[EpisodeRecord], n_rows_expected: int, split: str) ->
         observe_moves=Dist.of([float(r.trace.n_observe_moves) for r in records if r.trace]),
         repeats=repeats,
         repeat_cv_max=max(cvs) if cvs else None,
+        llm=_llm_stats(records),
     )
 
 
@@ -303,6 +357,15 @@ def table(report: Report) -> str:
             f"{t.task:18s} {t.agent:5s} {t.split:12s} {t.n:4d} {t.n_ok:4d} {t.success:8.1%} "
             f"[{lo:5.1%}, {hi:5.1%}] {t.n_infra:5d} {wh:9.4f} {t.wall_s.p95:8.1f} {cvm:>7s}"
         )
+        if t.llm is not None:
+            lat = f"{t.llm.latency_s.p95:.2f} s" if t.llm.latency_s.n else "-"
+            outcomes = ", ".join(f"{k}={v}" for k, v in t.llm.program_outcomes.items())
+            lines.append(
+                f"{'':18s} llm {t.llm.provider}/{'+'.join(t.llm.models)}: "
+                f"tokens/ep med {t.llm.tokens_per_episode.median:.0f}, "
+                f"cost {t.llm.cost_usd:.4f} USD ({t.llm.cost_per_400_episodes_usd:.2f}/400 ep), "
+                f"cached {t.llm.cached_rate:.0%}, latency p95 {lat}, programs: {outcomes}"
+            )
     lines.append("")
     for name, ok in report.checks.items():
         lines.append(f"[{'PASS' if ok else 'FAIL'}] {name}")

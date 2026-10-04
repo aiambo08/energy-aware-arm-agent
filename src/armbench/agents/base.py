@@ -27,7 +27,30 @@ class AgentTrace(BaseModel):
     response_sha256: str | None = None
     program_sha256: str | None = None
     """Hash of the code that ran (the baseline module for A, the generated program for B+)."""
+    llm_provider: str | None = None
+    llm_model: str | None = None
+    """Exact model identifier the provider reported."""
+    llm_cached: bool | None = None
+    """Every completion of the episode came from the cache (replay or repeated prompt)."""
+    cost_usd: float | None = None
+    program_outcome: str | None = None
+    """Sandbox outcome of the last program (``completed``, ``rejected``, ``exception`` ...)."""
+    program_calls: tuple[str, ...] = ()
+    """Primitive names the last program invoked, in order (replay compares these)."""
+    program_error: str | None = None
+    sandbox_isolation: tuple[str, ...] = ()
     notes: str = ""
+
+
+class AgentError(Exception):
+    """The agent could not act (no program, provider failure, budget, rejected code); the
+    runner logs it as a failure of stage ``agent`` with this ``code`` and keeps ``trace``."""
+
+    def __init__(self, code: str, message: str, *, trace: AgentTrace | None = None) -> None:
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.trace = trace
 
 
 class Agent(Protocol):

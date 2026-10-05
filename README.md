@@ -602,6 +602,27 @@ call, so the frozen body — `SLOW = 0.5` inside — is executed unchanged). Sam
 pair; ~350 more tokens per episode for the block. These numbers validate the plumbing and the
 accounting with a fixed recipe, not energy awareness in a language model.
 
+## Pre-registered evaluation (F9)
+
+The protocol is `docs/protocol.md`: hypotheses, configurations, seeds, model, decision rules,
+exclusions and a machine-readable manifest that pins the code tree, the frozen skill library
+and the energy reference. The locked `final_eval` seeds (100–119) only unlock with the hash of
+that file and a clean, matching repository.
+
+```bash
+uv run armbench protocol verify                 # exit 0: the repository matches every pinned artefact
+H=$(uv run armbench protocol hash)              # sha256 of docs/protocol.md
+uv run armbench run --task all --agent A --seeds final_eval --backend sim \
+  --final-eval --protocol-hash "$H" --out runs/f9_A          # wrong hash / dirty tree -> exit 2
+uv run armbench analyze runs/f9_A runs/f9_B runs/f9_BS runs/f9_C runs/f9_CS \
+  --out reports/f9_eval.json --md reports/f9_eval.md        # deterministic: same report_sha256
+```
+
+`armbench analyze` prints a per-cell table (success with Wilson 95 %, Wh median/IQM over
+successful episodes) and one paired comparison per hypothesis (success difference and the
+median relative Wh difference in all six sensitivity rows, stratified bootstrap intervals),
+then the verdicts and the scenario (favourable / mixed / null / technical failure).
+
 ## Seeded scenes and UR5e kinematics (host, no ROS)
 
 ```bash

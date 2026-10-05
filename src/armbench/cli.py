@@ -15,6 +15,7 @@ from pydantic import BaseModel, ConfigDict
 
 from armbench import __version__
 from armbench.agents.base import Agent
+from armbench.analysis import AnalysisError, analyse, markdown
 from armbench.energy import (
     DEFAULT_ENERGY_FILE,
     REFERENCE_FILE,
@@ -38,6 +39,15 @@ from armbench.llm import (
     make_provider,
 )
 from armbench.paths import ENERGY_REF_DIR, SKILLS_DIR
+from armbench.protocol import (
+    PROTOCOL_FILE,
+    ProtocolError,
+    authorise_final_eval,
+    current_artefacts,
+    load_manifest,
+    protocol_sha256,
+)
+from armbench.protocol import verify as protocol_problems
 from armbench.scene import (
     DEFAULT_SCENE_FILE,
     generate_scene,
@@ -354,7 +364,23 @@ def _print_estimate(est: Estimate) -> None:
     )
 
 
-def _run_meta(spec: _RunSpec, *, backend: str, image: str) -> dict[str, object]:
+def _check_protocol(
+    final_eval: bool, protocol_hash: str | None, llm_config: Path, agent: str, tasks: list[str]
+) -> str | None:
+    """A ``--final-eval`` run must match the frozen ``docs/protocol.md`` (exit 2 otherwise)."""
+    if not final_eval:
+        return None
+    try:
+        authorise_final_eval(protocol_hash, llm_config, agent, tasks)
+    except ProtocolError as exc:
+        typer.echo(f"refused: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    return protocol_hash
+
+
+def _run_meta(
+    spec: _RunSpec, *, backend: str, image: str, protocol_hash: str | None = None
+) -> dict[str, object]:
     """``run.json``: what the run was asked to do plus the hashes of what the agent could
     see (LLM config, frozen library, energy reference). Refuses (exit 2) an unfrozen library
     or a reference missing a task."""
@@ -391,7 +417,7 @@ def _run_meta(spec: _RunSpec, *, backend: str, image: str) -> dict[str, object]:
             "repeat": spec.repeat, "backend": backend,
             "image": image if backend == "sim" else None, "git_sha": _git_sha(),
             "armbench": __version__, "llm": llm_meta, "skills": skills_meta,
-            "energy_ref": energy_meta}  # fmt: skip
+            "energy_ref": energy_meta, "protocol_sha256": protocol_hash}  # fmt: skip
 
 
 @app.command()
@@ -442,6 +468,7 @@ def run(  # noqa: PLR0913
         typer.echo(f"refused: {exc}", err=True)
         raise typer.Exit(code=2) from exc
     tasks = _expand_tasks(task)
+    registered = _check_protocol(final_eval, protocol_hash, llm_config, agent, tasks)
     run_id = uuid.uuid4().hex[:12]
     spec = _RunSpec(
         tasks=tasks, agent=agent, seeds=seed_list, repeat=repeat, run_id=run_id,
@@ -454,7 +481,10 @@ def run(  # noqa: PLR0913
     out_dir = out or Path("runs") / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "run.json").write_text(
-        json.dumps(_run_meta(spec, backend=backend, image=image), indent=1) + "\n"
+        json.dumps(
+            _run_meta(spec, backend=backend, image=image, protocol_hash=registered), indent=1
+        )
+        + "\n"
     )
     if backend == "fake":
         n_ok = _run_fake(spec, out_dir)
@@ -728,8 +758,10 @@ def llm_estimate(  # noqa: PLR0913
     except LockedSeedError as exc:
         typer.echo(f"refused: {exc}", err=True)
         raise typer.Exit(code=2) from exc
+    tasks = _expand_tasks(task)
+    _check_protocol(final_eval, protocol_hash, llm_config, agent, tasks)
     spec = _RunSpec(
-        tasks=_expand_tasks(task), agent=agent, seeds=seed_list, repeat=1, run_id="estimate",
+        tasks=tasks, agent=agent, seeds=seed_list, repeat=1, run_id="estimate",
         llm_config=llm_config, skills_dir=skills_dir, energy_ref_dir=energy_ref_dir,
     )  # fmt: skip
     if not spec.uses_llm:
@@ -795,3 +827,73 @@ def llm_check(
         f"tokens, {resp.latency_s:.2f} s, ~{cost:.6f} USD, finish {resp.finish_reason}: "
         f"{resp.text.strip()[:60]!r}"
     )
+
+
+protocol_app = typer.Typer(no_args_is_help=True, help="Pre-registered protocol (F9).")
+app.add_typer(protocol_app, name="protocol")
+
+
+@protocol_app.command("hash")
+def protocol_hash_cmd(
+    path: Annotated[Path, typer.Option(help="Protocol file.")] = PROTOCOL_FILE,
+) -> None:
+    """Print the protocol hash (sha256 of the file) to pass as ``--protocol-hash``."""
+    try:
+        typer.echo(protocol_sha256(path))
+    except ProtocolError as exc:
+        typer.echo(f"failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+
+
+@protocol_app.command("artefacts")
+def protocol_artefacts() -> None:
+    """Print the current artefact hashes (what the protocol's ``artefacts:`` block pins)."""
+    typer.echo(current_artefacts().model_dump_json(indent=1))
+
+
+@protocol_app.command("verify")
+def protocol_verify(
+    path: Annotated[Path, typer.Option(help="Protocol file.")] = PROTOCOL_FILE,
+) -> None:
+    """Exit 0 when the committed repository matches every artefact the protocol pins."""
+    try:
+        problems = protocol_problems(path)
+    except ProtocolError as exc:
+        typer.echo(f"failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    for p in problems:
+        typer.echo(p, err=True)
+    if problems:
+        raise typer.Exit(code=1)
+    typer.echo(f"protocol {protocol_sha256(path)} matches the repository")
+
+
+@app.command()
+def analyze(
+    runs: Annotated[list[Path], typer.Argument(help="Run directories (one or more per agent).")],
+    out: Annotated[Path, typer.Option(help="JSON report.")],
+    md: Annotated[Path | None, typer.Option(help="Markdown summary.")] = None,
+    protocol: Annotated[Path, typer.Option(help="Protocol file.")] = PROTOCOL_FILE,
+    energy_file: Annotated[Path, typer.Option(help="Energy YAML.")] = DEFAULT_ENERGY_FILE,
+) -> None:
+    """Pre-registered analysis of F9 runs (docs/protocol.md §6); deterministic."""
+    try:
+        manifest = load_manifest(protocol)
+        sha = protocol_sha256(protocol)
+    except ProtocolError as exc:
+        typer.echo(f"failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    params = load_energy_params(energy_file)
+    rows = [(str(v), e) for v in Variant for e in params.etas()]
+    try:
+        report = analyse(runs, manifest, rows, sha)
+    except AnalysisError as exc:
+        typer.echo(f"failed: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(report, indent=1, sort_keys=True) + "\n")
+    text = markdown(report)
+    if md is not None:
+        md.parent.mkdir(parents=True, exist_ok=True)
+        md.write_text(text)
+    typer.echo(text)

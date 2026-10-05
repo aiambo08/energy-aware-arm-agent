@@ -9,11 +9,21 @@ authors:
     affiliation: Universidad Politécnica de Madrid
 repository-code: "https://github.com/aiambo08/energy-aware-arm-agent"
 license: MIT
-version: 0.0.1
-date-released: 2026-10-03
+version: 1.0.0
+date-released: 2026-10-04
 keywords:
   - robotics
   - llm-agent
   - energy
   - gazebo
   - ros2
+abstract: >-
+  A reproducible benchmark of LLM agents that write programs over typed primitives for a
+  simulated UR5e arm (ROS 2 Jazzy, Gazebo Harmonic), with a pre-registered evaluation of
+  skill reuse and energy information (protocol f9-v1).
+keywords:
+  - robotics
+  - llm-agent
+  - energy
+  - benchmark
+  - gazebo

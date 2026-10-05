@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>armbench: energy-aware LLM arm agents, pre-registered results (f9-v1)</title>
+<style>
+:root{--fg:#1d2330;--mut:#5b6475;--bg:#fff;--line:#e3e6ec;--acc:#2458d6;--ok:#1a7f37;--bad:#b42318}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--fg);background:var(--bg)}
+main{max-width:1100px;margin:0 auto;padding:24px 20px 60px}h1{font-size:26px;margin:0 0 4px}h2{font-size:19px;margin:34px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px}
+.mut{color:var(--mut)}code{font:12px ui-monospace,Menlo,monospace;background:#f3f5f8;padding:1px 4px;border-radius:3px;word-break:break-all}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}th{background:#f7f8fa}
+.pill{display:inline-block;padding:1px 8px;border-radius:10px;font-size:13px;font-weight:600}.sup{background:#dcfce7;color:var(--ok)}.nsup{background:#fee4e2;color:var(--bad)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.card{border:1px solid var(--line);border-radius:8px;padding:12px}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}select,button{font:inherit;padding:3px 8px}
+.view{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:760px){.view{grid-template-columns:1fr}}
+canvas{width:100%;border:1px solid var(--line);border-radius:8px;background:#fbfcfd;touch-action:none}
+svg text{font:12px system-ui,sans-serif;fill:var(--fg)}.note{font-size:13px}
+</style>
+</head>
+<body>
+<main>
+<h1>Does energy feedback make an LLM robot agent use fewer watt-hours?</h1>
+<p class="mut">armbench, pre-registered evaluation <code>f9-v1</code>. Simulated UR5e (ROS 2 Jazzy + Gazebo Harmonic), 5 agents &times; 4 tasks &times; 20 locked seeds. LLM: <code>Qwen/Qwen3-235B-A22B-Instruct-2507</code>, temperature 0. Source: <a href="https://github.com/aiambo08/energy-aware-arm-agent">github.com/aiambo08/energy-aware-arm-agent</a>.</p>
+<div id="head" class="cards"></div>
+<p class="note mut">A: scripted baseline. B: LLM writes a program over 5 primitives. B+S: B with a frozen library of validated skills. C: B told baseline A's Wh for the task and the energy levers. C+S: C with skills. Energy is integrated from Gazebo joint effort (model A, &eta; = 0.70) plus a constant P<sub>0</sub> = 100 W; about 87 % of each episode's energy is P<sub>0</sub>&middot;t, so time dominates.</p>
+
+<h2>Hypotheses (decided by the protocol, not by this page)</h2>
+<table id="hyp"></table>
+<p class="note mut">Energy: median relative paired difference (treatment vs control) and its 95 % bootstrap CI, worst case over the 6 sensitivity rows (model A/B &times; &eta; 0.6/0.7/0.8). A saving is claimed only if every row's CI lies below 0 with success non-inferior (margin 0.10).</p>
+
+<h2>Success and energy per task</h2>
+<table id="cells"></table>
+
+<h2>Success vs energy</h2>
+<div class="row"><label>Task <select id="ptask"></select></label><span class="mut note">x: median Wh of successful episodes; y: success rate. Lower-right is better. Hover a point.</span></div>
+<div id="pareto"></div>
+
+<h2>Episode replays: B vs C, seed 100</h2>
+<div class="row"><label>Task <select id="rtask"></select></label><button id="play">Pause</button><input id="scrub" type="range" min="0" max="1000" value="0" style="flex:1;min-width:160px"><span id="clock" class="mut note"></span></div>
+<p class="note mut">Drag to rotate. Arm drawn from forward kinematics of the 100 Hz joint log Gazebo recorded during the evaluation (every 5th sample); cubes and obstacle at their seeded initial pose; grey trail: tool path.</p>
+<div class="view"><div><b>B</b> <span id="infoB" class="note"></span><canvas id="cB" width="520" height="400"></canvas></div><div><b>C</b> <span id="infoC" class="note"></span><canvas id="cC" width="520" height="400"></canvas></div></div>
+<p id="prompt" class="note mut"></p>
+
+<h2>Reproduce</h2>
+<p class="note">Every number here comes from <code>reports/f9_eval.json</code> (report sha256 <code id="rsha"></code>, protocol sha256 <code id="psha"></code>), regenerated bit for bit by <code>armbench analyze</code> from the dataset in <code>data/f9-v1.tar.gz</code>. Limitations and the technical report are in the repository README and <code>docs/report.md</code>.</p>
+</main>
+<script>
+const D=/*__DATA__*/null;
+const AG=["A","B","B+S","C","C+S"],COL={"A":"#6b7280","B":"#d97706","B+S":"#2563eb","C":"#16a34a","C+S":"#7c3aed"};
+const pct=x=>(100*x).toFixed(1)+" %",f3=x=>x==null?"–":x.toFixed(3),sg=x=>(x>=0?"+":"")+x.toFixed(3);
+const $=id=>document.getElementById(id);
+$("rsha").textContent=D.report_sha256;$("psha").textContent=D.protocol_sha256;
+const v=D.verdicts;
+$("head").innerHTML=[["Episodes scored",D.n_scored+" / 400, valid "+D.valid_fraction.toFixed(3)],["H1 skills (B+S vs B)",v.H1],["H2 energy info (C vs B)",v.H2],["H3 energy info with skills (C+S vs B+S)",v.H3],["Pre-registered scenario",v.scenario]].map(([k,x])=>`<div class="card"><div class="mut note">${k}</div><div>${/^(supported|not supported)$/.test(x)?`<span class="pill ${x==="supported"?"sup":"nsup"}">${x}</span>`:`<b>${x}</b>`}</div></div>`).join("");
+let h="<tr><th>Hypothesis</th><th>Treatment vs control</th><th>Success diff [95 % CI]</th><th>Energy rel. diff, worst row [95 % CI]</th><th>Verdict</th></tr>";
+for(const k of ["H1","H2","H3"]){const c=D.comparisons[k];const w=c.energy.reduce((a,b)=>b.ci[1]>a.ci[1]?b:a);
+h+=`<tr><td>${k}</td><td>${c.treatment} vs ${c.control} (${c.n_pairs} pairs)</td><td>${sg(c.success_diff)} [${sg(c.success_diff_ci[0])}, ${sg(c.success_diff_ci[1])}]</td><td>${pct(w.median_rel_diff)} [${pct(w.ci[0])}, ${pct(w.ci[1])}] <span class="mut">(${w.variant}, η ${w.eta})</span></td><td><span class="pill ${v[k]==="supported"?"sup":"nsup"}">${v[k]}</span></td></tr>`}
+$("hyp").innerHTML=h;
+const tasks=[...new Set(D.cells.map(c=>c.task))];
+let t="<tr><th>Task</th>"+AG.map(a=>`<th>${a}</th>`).join("")+"</tr>";
+for(const task of tasks){t+=`<tr><td>${task}</td>`;for(const a of AG){const c=D.cells.find(x=>x.task===task&&x.agent===a);t+=`<td title="Wilson 95 % [${f3(c.wilson95[0])}, ${f3(c.wilson95[1])}]">${c.k}/${c.n} <span class="mut">[${c.wilson95[0].toFixed(2)}, ${c.wilson95[1].toFixed(2)}]</span><br>${f3(c.wh_success_median)} Wh</td>`}t+="</tr>"}
+$("cells").innerHTML=t+`<tr><td colspan="6" class="note mut" style="text-align:left">k/n successes [Wilson 95 % CI]; median Wh of successful episodes (model A, η 0.70).</td></tr>`;
+const opt=(sel,xs)=>{sel.innerHTML=xs.map(x=>`<option>${x}</option>`).join("")};
+opt($("ptask"),["all",...tasks]);
+function drawPareto(){const task=$("ptask").value,P=D.pareto.filter(p=>p.task===task&&p.wh_median!=null);
+const W=760,H=340,L=70,R=20,T=20,B=45,xs=P.map(p=>p.wh_median),x0=Math.min(...xs),x1=Math.max(...xs),pad=(x1-x0)*0.15||0.005,lo=x0-pad,hi=x1+pad;
+const X=x=>L+(x-lo)/(hi-lo)*(W-L-R),Y=y=>T+(1-y)*(H-T-B);let s=`<svg viewBox="0 0 ${W} ${H}" width="100%">`;
+for(let i=0;i<=5;i++){const y=i/5;s+=`<line x1="${L}" x2="${W-R}" y1="${Y(y)}" y2="${Y(y)}" stroke="#eee"/><text x="${L-8}" y="${Y(y)+4}" text-anchor="end">${(y*100).toFixed(0)}%</text>`}
+for(let i=0;i<=4;i++){const x=lo+(hi-lo)*i/4;s+=`<text x="${X(x)}" y="${H-B+18}" text-anchor="middle">${x.toFixed(4)}</text>`}
+s+=`<text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle">median Wh (successful episodes)</text><text transform="translate(16 ${(T+H-B)/2}) rotate(-90)" text-anchor="middle">success</text>`;
+for(const p of P){s+=`<g><circle cx="${X(p.wh_median)}" cy="${Y(p.success)}" r="8" fill="${COL[p.agent]}" opacity=".85"><title>${p.agent}: success ${pct(p.success)} (n=${p.n}), median ${p.wh_median.toFixed(4)} Wh</title></circle><text x="${X(p.wh_median)+11}" y="${Y(p.success)+4}">${p.agent}</text></g>`}
+$("pareto").innerHTML=s+"</svg>"}
+$("ptask").onchange=drawPareto;drawPareto();
+opt($("rtask"),D.replays.map(r=>r.task));
+const CC={red:"#d91a1a",green:"#1ab326",blue:"#1a40d9",yellow:"#e6d91a"};
+let yaw=-1.2,pitch=0.5,u=0,playing=true,last=null;
+function proj(p,cv){const x=p[0]+0.3,y=p[1],z=p[2]-0.2,cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+const X=x*cy-y*sy,Yr=x*sy+y*cy,Zs=z*cp+Yr*sp,Dp=Yr*cp-z*sp,s=cv.width*0.8,k=3/(3+Dp);return [cv.width*0.5+X*s*k,cv.height*0.5-Zs*s*k]}
+function box(ctx,cv,c,sz,yawb,fill){const [hx,hy,hz]=sz.map(a=>a/2),co=Math.cos(yawb),si=Math.sin(yawb),V=[];
+for(const dx of[-hx,hx])for(const dy of[-hy,hy])for(const dz of[-hz,hz])V.push([c[0]+dx*co-dy*si,c[1]+dx*si+dy*co,c[2]+dz]);
+const Pp=V.map(p=>proj(p,cv)),E=[[0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[4,6],[5,7],[0,4],[1,5],[2,6],[3,7]];
+ctx.fillStyle=fill;ctx.globalAlpha=.35;ctx.beginPath();for(const i of[1,3,7,5])ctx.lineTo(...Pp[i]);ctx.fill();ctx.globalAlpha=1;
+ctx.strokeStyle=fill;ctx.lineWidth=1.5;ctx.beginPath();for(const[a,b]of E){ctx.moveTo(...Pp[a]);ctx.lineTo(...Pp[b])}ctx.stroke()}
+function draw(agent,r,tt){const cv=$("c"+agent.replace("+S","S")),ctx=cv.getContext("2d"),e=r[agent];ctx.clearRect(0,0,cv.width,cv.height);
+ctx.strokeStyle="#d5d9e0";ctx.lineWidth=1;ctx.beginPath();for(let g=-0.8;g<=0.81;g+=0.1){ctx.moveTo(...proj([g,-0.8,0],cv));ctx.lineTo(...proj([g,0.8,0],cv));ctx.moveTo(...proj([-0.8,g,0],cv));ctx.lineTo(...proj([0.8,g,0],cv))}ctx.stroke();
+for(const o of r.obstacles)box(ctx,cv,o.xyz,o.size,o.yaw,"#555");
+for(const c of r.cubes)box(ctx,cv,c.xyz,[c.size,c.size,c.size],0,CC[c.color]||"#888");
+const F=e.frames;let i=F.findIndex(f=>f.t>tt);if(i<0)i=F.length-1;
+ctx.strokeStyle="#9aa3b2";ctx.lineWidth=1.2;ctx.beginPath();for(let j=0;j<=i;j++)ctx.lineTo(...proj(F[j].p[7],cv));ctx.stroke();
+const p=F[i].p.map(q=>proj(q,cv));ctx.strokeStyle=COL[agent];ctx.lineWidth=7;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();for(const q of p)ctx.lineTo(...q);ctx.stroke();
+ctx.fillStyle="#1d2330";for(const q of p){ctx.beginPath();ctx.arc(q[0],q[1],3.5,0,7);ctx.fill()}
+const done=tt>=e.duration_s;$("info"+agent.replace("+S","S")).innerHTML=`t = ${Math.min(tt,e.duration_s).toFixed(1)} / ${e.duration_s.toFixed(1)} s &middot; <b>${e.wh==null?"–":e.wh.toFixed(4)} Wh</b> &middot; ${done?(e.ok?'<span class="pill sup">success</span>':'<span class="pill nsup">fail</span>'):""} <span class="mut">${done?e.reason:""}</span>`}
+function frame(ts){const r=D.replays[$("rtask").selectedIndex],T=Math.max(r.B.duration_s,r.C.duration_s);
+if(playing&&last!=null){u+=(ts-last)/1000/T;if(u>1.08)u=0}last=ts;$("scrub").value=Math.min(1000,u*1000);
+const tt=Math.min(u,1)*T;$("clock").textContent=tt.toFixed(1)+" s";draw("B",r,tt);draw("C",r,tt);$("prompt").textContent="Task prompt: "+r.prompt;requestAnimationFrame(frame)}
+$("play").onclick=()=>{playing=!playing;$("play").textContent=playing?"Pause":"Play"};
+$("scrub").oninput=e=>{u=e.target.value/1000;playing=false;$("play").textContent="Play"};$("rtask").onchange=()=>{u=0};
+for(const id of["cB","cC"]){const cv=$(id);let drag=null;cv.onpointerdown=e=>{drag=[e.clientX,e.clientY];cv.setPointerCapture(e.pointerId)};
+cv.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*0.01;pitch=Math.max(-0.1,Math.min(1.4,pitch+(e.clientY-drag[1])*0.01));drag=[e.clientX,e.clientY]};cv.onpointerup=()=>{drag=null}}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

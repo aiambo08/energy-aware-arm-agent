@@ -1,0 +1,37 @@
+# Local open-weights model through Ollama's OpenAI-compatible endpoint (no paid key, needs a GPU
+# or a lot of patience on CPU). Not used by the pre-registered evaluation: results with this
+# profile are a different model and must be reported as such, never mixed with f9-v1.
+#   ollama pull qwen2.5-coder:7b
+#   export ARMBENCH_OLLAMA_API_KEY=ollama        # Ollama ignores the value; armbench needs it set
+#   uv run armbench llm check --llm-config examples/llm.ollama.yaml
+#   uv run armbench run --task pick_place@1 --agent C --seeds 0-9 --backend fake \
+#     --provider openai --llm-config examples/llm.ollama.yaml --out runs/ollama_C
+schema_version: 1
+provider: openai
+model: qwen2.5-coder:7b
+temperature: 0.0
+max_tokens: 1500
+seed: 0
+max_attempts: 1
+max_tokens_per_episode: 8000
+max_usd_per_run: 0.0
+max_usd_total: 0.0
+prices_usd_per_1m: {input: 0.0, output: 0.0}
+cache_dir: cache/llm
+openai:
+  base_url: http://localhost:11434/v1/
+  api_key_env: ARMBENCH_OLLAMA_API_KEY
+  timeout_s: 600.0
+  max_retries: 2
+  backoff_s: 2.0
+  min_interval_s: 0.0
+  max_retry_after_s: 60.0
+sandbox:
+  cpu_s: 10.0
+  memory_mb: 512
+  wall_s: 300.0
+  sim_s: 60.0
+  max_calls: 200
+  stdout_kb: 16
+  max_source_chars: 20000
+  max_nodes: 5000

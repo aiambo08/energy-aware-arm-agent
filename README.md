@@ -8,6 +8,26 @@ A reproducible benchmark around a simulated **UR5e** (ROS 2 Jazzy + Gazebo
 Harmonic, Docker, no GPU required) to answer that question with paired seeds,
 confidence intervals and a pre-registered protocol.
 
+**In one sentence:** an LLM writes a short Python program for a robot arm, the program runs in a
+sandbox against typed primitives (`observe`, `detect`, `move_to`, `grasp`, `release`) on a simulated
+UR5e, and the benchmark measures whether it succeeded and how many watt-hours the joints used,
+so agents with and without skills or energy feedback can be compared on the same seeds.
+
+<p align="center">
+  <img src="docs/media/gazebo_sort3.gif" width="420" alt="Gazebo: the UR5e sorts three cubes into their bins, seen from the overhead RGB-D camera">
+  <img src="docs/media/site_replay.gif" width="420" alt="Results page: 3D replay of agents B and C on the same seed from the logged joint states">
+</p>
+<p align="center"><sub>
+Left: one <code>sort3@1</code> episode in Gazebo (baseline A, dev seed 0) from the simulated overhead
+camera, 2× speed (<a href="docs/media/gazebo_sort3.mp4">MP4</a>). Right: 3D replay on the results page of
+agents B (fails, a cube ends 306 mm off) and C on the same F9 seed, drawn from the 100 Hz joint log.
+</sub></p>
+
+![Results page overview: verdicts, hypotheses and per-task success and energy](docs/media/site_overview.png)
+
+The media are regenerated with `scripts/media/record_episode.py` (Docker + ffmpeg) and
+`scripts/media/capture_site.py` (Chrome over CDP + ffmpeg).
+
 **Status: complete (F0–F10); the optional live demo F11 was dropped.** Version 1.0.0 is
 prepared but not tagged: there is no PyPI package, GHCR image, DOI or Pages site yet.
 Every number below comes from `reports/` and the script that produced it.

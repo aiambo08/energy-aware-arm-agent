@@ -66,7 +66,12 @@ python_version = "3.12"
 strict = true
 warn_unreachable = true
 files = ["src", "tests", "scripts"]
+exclude = ["scripts/media/camera_recorder\\.py"]  # runs inside the ROS image (rclpy)
 plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["playwright.*"]  # optional, only for scripts/media/capture_site.py (uv run --with)
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

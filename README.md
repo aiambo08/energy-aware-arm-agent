@@ -28,7 +28,7 @@ agents B (fails, a cube ends 306 mm off) and C on the same F9 seed, drawn from t
 The media are regenerated with `scripts/media/record_episode.py` (Docker + ffmpeg) and
 `scripts/media/capture_site.py` (Chrome over CDP + ffmpeg).
 
-**Status: F9 pre-registered evaluation done; F10 (publication) in review.** Version 1.0.0 is
+**Status: complete (F0–F10); the optional live demo F11 was dropped.** Version 1.0.0 is
 prepared but not tagged: there is no PyPI package, GHCR image, DOI or Pages site yet.
 Every number below comes from `reports/` and the script that produced it.
 
@@ -107,7 +107,7 @@ Roadmap (one PR per phase, see `docs/plan.es.md` and `docs/PROJECT_STATE.md`):
 ~~F1 arm simulation~~ · ~~F2 torque source and energy model~~ · ~~F3 perception~~ ·
 ~~F4 primitives~~ · ~~F5 tasks, baseline and runner~~ · ~~F6 LLM agent and sandbox~~ ·
 ~~F7 skill library~~ · ~~F8 energy-aware agent~~ · ~~F9 pre-registered evaluation~~ ·
-F10 publication (in review).
+~~F10 publication~~ · F11 live demo (dropped).
 
 ## Quick start (host, no ROS)
 

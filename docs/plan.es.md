@@ -413,7 +413,7 @@ Formato de cada fase: **objetivo**, **entregables**, **métricas de aceptación 
 
 ---
 
-### F11 (opcional). Demo en vivo (semanas 15–16)
+### F11 (opcional). Demo en vivo (semanas 15–16) — descartada (D10)
 
 **Arquitectura propuesta**: una VM CPU (8 vCPU) con la sim headless y un *worker* por episodio; frontend estático que se conecta por WebSocket (foxglove_bridge o *stream* de Rerun) [verificar]; cola con un episodio a la vez por visitante.
 
@@ -485,7 +485,7 @@ Los resultados de la investigación (H1–H3) **no son métricas de aceptación*
 | D7 | Biblioteca de skills congelada | Sí | F7 |
 | D8 | Significado de "Wh anterior" en C | **Decidido (ADR-009)**: Wh de la línea base A en la misma tarea, artefacto congelado con hash | F8 |
 | D9 | Nombre del proyecto y del repo | Provisional `armbench`; comprobar que el nombre está libre en PyPI y GitHub | F0 |
-| D10 | Hacer o no F11 | Decidir tras F10 según presupuesto | F10 |
+| D10 | Hacer o no F11 | **Decidido**: no se hace F11; el dataset de replay, la demo y la web estática cubren la reproducción sin coste fijo ni exponer el sandbox | F10 |
 
 ---
 

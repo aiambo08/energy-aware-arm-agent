@@ -9,6 +9,8 @@ First public release: the pre-registered evaluation `f9-v1` and everything neede
 replay it. Not tagged yet; `release.yml` publishes to PyPI and GHCR when `v1.0.0` is pushed.
 
 ### Added
+- README: Gazebo episode GIF/MP4, results-page replay GIF and screenshot (`docs/media/`), with
+  `scripts/media/record_episode.py` and `scripts/media/capture_site.py` to regenerate them.
 - F10: `data/f9-v1.tar.gz` (core dataset: 400 episode records, programs, sandbox traces, LLM
   response cache; CC BY 4.0) and `scripts/export_dataset.py` (deterministic bundle builder,
   `--full` adds the 100 Hz joint samples).

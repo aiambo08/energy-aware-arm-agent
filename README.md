@@ -8,9 +8,59 @@ A reproducible benchmark around a simulated **UR5e** (ROS 2 Jazzy + Gazebo
 Harmonic, Docker, no GPU required) to answer that question with paired seeds,
 confidence intervals and a pre-registered protocol.
 
-**Status: phase F2 (energy model and torque source) merged.** There are no benchmark results yet.
-Anything in this repository that looks like a number is either a configuration
-value or a measurement stored under `reports/` with the script that produced it.
+**Status: F9 pre-registered evaluation done; F10 (publication) in review.** Version 1.0.0 is
+prepared but not tagged: there is no PyPI package, GHCR image, DOI or Pages site yet.
+Every number below comes from `reports/` and the script that produced it.
+
+## Results (protocol `f9-v1`, 400 Gazebo episodes)
+
+One LLM (`Qwen/Qwen3-235B-A22B-Instruct-2507`, temperature 0, one attempt), 4 tasks × locked
+seeds 100–119, paired across agents. Full write-up: [`docs/report.md`](docs/report.md);
+analysis: [`reports/f9_eval.md`](reports/f9_eval.md).
+
+| Agent | What it gets | Success |
+|---|---|---:|
+| A | scripted baseline | 80/80 |
+| B | LLM writes the program | 62/80 |
+| B+S | B + frozen library of validated skills | 78/80 |
+| C | B + baseline A's Wh per task as a reference | 76/80 |
+| C+S | B+S + the energy reference | 80/80 |
+
+- **H1 (skills raise success): supported**, +0.200 [+0.100, +0.300]; B+S spends ~0.8 % more Wh.
+- **H2 (energy information lowers Wh, C vs B): not supported**, +0.1 %, CI contains 0 in all 6 energy rows.
+- **H3 (same with skills, C+S vs B+S): not supported**, ≈ 0.0 % [−0.2 %, +0.1 %].
+- **Scenario: null.** Telling the agent about energy did not reduce consumption.
+
+Limitations: one model, simulation only, energy-model constants are assumptions, Gazebo is not
+bit-reproducible (replay reproduces prompts and programs, not trajectories). See
+[`docs/report.md`](docs/report.md#6-limitations).
+
+## Quickstart: replay an F9 episode (no GPU, no API key, no ROS)
+
+```bash
+git clone https://github.com/aiambo08/energy-aware-arm-agent.git && cd energy-aware-arm-agent
+docker compose run --rm demo --task pick_place --agent C --seed 100
+```
+
+or with [uv](https://docs.astral.sh/uv/) on the host: `uv run python scripts/demo.py --task pick_place --agent C --seed 100`.
+Expected end of the output:
+
+```
+C pick_place@1 seed 100
+  Gazebo (F9 log):     ok=True  target at goal  Wh=0.20981512391522775
+  kinematic (replay):  ok=True  target at goal
+  prompt_sha256    same
+  program_sha256   same
+  program_calls    same
+  skills_used      same
+replay served the logged LLM answer: same prompt and same program, no network call
+```
+
+The dataset `data/f9-v1.tar.gz` (CC BY 4.0) holds the 400 episode records, every generated
+program with its sandbox trace and the cached LLM answers. The results page with success,
+energy, a success-vs-Wh plot and 3D replays is the self-contained `site/index.html` (open it in a
+browser). How to run new episodes, what is logged and how to add agents, tasks or models:
+[`docs/benchmark.md`](docs/benchmark.md). Security model of the sandbox: [`SECURITY.md`](SECURITY.md).
 
 ## What exists today
 
@@ -29,14 +79,15 @@ value or a measurement stored under `reports/` with the script that produced it.
 | Primitives (F4) | `src/armbench/primitives`: `Robot` with `observe()`, `detect()`, `move_to()`, `grasp()`, `release()`, `reset()`, `execute_skill()` (wired to the F7 library); Pydantic `Pose`/`Observation`/`Detection`/`Result`; typed errors (`OutOfReach`, `Singularity`, `Collision`, `Timeout`, `NoObjectGrasped`, `CameraTimeout`); pre-flight IK/branch/singularity/table-clearance checks (ADR-005); `KinematicBackend` (no ROS) and `RosBackend` (`armbench_bringup`); `configs/primitives.yaml`; `scripts/primitives_eval.py` runs the F4 gate → `reports/f4_primitives.json` |
 | Torque source (F2) | `armbench_bringup` nodes `energy_meter` (online Wh on `/armbench/energy`), `torque_probe` and `torque_compare` (Pinocchio inverse dynamics); `scripts/torque_source.py` runs critical gate 2 → `reports/f2_torque_source.json`, decision in ADR-004 |
 | Simulation (F1) | `ros_ws/src/armbench_description` (UR5e + parallel gripper xacro, tabletop world with fixed RGB-D camera), `ros_ws/src/armbench_bringup` (`sim.launch.py`, controllers, `sim_check` node) |
-| CI | `verify` (lint, types, tests, no ROS) and `sim-image` (build image, F0 boot gate, F1 self-check gate) |
+| CI | `verify` (lint, types, tests with coverage ≥ 80 %, protocol verify, replay demo; offline link check) and `sim-image` (build image, F0 boot gate, F1 self-check gate, one Gazebo episode) |
+| Publication (F10) | `data/f9-v1.tar.gz` + `scripts/export_dataset.py`, `scripts/demo.py` + `docker-compose.yml`, `scripts/build_site.py` → `site/index.html`, `release.yml` (PyPI, GHCR on a `v*` tag), `pages.yml` |
 | Docs | `docs/plan.es.md` (full phased plan, Spanish), ADRs in `docs/adr/`, `docs/PROJECT_STATE.md` |
 
 Roadmap (one PR per phase, see `docs/plan.es.md` and `docs/PROJECT_STATE.md`):
 ~~F1 arm simulation~~ · ~~F2 torque source and energy model~~ · ~~F3 perception~~ ·
 ~~F4 primitives~~ · ~~F5 tasks, baseline and runner~~ · ~~F6 LLM agent and sandbox~~ ·
-~~F7 skill library~~ · ~~F8 energy-aware agent~~ · F9 pre-registered evaluation ·
-F10 publication.
+~~F7 skill library~~ · ~~F8 energy-aware agent~~ · ~~F9 pre-registered evaluation~~ ·
+F10 publication (in review).
 
 ## Quick start (host, no ROS)
 
@@ -614,7 +665,7 @@ uv run armbench protocol verify                 # exit 0: the repository matches
 H=$(uv run armbench protocol hash)              # sha256 of docs/protocol.md
 uv run armbench run --task all --agent A --seeds final_eval --backend sim \
   --final-eval --protocol-hash "$H" --out runs/f9_A          # wrong hash / dirty tree -> exit 2
-uv run armbench analyze runs/f9_A runs/f9_B runs/f9_BS runs/f9_C runs/f9_CS \
+uv run armbench analyze runs/f9_A runs/f9_B runs/f9_BSS runs/f9_C runs/f9_CSS \
   --out reports/f9_eval.json --md reports/f9_eval.md        # deterministic: same report_sha256
 ```
 
@@ -684,6 +735,6 @@ docs/              plan, ADRs, PROJECT_STATE.md
 
 ## Contributing and licence
 
-See `CONTRIBUTING.md`. Code is MIT (`LICENSE`). Robot meshes and third-party
-ROS packages keep their own licences; they will be listed in
-`THIRD_PARTY_LICENSES.md` before any image is published (phase F10).
+See `CONTRIBUTING.md`. Code is MIT (`LICENSE`), the dataset CC BY 4.0. Robot meshes and
+third-party ROS packages keep their own licences: see `THIRD_PARTY_LICENSES.md`. Changes:
+`CHANGELOG.md`. Cite with `CITATION.cff`.

@@ -8,6 +8,8 @@ on:
       - "scripts/check_sim_boot.py"
       - "scripts/check_sim.py"
       - ".github/workflows/sim-image.yml"
+      - "src/armbench/**"
+      - "uv.lock"
   push:
     branches: [main]
     paths:
@@ -16,6 +18,8 @@ on:
       - "scripts/check_sim_boot.py"
       - "scripts/check_sim.py"
       - ".github/workflows/sim-image.yml"
+      - "src/armbench/**"
+      - "uv.lock"
   workflow_dispatch:
 
 permissions:
@@ -43,6 +47,16 @@ jobs:
       # 10 FPS acceptance threshold is for the development host (reports/f1_sim.json).
       - name: UR5e + gripper + RGB-D self-check (F1 gate)
         run: python3 scripts/check_sim.py --image armbench-sim:dev --repeats 3 --camera-fps-min 8 --out reports/f1_sim.ci.json
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.22"
+          enable-cache: true
+      - run: uv sync --locked
+      - name: One Gazebo episode end to end (baseline A, pick_place@1, dev seed 0)
+        run: |
+          uv run armbench run --task pick_place@1 --agent A --seeds 0 --backend sim \
+            --image armbench-sim:dev --out runs/ci_smoke
+          grep -q '"ok": *true' runs/ci_smoke/episodes.jsonl
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -50,3 +64,4 @@ jobs:
           path: |
             reports/f0_sim.ci.json
             reports/f1_sim.ci.json
+            runs/ci_smoke/episodes.jsonl

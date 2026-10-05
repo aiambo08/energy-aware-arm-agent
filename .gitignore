@@ -32,3 +32,6 @@ reports/_f4_*/
 
 # LLM response cache (runs carry their own bundle under <out>/llm)
 /cache/
+
+# Extracted dataset and demo output (scripts/demo.py)
+/.armbench/

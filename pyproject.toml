@@ -1,6 +1,6 @@
 [project]
 name = "armbench"
-version = "0.0.1"
+version = "1.0.0"
 description = "Energy-aware LLM agent benchmark for a simulated UR5e arm (ROS 2 Jazzy + Gazebo Harmonic)."
 readme = "README.md"
 license = "MIT"
@@ -8,7 +8,7 @@ requires-python = ">=3.12"
 authors = [{ name = "Aibo Ni", email = "aibo.ni@alumnos.upm.es" }]
 keywords = ["robotics", "llm-agent", "energy", "gazebo", "ros2", "benchmark"]
 classifiers = [
-  "Development Status :: 2 - Pre-Alpha",
+  "Development Status :: 4 - Beta",
   "Programming Language :: Python :: 3.12",
   "Topic :: Scientific/Engineering",
 ]
@@ -32,6 +32,7 @@ dev = [
   "mypy>=1.10",
   "pre-commit>=3.7",
   "pytest>=8.2",
+  "pytest-cov>=5.0",
   "pytest-timeout>=2.3",
   "ruff>=0.5",
   "types-pyyaml>=6.0",

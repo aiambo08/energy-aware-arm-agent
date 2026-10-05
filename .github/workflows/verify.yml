@@ -36,5 +36,5 @@ jobs:
       - name: Check relative links in Markdown and the results page
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --offline --no-progress --include-fragments=false "./**/*.md" site/index.html
+          args: --offline --no-progress --include-fragments=none "./**/*.md" site/index.html
           fail: true
